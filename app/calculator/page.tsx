@@ -105,10 +105,8 @@ export default function CalculatorPage() {
                 </li>
               </ul>
               <a 
-                href="https://investiscope.net" 
+                href="/classic" 
                 className="block w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white text-center py-4 rounded-xl font-bold hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
-                target="_blank"
-                rel="noopener noreferrer"
               >
                 Launch Classic Calculator →
               </a>
