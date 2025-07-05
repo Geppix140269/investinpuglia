@@ -33,9 +33,22 @@ export default function Navbar() {
             <a href="/tools" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
               Tools
             </a>
-            <a href="/calculator" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
-              Calculators
-            </a>
+            <div className="relative group">
+              <a href="/calculator" className="text-gray-700 hover:text-gray-900 transition-colors font-medium flex items-center gap-1">
+                Calculators
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </a>
+              <div className="absolute top-full left-0 mt-2 bg-white rounded-lg shadow-lg py-2 min-w-[200px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                <a href="https://investiscopeeasy.netlify.app/" target="_blank" rel="noopener noreferrer" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
+                  InvestiScope Light
+                </a>
+                <a href="/classic" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
+                  InvestiScope Classic
+                </a>
+              </div>
+            </div>
             <a href="/surveys" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
               Surveys
             </a>
@@ -80,9 +93,19 @@ export default function Navbar() {
               <a href="/tools" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
                 Tools
               </a>
-              <a href="/calculator" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
-                Calculators
-              </a>
+              <div>
+                <a href="/calculator" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2 block">
+                  Calculators
+                </a>
+                <div className="ml-4 mt-2 space-y-2">
+                  <a href="https://investiscopeeasy.netlify.app/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors text-sm block">
+                    → InvestiScope Light
+                  </a>
+                  <a href="/classic" className="text-gray-600 hover:text-gray-900 transition-colors text-sm block">
+                    → InvestiScope Classic
+                  </a>
+                </div>
+              </div>
               <a href="/surveys" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
                 Surveys
               </a>
