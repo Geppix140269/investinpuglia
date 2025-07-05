@@ -356,7 +356,7 @@ export default function HomePage() {
          <div className="grid md:grid-cols-2 gap-12 items-center">
            <div>
              <img 
-               src="/IMG_3382.JPG" 
+               src="/Giuseppe Funaro 062025.jpg" 
                alt="Giuseppe Funaro - Property Investment Advisor Puglia" 
                className="rounded-3xl shadow-2xl w-full"
              />
