@@ -92,7 +92,7 @@ export default function HomePage() {
                
                <div className="flex flex-col items-center">
                  <img 
-                   src="/regione-puglia-logo.png" 
+                   src="/regione_puglia-Photoroom.png" 
                    alt="Regione Puglia" 
                    className="h-20 w-auto mb-2 grayscale opacity-80"
                  />
