@@ -1,101 +1,42 @@
-// app/pro/page.tsx - Giuseppe Funaro Professional Advisory Page
+// app/pro/page.tsx - Fixed version without styled-jsx
+
+'use client'  // Add this to make it a Client Component
 
 export default function ProPage() {
   return (
     <>
-      <style jsx>{`
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #059669 75%, #047857 100%);
-            background-size: 400% 400%;
-            animation: gradientShift 20s ease infinite;
-            position: relative;
-        }
-        
-        .gradient-bg::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-image: 
-                repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.02) 35px, rgba(255,255,255,.02) 70px);
-            pointer-events: none;
-        }
-        
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        .glass {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
-        }
-        
-        .fade-in { 
-            animation: fadeIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            opacity: 0;
-        }
-        
-        @keyframes fadeIn { 
-            to { opacity: 1; }
-        }
-        
-        .slide-up { 
-            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-            opacity: 0;
-        }
-        
-        @keyframes slideUp { 
-            from { 
-                opacity: 0; 
-                transform: translateY(40px); 
-            } 
-            to { 
-                opacity: 1; 
-                transform: translateY(0); 
-            }
-        }
-        
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
-        .delay-4 { animation-delay: 0.4s; }
-      `}</style>
-
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center py-20 px-5 relative overflow-hidden gradient-bg">
-        <div className="absolute -top-1/2 -right-1/2 w-[200%] h-[200%] bg-radial-gradient opacity-10 animate-shimmer" />
+      <section className="min-h-screen flex items-center py-20 px-5 relative overflow-hidden bg-gradient-to-br from-[#667eea] via-[#764ba2] via-[#059669] to-[#047857] bg-[length:400%_400%] animate-gradient">
+        <div className="absolute -top-1/2 -right-1/2 w-[200%] h-[200%] opacity-10" 
+             style={{
+               background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+               animation: 'shimmer 15s linear infinite'
+             }} />
         
         <div className="max-w-7xl mx-auto w-full relative z-10">
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-700 text-white px-7 py-3 rounded-full text-sm font-bold mb-8 shadow-lg fade-in">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-red-600 to-red-700 text-white px-7 py-3 rounded-full text-sm font-bold mb-8 shadow-lg animate-fadeIn">
               <span className="w-2 h-2 bg-yellow-400 rounded-full animate-ping" />
               ⚡ €810,000 SECURED FOR BRIGITTE IN 5 MONTHS
             </div>
             
-            <h1 className="text-4xl md:text-6xl font-light text-white mb-6 fade-in delay-1">
+            <h1 className="text-4xl md:text-6xl font-light text-white mb-6 animate-fadeIn animation-delay-100">
               Secure Up to <strong className="font-extrabold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">€2.25M in EU Grants</strong><br/>
               for Your Dream Property in Puglia
             </h1>
             
-            <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-4xl mx-auto fade-in delay-2">
+            <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-4xl mx-auto animate-fadeIn animation-delay-200">
               Without bureaucracy, language barriers, or losing €200K to the system.<br/>
               <span className="text-lg opacity-90">I handle everything while you stay in London, Paris, or New York.</span>
             </p>
             
-            <div className="inline-block bg-gradient-to-r from-yellow-400/20 to-orange-500/10 backdrop-blur-md border border-yellow-400/30 px-8 py-5 rounded-full mb-10 fade-in delay-3">
+            <div className="inline-block bg-gradient-to-r from-yellow-400/20 to-orange-500/10 backdrop-blur-md border border-yellow-400/30 px-8 py-5 rounded-full mb-10 animate-fadeIn animation-delay-300">
               <p className="text-white text-lg font-semibold">
                 💎 One expert, one mission: turn your renovation dream into €2.25M in non-repayable funding
               </p>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-5 justify-center fade-in delay-4">
+            <div className="flex flex-col sm:flex-row gap-5 justify-center animate-fadeIn animation-delay-400">
               <a 
                 href="https://calendly.com/investiscope_pro/30min" 
                 className="inline-flex items-center gap-3 bg-gradient-to-r from-green-600 to-green-700 text-white px-10 py-5 rounded-full text-lg font-bold hover:-translate-y-1 hover:shadow-2xl transition-all duration-300"
@@ -113,7 +54,7 @@ export default function ProPage() {
               </a>
             </div>
             
-            <div className="mt-10 inline-block bg-black/40 backdrop-blur-md px-6 py-3 rounded-full fade-in delay-4">
+            <div className="mt-10 inline-block bg-black/40 backdrop-blur-md px-6 py-3 rounded-full animate-fadeIn animation-delay-400">
               <p className="text-white font-semibold">
                 🎯 I work with a maximum of <span className="text-2xl text-yellow-400">3 clients</span> at a time
               </p>
@@ -186,7 +127,7 @@ export default function ProPage() {
       </section>
 
       {/* Services Section */}
-      <section className="py-20 gradient-bg" id="services">
+      <section className="py-20 bg-gradient-to-br from-[#667eea] via-[#764ba2] via-[#059669] to-[#047857] bg-[length:400%_400%] animate-gradient" id="services">
         <div className="max-w-7xl mx-auto px-5">
           <h2 className="text-4xl md:text-5xl font-light text-white text-center mb-6">
             What You're <strong className="font-extrabold">Really Paying Me For</strong>
