@@ -23,7 +23,7 @@ export default function HomePage() {
            </div>
            
            {/* H1 with Puglia added */}
-           <h1 className="text-4xl md:text-6xl font-light text-white mb-6 animate-fadeIn animation-delay-100">
+           <h1 className="text-4xl md:text-6xl font-light text-white mb-6 animate-fadeIn animation-delay-100" style={{ fontFamily: "'Playfair Display', serif" }}>
              Secure <strong className="font-extrabold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">€2.25M in Grants</strong> for Your Property in Puglia
            </h1>
            
@@ -58,6 +58,61 @@ export default function HomePage() {
        </div>
      </section>
 
+     {/* Grant Source Institutions Section - Legally Compliant */}
+     <section className="py-16 bg-gray-50">
+       <div className="max-w-7xl mx-auto px-5">
+         <div className="max-w-4xl mx-auto">
+           <div className="text-center mb-10">
+             <p className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-2">
+               FUNDING PROGRAM AFFILIATION
+             </p>
+             <h3 className="text-2xl font-bold text-gray-900 mb-4">
+               Grant Source Institutions
+             </h3>
+             <p className="text-gray-600 max-w-3xl mx-auto">
+               InvestiScope™ provides consultancy and support services related to the Mini PIA program — 
+               a public funding initiative co-financed by Regione Puglia and the European Union through 
+               the POR Puglia FESR-FSE 2014–2020 and 2021–2027 programs.
+             </p>
+           </div>
+           
+           <div className="bg-white rounded-xl p-8 shadow-sm border border-gray-200">
+             <p className="text-center text-sm text-gray-600 mb-6 font-medium">
+               This grant opportunity is co-financed by:
+             </p>
+             
+             <div className="flex flex-wrap items-center justify-center gap-12 mb-8">
+               <div className="flex flex-col items-center">
+                 <img 
+                   src="/EN_co_fundedvertical_RGB_POS.png" 
+                   alt="Co-funded by the European Union" 
+                   className="h-24 w-auto mb-2"
+                 />
+               </div>
+               
+               <div className="flex flex-col items-center">
+                 <img 
+                   src="/regione-puglia-logo.png" 
+                   alt="Regione Puglia" 
+                   className="h-20 w-auto mb-2 grayscale opacity-80"
+                 />
+                 <p className="text-sm text-gray-600">Regione Puglia</p>
+                 <p className="text-xs text-gray-500">POR Puglia 2014-2027</p>
+               </div>
+             </div>
+             
+             <div className="border-t pt-6">
+               <p className="text-xs text-gray-500 text-center italic">
+                 <strong>Disclaimer:</strong> InvestiScope™ is an independent private consultancy and is not 
+                 affiliated with or endorsed by Regione Puglia or the European Union. The presence of 
+                 institutional logos reflects our focus on helping eligible investors access these public resources.
+               </p>
+             </div>
+           </div>
+         </div>
+       </div>
+     </section>
+
      {/* The Opportunity Section */}
      <section className="py-20 relative bg-white overflow-hidden">
        <div className="absolute inset-0 bg-gradient-to-br from-green-50/50 to-emerald-50/30"></div>
@@ -66,7 +121,7 @@ export default function HomePage() {
            <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-800 px-4 py-2 rounded-full text-sm font-semibold mb-4">
              🎯 THE OPPORTUNITY
            </div>
-           <h2 className="text-4xl md:text-5xl font-bold mb-6">
+           <h2 className="text-4xl md:text-5xl font-bold mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
              Why Smart Money is <span className="bg-gradient-to-r from-green-600 to-emerald-600 bg-clip-text text-transparent">Flowing to Puglia</span>
            </h2>
          </div>
@@ -301,7 +356,7 @@ export default function HomePage() {
          <div className="grid md:grid-cols-2 gap-12 items-center">
            <div>
              <img 
-               src="/images/foto.jpeg" 
+               src="/IMG_3382.JPG" 
                alt="Giuseppe Funaro - Property Investment Advisor Puglia" 
                className="rounded-3xl shadow-2xl w-full"
              />
