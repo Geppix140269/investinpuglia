@@ -8,7 +8,7 @@ declare global {
   interface Window {
     showRegistrationModal: () => void;
     closeModal: () => void;
-    handleRegistration: (event: Event) => Promise<false>;
+    handleRegistration: (event: any) => Promise<false>;
     sendWhatsAppDirect: () => void;
     supabase: any;
     emailjs: any;
@@ -1075,7 +1075,7 @@ export default function ClassicPage() {
               </div>
             </div>
             
-            <form id="reportForm" onSubmit={(e) => { e.preventDefault(); window.handleRegistration && window.handleRegistration(e) }}>
+            <form id="reportForm" onSubmit={(e) => { e.preventDefault(); if (window.handleRegistration) window.handleRegistration(e.nativeEvent) }}>
               <div className="form-group">
                 <label className="form-label">Full Name *</label>
                 <input type="text" className="form-input" id="userName" required />
