@@ -1,107 +1,109 @@
-// app/calculator/page.tsx - Calculator selection page
-
+// app/calculator/page.tsx
 export default function CalculatorPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Simple Navbar */}
-      <nav className="bg-white shadow-md">
-        <div className="container-custom py-4">
-          <a href="/" className="text-2xl font-bold text-primary hover:opacity-80">
-            InvestiScope™
-          </a>
+    <>
+      {/* Hero Section */}
+      <section className="py-20 bg-gradient-to-br from-[#667eea] via-[#764ba2] via-[#059669] to-[#047857] bg-[length:400%_400%] animate-gradient text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="max-w-7xl mx-auto px-5 relative z-10">
+          <div className="text-center">
+            <h1 className="text-5xl md:text-6xl font-bold mb-6">
+              Investment <span className="text-yellow-400">Calculators</span>
+            </h1>
+            <p className="text-xl text-gray-200 max-w-3xl mx-auto">
+              Choose the perfect tool for analyzing your Italian property investment and PIA grant eligibility
+            </p>
+          </div>
         </div>
-      </nav>
-      
-      <div className="container-custom py-16">
-        <h1 className="text-4xl font-bold text-center mb-4">
-          Choose Your Calculator
-        </h1>
-        <p className="text-xl text-gray-600 text-center mb-12 max-w-3xl mx-auto">
-          Select the tool that best fits your needs for analyzing Italian property investments and PIA grant eligibility
-        </p>
-        
-        {/* Calculator Options */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-          {/* InvestiScope Light */}
-          <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow relative overflow-hidden">
-            <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-              RECOMMENDED
+      </section>
+
+      {/* Calculators Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-5">
+          <div className="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+            {/* InvestiScope Light */}
+            <div className="bg-white rounded-2xl shadow-xl p-10 relative overflow-hidden hover:shadow-2xl transition-shadow">
+              <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                RECOMMENDED
+              </div>
+              <div className="text-6xl mb-6">⚡</div>
+              <h2 className="text-3xl font-bold mb-4">InvestiScope™ Light</h2>
+              <p className="text-gray-600 mb-6">
+                Perfect for quick assessments. Get instant ROI projections and grant eligibility in under 60 seconds.
+              </p>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-center gap-3">
+                  <span className="text-green-500 font-bold">✓</span>
+                  Lightning-fast analysis
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="text-green-500 font-bold">✓</span>
+                  Instant grant eligibility check
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="text-green-500 font-bold">✓</span>
+                  Basic ROI projections
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="text-green-500 font-bold">✓</span>
+                  No registration required
+                </li>
+              </ul>
+              <a 
+                href="https://investiscopeeasy.netlify.app/" 
+                className="block w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-center py-4 rounded-xl font-bold hover:shadow-lg transition-all"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Launch Light Calculator →
+              </a>
             </div>
-            <div className="text-5xl mb-4">⚡</div>
-            <h2 className="text-2xl font-bold mb-3">InvestiScope™ Light</h2>
-            <p className="text-gray-600 mb-6">
-              Perfect for quick assessments. Get instant ROI projections and grant eligibility in under 60 seconds.
-            </p>
-            <ul className="space-y-2 mb-8">
-              <li className="flex items-center gap-2 text-gray-700">
-                <span className="text-green-500">✓</span>
-                Lightning-fast analysis
-              </li>
-              <li className="flex items-center gap-2 text-gray-700">
-                <span className="text-green-500">✓</span>
-                Instant grant eligibility check
-              </li>
-              <li className="flex items-center gap-2 text-gray-700">
-                <span className="text-green-500">✓</span>
-                Basic ROI projections
-              </li>
-              <li className="flex items-center gap-2 text-gray-700">
-                <span className="text-green-500">✓</span>
-                No registration required
-              </li>
-            </ul>
-            <a 
-              href="https://investiscopeeasy.netlify.app/" 
-              className="block w-full bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold py-3 rounded-lg text-center hover:from-green-600 hover:to-green-700 transition-all"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Launch Light Calculator →
-            </a>
-          </div>
-          
-          {/* InvestiScope Classic */}
-          <div className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-shadow">
-            <div className="text-5xl mb-4">🧮</div>
-            <h2 className="text-2xl font-bold mb-3">InvestiScope™ Classic</h2>
-            <p className="text-gray-600 mb-6">
-              Comprehensive analysis tool for serious investors. Detailed financial projections and advanced grant calculations.
-            </p>
-            <ul className="space-y-2 mb-8">
-              <li className="flex items-center gap-2 text-gray-700">
-                <span className="text-green-500">✓</span>
-                Advanced grant calculations
-              </li>
-              <li className="flex items-center gap-2 text-gray-700">
-                <span className="text-green-500">✓</span>
-                Detailed financial modeling
-              </li>
-              <li className="flex items-center gap-2 text-gray-700">
-                <span className="text-green-500">✓</span>
-                5-year exit strategies
-              </li>
-              <li className="flex items-center gap-2 text-gray-700">
-                <span className="text-green-500">✓</span>
-                Up to €2.25M grant analysis
-              </li>
-            </ul>
-            <a 
-              href="https://investiscope.net" 
-              className="block w-full bg-primary text-white font-semibold py-3 rounded-lg text-center hover:bg-secondary transition-all"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Launch Classic Calculator →
-            </a>
+            
+            {/* InvestiScope Classic */}
+            <div className="bg-white rounded-2xl shadow-xl p-10 hover:shadow-2xl transition-shadow">
+              <div className="text-6xl mb-6">🧮</div>
+              <h2 className="text-3xl font-bold mb-4">InvestiScope™ Classic</h2>
+              <p className="text-gray-600 mb-6">
+                Comprehensive analysis tool for serious investors. Detailed financial projections and advanced grant calculations.
+              </p>
+              <ul className="space-y-3 mb-8">
+                <li className="flex items-center gap-3">
+                  <span className="text-green-500 font-bold">✓</span>
+                  Advanced grant calculations
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="text-green-500 font-bold">✓</span>
+                  Detailed financial modeling
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="text-green-500 font-bold">✓</span>
+                  5-year exit strategies
+                </li>
+                <li className="flex items-center gap-3">
+                  <span className="text-green-500 font-bold">✓</span>
+                  Up to €2.25M grant analysis
+                </li>
+              </ul>
+              <a 
+                href="https://investiscope.net" 
+                className="block w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white text-center py-4 rounded-xl font-bold hover:shadow-lg transition-all"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Launch Classic Calculator →
+              </a>
+            </div>
           </div>
         </div>
-        
-        {/* Comparison Table */}
-        <div className="mt-16 max-w-4xl mx-auto">
-          <h3 className="text-2xl font-bold text-center mb-8">Feature Comparison</h3>
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      </section>
+
+      {/* Comparison Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-5">
+          <h2 className="text-3xl font-bold text-center mb-12">Feature Comparison</h2>
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
             <table className="w-full">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-100">
                 <tr>
                   <th className="px-6 py-4 text-left font-semibold">Feature</th>
                   <th className="px-6 py-4 text-center font-semibold">Light ⚡</th>
@@ -125,25 +127,15 @@ export default function CalculatorPage() {
                   <td className="px-6 py-4 text-center">€2.25M</td>
                 </tr>
                 <tr>
-                  <td className="px-6 py-4">ROI Projections</td>
-                  <td className="px-6 py-4 text-center">Simple</td>
-                  <td className="px-6 py-4 text-center">Detailed</td>
-                </tr>
-                <tr>
                   <td className="px-6 py-4">Exit Strategy Analysis</td>
                   <td className="px-6 py-4 text-center">-</td>
                   <td className="px-6 py-4 text-center">✓</td>
-                </tr>
-                <tr>
-                  <td className="px-6 py-4">Registration Required</td>
-                  <td className="px-6 py-4 text-center">No</td>
-                  <td className="px-6 py-4 text-center">Optional</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
-      </div>
-    </div>
+      </section>
+    </>
   )
 }
