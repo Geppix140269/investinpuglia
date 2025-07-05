@@ -3,6 +3,19 @@
 import { useEffect } from 'react'
 import Script from 'next/script'
 
+// Extend Window interface for our custom functions
+declare global {
+  interface Window {
+    showRegistrationModal: () => void;
+    closeModal: () => void;
+    handleRegistration: (event: Event) => Promise<false>;
+    sendWhatsAppDirect: () => void;
+    supabase: any;
+    emailjs: any;
+    jspdf: any;
+  }
+}
+
 export default function ClassicPage() {
   useEffect(() => {
     // Check access on mount
@@ -1019,7 +1032,7 @@ export default function ClassicPage() {
           <section className="report-cta-section">
             <h3 className="report-cta-title">📊 Want a Professional PDF Report?</h3>
             <p className="report-cta-subtitle">Get your complete investment analysis delivered instantly!</p>
-            <button className="cta-button" onClick={() => window.showRegistrationModal()}>
+            <button className="cta-button" onClick={() => window.showRegistrationModal && window.showRegistrationModal()}>
               Get My Free Report
             </button>
           </section>
@@ -1033,7 +1046,7 @@ export default function ClassicPage() {
         {/* Registration Modal */}
         <div className="modal-overlay" id="registrationOverlay">
           <div className="modal-content">
-            <button className="modal-close" onClick={() => window.closeModal()}>✕</button>
+            <button className="modal-close" onClick={() => window.closeModal && window.closeModal()}>✕</button>
             
             <div className="modal-header">
               <h2 className="modal-title">Get Your Complete Investment Report</h2>
@@ -1062,7 +1075,7 @@ export default function ClassicPage() {
               </div>
             </div>
             
-            <form id="reportForm" onSubmit={(e) => { e.preventDefault(); window.handleRegistration(e) }}>
+            <form id="reportForm" onSubmit={(e) => { e.preventDefault(); window.handleRegistration && window.handleRegistration(e) }}>
               <div className="form-group">
                 <label className="form-label">Full Name *</label>
                 <input type="text" className="form-input" id="userName" required />
@@ -1099,13 +1112,13 @@ export default function ClassicPage() {
               </button>
             </form>
             
-            <div className="whatsapp-button" onClick={() => window.sendWhatsAppDirect()}>
+            <div className="whatsapp-button" onClick={() => window.sendWhatsAppDirect && window.sendWhatsAppDirect()}>
               💬 Send Report via WhatsApp
             </div>
             
             <p className="privacy-note">
               🔒 Your information is secure and will only be used to send your report.<br />
-              We respect your privacy and won't spam you.
+              We respect your privacy and won&apos;t spam you.
             </p>
           </div>
         </div>
