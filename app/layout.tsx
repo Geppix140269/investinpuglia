@@ -1,12 +1,15 @@
+// app/layout.tsx - Updated with Navbar
+
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
+import Navbar from '@/components/Navbar'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'InvestiScope - Foreign Property Investment Advisory',
-  description: 'Strategic advisory services for foreign property investors in Italy',
+  title: 'Giuseppe Funaro - EU Grant Expert | Secure €2.25M for Your Puglia Property',
+  description: 'Expert advisory for foreign property investors in Italy. Secure up to €2.25M in EU grants with proven strategies.',
 }
 
 export default function RootLayout({
@@ -17,7 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        {children}
+        <Navbar />
+        <main className="pt-16">
+          {children}
+        </main>
       </body>
     </html>
   )
