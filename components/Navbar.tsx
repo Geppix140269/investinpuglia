@@ -1,5 +1,3 @@
-// components/Navbar.tsx - Professional Navigation Bar
-
 'use client'
 
 import { useState } from 'react'
@@ -29,7 +27,10 @@ export default function Navbar() {
               Calculators
             </a>
             <a href="/surveys" className="text-white/80 hover:text-white transition-colors font-medium">
-              Property Survey
+              Surveys
+            </a>
+            <a href="/contact" className="text-white/80 hover:text-white transition-colors font-medium">
+              Contact
             </a>
             <a href="/blog" className="text-white/80 hover:text-white transition-colors font-medium">
               Blog
@@ -67,13 +68,16 @@ export default function Navbar() {
                 Home
               </a>
               <a href="/tools" className="text-white/80 hover:text-white transition-colors font-medium py-2">
-                Tools Overview
+                Tools
               </a>
               <a href="/calculator" className="text-white/80 hover:text-white transition-colors font-medium py-2">
-                Grant Calculators
+                Calculators
               </a>
               <a href="/surveys" className="text-white/80 hover:text-white transition-colors font-medium py-2">
-                Property Survey
+                Surveys
+              </a>
+              <a href="/contact" className="text-white/80 hover:text-white transition-colors font-medium py-2">
+                Contact
               </a>
               <a href="/blog" className="text-white/80 hover:text-white transition-colors font-medium py-2">
                 Blog
