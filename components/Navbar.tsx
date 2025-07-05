@@ -7,7 +7,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <nav className="fixed top-0 left-0 right-0 bg-slate-900/95 backdrop-blur-md z-50 border-b border-white/10">
+    <nav className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md z-50 border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
@@ -18,31 +18,31 @@ export default function Navbar() {
               className="h-10 w-auto"
             />
             <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>
+              <span className="text-2xl font-bold text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>
                 InvestiScope
               </span>
-              <span className="text-xs text-white/80 font-normal">™</span>
+              <span className="text-xs text-gray-700 font-normal">™</span>
             </div>
           </a>
           
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="/" className="text-white/80 hover:text-white transition-colors font-medium">
+            <a href="/" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
               Home
             </a>
-            <a href="/tools" className="text-white/80 hover:text-white transition-colors font-medium">
+            <a href="/tools" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
               Tools
             </a>
-            <a href="/calculator" className="text-white/80 hover:text-white transition-colors font-medium">
+            <a href="/calculator" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
               Calculators
             </a>
-            <a href="/surveys" className="text-white/80 hover:text-white transition-colors font-medium">
+            <a href="/surveys" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
               Surveys
             </a>
-            <a href="/contact" className="text-white/80 hover:text-white transition-colors font-medium">
+            <a href="/contact" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
               Contact
             </a>
-            <a href="/blog" className="text-white/80 hover:text-white transition-colors font-medium">
+            <a href="/blog" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
               Blog
             </a>
             <a 
@@ -58,7 +58,7 @@ export default function Navbar() {
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-white"
+            className="md:hidden text-gray-700"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor">
               {isOpen ? (
@@ -72,24 +72,24 @@ export default function Navbar() {
         
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t border-white/10">
+          <div className="md:hidden py-4 border-t border-gray-200">
             <div className="flex flex-col gap-4">
-              <a href="/" className="text-white/80 hover:text-white transition-colors font-medium py-2">
+              <a href="/" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
                 Home
               </a>
-              <a href="/tools" className="text-white/80 hover:text-white transition-colors font-medium py-2">
+              <a href="/tools" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
                 Tools
               </a>
-              <a href="/calculator" className="text-white/80 hover:text-white transition-colors font-medium py-2">
+              <a href="/calculator" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
                 Calculators
               </a>
-              <a href="/surveys" className="text-white/80 hover:text-white transition-colors font-medium py-2">
+              <a href="/surveys" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
                 Surveys
               </a>
-              <a href="/contact" className="text-white/80 hover:text-white transition-colors font-medium py-2">
+              <a href="/contact" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
                 Contact
               </a>
-              <a href="/blog" className="text-white/80 hover:text-white transition-colors font-medium py-2">
+              <a href="/blog" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
                 Blog
               </a>
               <a 
