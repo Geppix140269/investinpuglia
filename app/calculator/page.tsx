@@ -2,31 +2,51 @@
 export default function CalculatorPage() {
   return (
     <>
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-[#667eea] via-[#764ba2] via-[#059669] to-[#047857] bg-[length:400%_400%] animate-gradient text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="max-w-7xl mx-auto px-5 relative z-10">
+      {/* Hero Section with ALL effects */}
+      <section className="min-h-screen flex items-center py-20 px-5 relative overflow-hidden bg-gradient-to-br from-[#667eea] via-[#764ba2] via-[#059669] to-[#047857] bg-[length:400%_400%] animate-gradient">
+        {/* Animated background elements */}
+        <div className="absolute -top-1/2 -right-1/2 w-[200%] h-[200%] opacity-10" 
+             style={{
+               background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+               animation: 'shimmer 15s linear infinite'
+             }} />
+        
+        <div className="max-w-7xl mx-auto w-full relative z-10">
           <div className="text-center">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Investment <span className="text-yellow-400">Calculators</span>
+            {/* Badge with glow */}
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-700 text-white px-7 py-3 rounded-full text-sm font-bold mb-8 shadow-lg animate-fadeIn">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-ping" />
+              AI-POWERED GRANT ANALYSIS
+            </div>
+            
+            <h1 className="text-4xl md:text-6xl font-light text-white mb-6 animate-fadeIn animation-delay-100">
+              Investment <strong className="font-extrabold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">Calculators</strong>
             </h1>
-            <p className="text-xl text-gray-200 max-w-3xl mx-auto">
+            
+            <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-4xl mx-auto animate-fadeIn animation-delay-200">
               Choose the perfect tool for analyzing your Italian property investment and PIA grant eligibility
             </p>
+            
+            {/* Glass morphism box */}
+            <div className="inline-block bg-gradient-to-r from-green-400/20 to-emerald-500/10 backdrop-blur-md border border-green-400/30 px-8 py-5 rounded-full mb-10 animate-fadeIn animation-delay-300">
+              <p className="text-white text-lg font-semibold">
+                💰 Calculate up to €2.25M in grants instantly
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Calculators Section */}
-      <section className="py-20 bg-white">
+      {/* Calculators Section with glass morphism cards */}
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-5">
           <div className="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto">
-            {/* InvestiScope Light */}
-            <div className="bg-white rounded-2xl shadow-xl p-10 relative overflow-hidden hover:shadow-2xl transition-shadow">
-              <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+            {/* InvestiScope Light - Glass morphism card */}
+            <div className="relative bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl p-10 border border-white/50 hover:-translate-y-2 transition-all duration-300">
+              <div className="absolute top-4 right-4 bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
                 RECOMMENDED
               </div>
-              <div className="text-6xl mb-6">⚡</div>
+              <div className="text-6xl mb-6 animate-float">⚡</div>
               <h2 className="text-3xl font-bold mb-4">InvestiScope™ Light</h2>
               <p className="text-gray-600 mb-6">
                 Perfect for quick assessments. Get instant ROI projections and grant eligibility in under 60 seconds.
@@ -51,7 +71,7 @@ export default function CalculatorPage() {
               </ul>
               <a 
                 href="https://investiscopeeasy.netlify.app/" 
-                className="block w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-center py-4 rounded-xl font-bold hover:shadow-lg transition-all"
+                className="block w-full bg-gradient-to-r from-yellow-400 to-orange-500 text-white text-center py-4 rounded-xl font-bold hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -59,9 +79,9 @@ export default function CalculatorPage() {
               </a>
             </div>
             
-            {/* InvestiScope Classic */}
-            <div className="bg-white rounded-2xl shadow-xl p-10 hover:shadow-2xl transition-shadow">
-              <div className="text-6xl mb-6">🧮</div>
+            {/* InvestiScope Classic - Glass morphism card */}
+            <div className="relative bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl p-10 border border-white/50 hover:-translate-y-2 transition-all duration-300">
+              <div className="text-6xl mb-6 animate-float animation-delay-200">🧮</div>
               <h2 className="text-3xl font-bold mb-4">InvestiScope™ Classic</h2>
               <p className="text-gray-600 mb-6">
                 Comprehensive analysis tool for serious investors. Detailed financial projections and advanced grant calculations.
@@ -86,53 +106,13 @@ export default function CalculatorPage() {
               </ul>
               <a 
                 href="https://investiscope.net" 
-                className="block w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white text-center py-4 rounded-xl font-bold hover:shadow-lg transition-all"
+                className="block w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white text-center py-4 rounded-xl font-bold hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 Launch Classic Calculator →
               </a>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Comparison Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-5">
-          <h2 className="text-3xl font-bold text-center mb-12">Feature Comparison</h2>
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="px-6 py-4 text-left font-semibold">Feature</th>
-                  <th className="px-6 py-4 text-center font-semibold">Light ⚡</th>
-                  <th className="px-6 py-4 text-center font-semibold">Classic 🧮</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                <tr>
-                  <td className="px-6 py-4">Analysis Speed</td>
-                  <td className="px-6 py-4 text-center">60 seconds</td>
-                  <td className="px-6 py-4 text-center">2-3 minutes</td>
-                </tr>
-                <tr>
-                  <td className="px-6 py-4">Grant Calculation</td>
-                  <td className="px-6 py-4 text-center">Basic</td>
-                  <td className="px-6 py-4 text-center">Advanced</td>
-                </tr>
-                <tr>
-                  <td className="px-6 py-4">Maximum Grant Analysis</td>
-                  <td className="px-6 py-4 text-center">€2.25M</td>
-                  <td className="px-6 py-4 text-center">€2.25M</td>
-                </tr>
-                <tr>
-                  <td className="px-6 py-4">Exit Strategy Analysis</td>
-                  <td className="px-6 py-4 text-center">-</td>
-                  <td className="px-6 py-4 text-center">✓</td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </div>
       </section>
