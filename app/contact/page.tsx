@@ -4,27 +4,66 @@
 export default function ContactPage() {
   return (
     <>
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-[#667eea] via-[#764ba2] via-[#059669] to-[#047857] bg-[length:400%_400%] animate-gradient text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/20"></div>
-        <div className="max-w-7xl mx-auto px-5 relative z-10">
+      {/* Hero Section with ALL effects */}
+      <section className="min-h-screen flex items-center py-20 px-5 relative overflow-hidden bg-gradient-to-br from-[#667eea] via-[#764ba2] via-[#059669] to-[#047857] bg-[length:400%_400%] animate-gradient">
+        {/* Animated background elements */}
+        <div className="absolute -top-1/2 -right-1/2 w-[200%] h-[200%] opacity-10" 
+             style={{
+               background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+               animation: 'shimmer 15s linear infinite'
+             }} />
+        
+        <div className="max-w-7xl mx-auto w-full relative z-10">
           <div className="text-center">
-            <h1 className="text-5xl md:text-6xl font-bold mb-6">
-              Get in <span className="text-yellow-400">Touch</span>
+            {/* Badge with glow */}
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-emerald-700 text-white px-7 py-3 rounded-full text-sm font-bold mb-8 shadow-lg animate-fadeIn">
+              <span className="w-2 h-2 bg-emerald-400 rounded-full animate-ping" />
+              EXPERT GUIDANCE AWAITS
+            </div>
+            
+            <h1 className="text-4xl md:text-6xl font-light text-white mb-6 animate-fadeIn animation-delay-100">
+              Get in <strong className="font-extrabold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">Touch</strong>
             </h1>
-            <p className="text-xl text-gray-200 max-w-3xl mx-auto">
+            
+            <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-4xl mx-auto animate-fadeIn animation-delay-200">
               Ready to secure your Italian property investment with expert guidance? Let's discuss your project.
             </p>
+            
+            {/* Glass morphism box */}
+            <div className="inline-block bg-gradient-to-r from-emerald-400/20 to-green-500/10 backdrop-blur-md border border-emerald-400/30 px-8 py-5 rounded-full mb-10 animate-fadeIn animation-delay-300">
+              <p className="text-white text-lg font-semibold">
+                📞 Average response time: Within 24 hours
+              </p>
+            </div>
+            
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-5 justify-center animate-fadeIn animation-delay-400">
+              <a 
+                href="https://calendly.com/investiscope_pro/30min" 
+                className="inline-flex items-center gap-3 bg-gradient-to-r from-green-600 to-green-700 text-white px-10 py-5 rounded-full text-lg font-bold hover:-translate-y-1 hover:shadow-2xl transition-all duration-300"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Book Strategy Call
+                <span className="text-2xl">→</span>
+              </a>
+              <a 
+                href="mailto:info@investiscope.net" 
+                className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md border-2 border-white/30 text-white px-10 py-5 rounded-full text-lg font-bold hover:bg-white/20 transition-all duration-300"
+              >
+                Email Directly
+              </a>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Contact Options */}
-      <section className="py-20 bg-white">
+      {/* Contact Options with glass cards */}
+      <section className="py-20 bg-gray-50">
         <div className="max-w-5xl mx-auto px-5">
           <div className="grid md:grid-cols-2 gap-10">
-            {/* Direct Contact */}
-            <div className="bg-white rounded-2xl shadow-xl p-10">
+            {/* Direct Contact - Glass card */}
+            <div className="relative bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl p-10 border border-white/50">
               <h2 className="text-2xl font-bold mb-8">Direct Contact</h2>
               
               <div className="space-y-6">
@@ -52,8 +91,8 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Schedule Consultation */}
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-xl p-10">
+            {/* Schedule Consultation - Glass card with gradient */}
+            <div className="relative bg-gradient-to-br from-green-50/80 to-emerald-50/80 backdrop-blur-lg rounded-3xl shadow-2xl p-10 border border-green-200/50">
               <h2 className="text-2xl font-bold mb-8">Schedule a Consultation</h2>
               
               <p className="text-gray-700 mb-6">
@@ -62,7 +101,7 @@ export default function ContactPage() {
               
               <a 
                 href="https://calendly.com/investiscope_pro/30min" 
-                className="inline-block bg-green-600 text-white px-8 py-4 rounded-xl font-bold hover:bg-green-700 transition-all w-full text-center"
+                className="inline-block bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl hover:-translate-y-1 transition-all w-full text-center"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -73,64 +112,6 @@ export default function ContactPage() {
                 Average response time: Within 24 hours
               </p>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Form */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-5">
-          <div className="bg-white rounded-2xl shadow-xl p-10">
-            <h2 className="text-3xl font-bold mb-8 text-center">Send us a Message</h2>
-            
-            <form className="space-y-6">
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-semibold mb-2">Name *</label>
-                  <input 
-                    type="text" 
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-2">Email *</label>
-                  <input 
-                    type="email" 
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-semibold mb-2">Subject *</label>
-                <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500" required>
-                  <option value="">Select a topic</option>
-                  <option value="grant-consultation">Grant Consultation</option>
-                  <option value="property-survey">Property Survey</option>
-                  <option value="investment-advisory">Investment Advisory</option>
-                  <option value="general">General Inquiry</option>
-                </select>
-              </div>
-              
-              <div>
-                <label className="block text-sm font-semibold mb-2">Message *</label>
-                <textarea 
-                  rows={6}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
-                  placeholder="Tell us about your property investment plans..."
-                  required
-                />
-              </div>
-              
-              <button 
-                type="submit"
-                className="w-full bg-green-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-green-700 transition-all"
-              >
-                Send Message
-              </button>
-            </form>
           </div>
         </div>
       </section>
