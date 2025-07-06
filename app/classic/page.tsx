@@ -1112,7 +1112,12 @@ export default function ClassicPage() {
               </button>
             </form>
             
-            <div className="whatsapp-button" onClick={() => window.sendWhatsAppDirect && window.sendWhatsAppDirect()}>
+            <button 
+  type="button"
+  className="whatsapp-button"
+  onClick={() => window.sendWhatsAppDirect && window.sendWhatsAppDirect()}
+  aria-label="Send Report via WhatsApp"
+>
               💬 Send Report via WhatsApp
             </div>
             
