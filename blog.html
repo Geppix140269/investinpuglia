@@ -1,0 +1,1338 @@
+<!-- blog.html - Main Blog Page for investiscope.net -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment Insights Blog - InvestiScope</title>
+    <meta name="description" content="Expert insights on Italian property investment, Mini PIA grants, market analysis, and investment strategies. Powered by InvestiScope technology.">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Investment Insights Blog - InvestiScope">
+    <meta property="og:description" content="Expert insights on Italian property investment, Mini PIA grants, market analysis, and investment strategies.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://investiscope.net/blog.html">
+    
+    <!-- Existing InvestiScope styling -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            padding: 2rem 0;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 3rem;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .hero {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 2rem auto;
+            line-height: 1.6;
+        }
+
+        /* Search Box */
+        .search-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            position: relative;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 1rem 3rem 1rem 1rem;
+            border: none;
+            border-radius: 2rem;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0.7;
+        }
+
+        /* Blog Grid */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .blog-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 0;
+            transition: transform 0.3s ease, background 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+        }
+
+        .blog-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .blog-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 1rem 1rem 0 0;
+        }
+
+        .blog-content {
+            padding: 1.5rem;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .blog-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            line-height: 1.3;
+        }
+
+        .blog-title a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .blog-title a:hover {
+            opacity: 0.8;
+        }
+
+        .blog-description {
+            opacity: 0.9;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .blog-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .read-more {
+            color: #fff;
+            font-weight: 600;
+            text-decoration: none;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .read-more:hover {
+            opacity: 1;
+        }
+
+        /* Categories */
+        .categories {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .categories h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .category-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            text-align: center;
+            transition: background 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .category-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .category-title {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .category-description {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            text-align: center;
+            margin: 3rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-description {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 2rem 0;
+            text-align: center;
+            margin-top: 4rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-section p, .footer-section a {
+            opacity: 0.8;
+            line-height: 1.6;
+            color: white;
+            text-decoration: none;
+        }
+
+        .footer-section a:hover {
+            opacity: 1;
+        }
+
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            opacity: 0.7;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .blog-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">InvestiScope</a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="blog.html">Blog</a></li>
+                    <li><a href="calculator.html">Calculator</a></li>
+                    <li><a href="app.html">Tools</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Investment Insights & Market Analysis</h1>
+            <p>Expert guidance on Italian property investment, Mini PIA grants, market trends, and success strategies from Marie Trulli International.</p>
+            
+            <div class="search-container">
+                <input type="text" class="search-box" placeholder="Search articles..." id="searchInput">
+                <span class="search-icon">🔍</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Grid -->
+    <section class="container">
+        <div class="blog-grid" id="blogGrid">
+            <!-- Featured Article -->
+            <article class="blog-card" data-featured="true">
+                <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=500&h=300&fit=crop" alt="Mini PIA Grants Guide" class="blog-image">
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span>📅 Jan 15, 2025</span>
+                        <span>⏱️ 12 min read</span>
+                    </div>
+                    <h2 class="blog-title">
+                        <a href="blog-mini-pia-grants.html">How to Maximize Mini PIA Grants for Italian Property Investment in 2025</a>
+                    </h2>
+                    <p class="blog-description">
+                        Complete guide to securing up to €2.25M in non-repayable Mini PIA Turismo grants for your Italian property investment. Step-by-step process and requirements.
+                    </p>
+                    <div class="blog-tags">
+                        <span class="tag">Mini PIA</span>
+                        <span class="tag">Grants</span>
+                        <span class="tag">Italian Property</span>
+                    </div>
+                    <a href="blog-mini-pia-grants.html" class="read-more">Read More →</a>
+                </div>
+            </article>
+
+            <!-- Market Analysis -->
+            <article class="blog-card">
+                <img src="https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=500&h=300&fit=crop" alt="Puglia Market Trends" class="blog-image">
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span>📅 Jan 10, 2025</span>
+                        <span>⏱️ 8 min read</span>
+                    </div>
+                    <h2 class="blog-title">
+                        <a href="blog-puglia-trends.html">Puglia Property Market Trends 2025: What Foreign Investors Need to Know</a>
+                    </h2>
+                    <p class="blog-description">
+                        In-depth analysis of Puglia's real estate market trends, price movements, and investment opportunities for 2025.
+                    </p>
+                    <div class="blog-tags">
+                        <span class="tag">Market Analysis</span>
+                        <span class="tag">Puglia</span>
+                        <span class="tag">Trends</span>
+                    </div>
+                    <a href="blog-puglia-trends.html" class="read-more">Read More →</a>
+                </div>
+            </article>
+
+            <!-- ROI Calculator Guide -->
+            <article class="blog-card">
+                <img src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=500&h=300&fit=crop" alt="ROI Calculator" class="blog-image">
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span>📅 Jan 5, 2025</span>
+                        <span>⏱️ 10 min read</span>
+                    </div>
+                    <h2 class="blog-title">
+                        <a href="blog-roi-calculator.html">ROI Calculator: How to Evaluate Italian Property Investment Returns</a>
+                    </h2>
+                    <p class="blog-description">
+                        Learn how to properly calculate ROI, IRR, and cash flow for Italian property investments using professional methods.
+                    </p>
+                    <div class="blog-tags">
+                        <span class="tag">ROI</span>
+                        <span class="tag">Calculator</span>
+                        <span class="tag">Analysis</span>
+                    </div>
+                    <a href="blog-roi-calculator.html" class="read-more">Read More →</a>
+                </div>
+            </article>
+
+            <!-- Case Study -->
+            <article class="blog-card">
+                <img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=500&h=300&fit=crop" alt="Investment Case Study" class="blog-image">
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span>📅 Dec 28, 2024</span>
+                        <span>⏱️ 15 min read</span>
+                    </div>
+                    <h2 class="blog-title">
+                        <a href="blog-case-study-trullo.html">Case Study: €540,000 Mini PIA Grant Success in Ostuni</a>
+                    </h2>
+                    <p class="blog-description">
+                        Real-world example of how foreign investors secured maximum Mini PIA funding for a trullo renovation project in Puglia's most desirable location.
+                    </p>
+                    <div class="blog-tags">
+                        <span class="tag">Case Study</span>
+                        <span class="tag">Success Story</span>
+                        <span class="tag">Ostuni</span>
+                    </div>
+                    <a href="blog-case-study-trullo.html" class="read-more">Read More →</a>
+                </div>
+            </article>
+
+            <!-- Legal Guide -->
+            <article class="blog-card">
+                <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=500&h=300&fit=crop" alt="Legal Requirements" class="blog-image">
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span>📅 Dec 20, 2024</span>
+                        <span>⏱️ 12 min read</span>
+                    </div>
+                    <h2 class="blog-title">
+                        <a href="blog-legal-requirements.html">Legal Requirements for Foreign Property Investment in Italy</a>
+                    </h2>
+                    <p class="blog-description">
+                        Complete legal guide covering taxes, permits, residency requirements, and compliance for non-EU property investors in Italy.
+                    </p>
+                    <div class="blog-tags">
+                        <span class="tag">Legal</span>
+                        <span class="tag">Tax</span>
+                        <span class="tag">Foreign Investors</span>
+                    </div>
+                    <a href="blog-legal-requirements.html" class="read-more">Read More →</a>
+                </div>
+            </article>
+
+            <!-- Tax Strategy -->
+            <article class="blog-card">
+                <img src="https://images.unsplash.com/photo-1554224154-26032ffc0d07?w=500&h=300&fit=crop" alt="Tax Strategy" class="blog-image">
+                <div class="blog-content">
+                    <div class="blog-meta">
+                        <span>📅 Dec 15, 2024</span>
+                        <span>⏱️ 9 min read</span>
+                    </div>
+                    <h2 class="blog-title">
+                        <a href="blog-tax-optimization.html">Tax Optimization Strategies for Italian Property Investors</a>
+                    </h2>
+                    <p class="blog-description">
+                        Advanced tax planning strategies to minimize liability and maximize returns on Italian property investments, including resident vs non-resident considerations.
+                    </p>
+                    <div class="blog-tags">
+                        <span class="tag">Tax Strategy</span>
+                        <span class="tag">Optimization</span>
+                        <span class="tag">Planning</span>
+                    </div>
+                    <a href="blog-tax-optimization.html" class="read-more">Read More →</a>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="container">
+        <div class="categories">
+            <h2>Explore by Category</h2>
+            <div class="category-grid">
+                <div class="category-card" onclick="filterByCategory('investment-guides')">
+                    <div class="category-title">📚 Investment Guides</div>
+                    <div class="category-description">Complete how-to articles and step-by-step processes</div>
+                </div>
+                <div class="category-card" onclick="filterByCategory('market-analysis')">
+                    <div class="category-title">📊 Market Analysis</div>
+                    <div class="category-description">Data-driven insights and trend analysis</div>
+                </div>
+                <div class="category-card" onclick="filterByCategory('case-studies')">
+                    <div class="category-title">🏆 Case Studies</div>
+                    <div class="category-description">Real success stories and examples</div>
+                </div>
+                <div class="category-card" onclick="filterByCategory('legal-tax')">
+                    <div class="category-title">⚖️ Legal & Tax</div>
+                    <div class="category-description">Expert legal and tax guidance</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="container">
+        <div class="cta-section">
+            <h2 class="cta-title">Ready to Start Your Investment Journey?</h2>
+            <p class="cta-description">
+                Use our free InvestiScope tools to analyze potential investments or get expert consultation 
+                for personalized guidance on your Italian property investment strategy.
+            </p>
+            <div class="cta-buttons">
+                <a href="calculator.html" class="btn btn-primary">🧮 Try Free Calculator</a>
+                <a href="mailto:info@marietrulli.com" class="btn btn-secondary">📞 Book Consultation</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>InvestiScope</h3>
+                    <p>AI-powered investment analysis for Italian property. Expert tools and consultation by Marie Trulli International.</p>
+                    <p>📧 info@marietrulli.com</p>
+                    <p>📱 +39 351 400 1402</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Tools</h3>
+                    <p><a href="calculator.html">Mini PIA Calculator</a></p>
+                    <p><a href="app.html">InvestiScope Pro</a></p>
+                    <p><a href="eligibility.html">Eligibility Check</a></p>
+                </div>
+                <div class="footer-section">
+                    <h3>Resources</h3>
+                    <p><a href="blog.html">Investment Blog</a></p>
+                    <p><a href="blog-mini-pia-grants.html">Mini PIA Guide</a></p>
+                    <p><a href="blog-roi-calculator.html">ROI Calculator Guide</a></p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 InvestiScope. Powered by Marie Trulli International. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Search functionality
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const blogCards = document.querySelectorAll('.blog-card');
+            
+            blogCards.forEach(card => {
+                const title = card.querySelector('.blog-title').textContent.toLowerCase();
+                const description = card.querySelector('.blog-description').textContent.toLowerCase();
+                const tags = Array.from(card.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase()).join(' ');
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm) || tags.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Category filtering
+        function filterByCategory(category) {
+            const blogCards = document.querySelectorAll('.blog-card');
+            
+            blogCards.forEach(card => {
+                const tags = Array.from(card.querySelectorAll('.tag')).map(tag => tag.textContent.toLowerCase());
+                
+                let showCard = false;
+                switch(category) {
+                    case 'investment-guides':
+                        showCard = tags.some(tag => ['mini pia', 'grants', 'guides', 'roi', 'calculator'].includes(tag));
+                        break;
+                    case 'market-analysis':
+                        showCard = tags.some(tag => ['market analysis', 'trends', 'puglia', 'analysis'].includes(tag));
+                        break;
+                    case 'case-studies':
+                        showCard = tags.some(tag => ['case study', 'success story', 'ostuni'].includes(tag));
+                        break;
+                    case 'legal-tax':
+                        showCard = tags.some(tag => ['legal', 'tax', 'tax strategy', 'foreign investors'].includes(tag));
+                        break;
+                }
+                
+                card.style.display = showCard ? 'block' : 'none';
+            });
+        }
+
+        // Reset filter
+        function showAllPosts() {
+            const blogCards = document.querySelectorAll('.blog-card');
+            blogCards.forEach(card => {
+                card.style.display = 'block';
+            });
+        }
+
+        // Add click handlers for category cards
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Visual feedback
+                document.querySelectorAll('.category-card').forEach(c => c.style.background = 'rgba(255, 255, 255, 0.1)');
+                this.style.background = 'rgba(255, 255, 255, 0.3)';
+            });
+        });
+
+        // Add "Show All" functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const showAllBtn = document.createElement('button');
+            showAllBtn.textContent = 'Show All Articles';
+            showAllBtn.className = 'btn btn-secondary';
+            showAllBtn.style.margin = '0 auto 2rem auto';
+            showAllBtn.style.display = 'block';
+            showAllBtn.onclick = showAllPosts;
+            
+            const categoriesSection = document.querySelector('.categories');
+            categoriesSection.appendChild(showAllBtn);
+        });
+    </script>
+</body>
+</html>
+
+<!-- blog-mini-pia-grants.html - Sample Blog Post -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Maximize Mini PIA Grants for Italian Property Investment in 2025 - InvestiScope</title>
+    <meta name="description" content="Complete guide to securing up to €2.25M in non-repayable Mini PIA Turismo grants for your Italian property investment. Step-by-step process and requirements.">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            color: white;
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            padding: 2rem 0;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            margin-bottom: 3rem;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            opacity: 0.8;
+            font-weight: 500;
+            transition: opacity 0.3s ease;
+        }
+
+        .back-link:hover {
+            opacity: 1;
+        }
+
+        .article-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .article-title {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .article-description {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .article-tags {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+        }
+
+        .article-content {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1.5rem;
+            padding: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .article-content h2 {
+            font-size: 2rem;
+            margin: 2.5rem 0 1rem 0;
+            color: #fff;
+        }
+
+        .article-content h3 {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem 0;
+            color: #f0f0f0;
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content ul, .article-content ol {
+            margin: 1.5rem 0;
+            padding-left: 2rem;
+        }
+
+        .article-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .article-content blockquote {
+            background: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid rgba(255, 255, 255, 0.5);
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+            font-style: italic;
+        }
+
+        .article-content strong {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* CTA Boxes */
+        .cta-box {
+            background: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .cta-box.primary {
+            border-color: rgba(59, 130, 246, 0.5);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .cta-box.secondary {
+            border-color: rgba(16, 185, 129, 0.5);
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .cta-box h3 {
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .cta-box p {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(16, 185, 129, 0.3);
+            border-color: rgba(16, 185, 129, 0.5);
+        }
+
+        .share-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .article-content {
+                padding: 2rem;
+            }
+            
+            .article-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <a href="blog.html" class="back-link">← Back to Blog</a>
+        </div>
+    </header>
+
+    <article class="container">
+        <header class="article-header">
+            <div class="article-meta">
+                <span>📅 January 15, 2025</span>
+                <span>⏱️ 12 min read</span>
+                <span>👤 Marie Trulli</span>
+            </div>
+            
+            <h1 class="article-title">
+                How to Maximize Mini PIA Grants for Italian Property Investment in 2025
+            </h1>
+            
+            <p class="article-description">
+                Complete guide to securing up to €2.25M in non-repayable Mini PIA Turismo grants for your Italian property investment. Step-by-step process and requirements.
+            </p>
+            
+            <div class="article-tags">
+                <span class="tag">Mini PIA</span>
+                <span class="tag">Italian Property</span>
+                <span class="tag">Investment Grants</span>
+                <span class="tag">Puglia</span>
+            </div>
+        </header>
+
+        <div class="article-content">
+            <p>The Mini PIA Turismo grant program represents one of the most significant opportunities for foreign property investors in Italy, offering up to <strong>€2.25 million in non-repayable funding</strong>. Yet many investors remain unaware of this incredible opportunity or struggle with the application process.</p>
+
+            <h2>What is the Mini PIA Turismo Grant?</h2>
+
+            <p>The Mini PIA (Programma di Incentivi per l'Attrazione degli investimenti) Turismo is a government initiative designed to boost tourism infrastructure in Puglia, Italy's southeastern region. The program offers:</p>
+
+            <ul>
+                <li><strong>Up to 45% non-repayable funding</strong> for eligible projects</li>
+                <li><strong>Maximum grant of €2.25 million</strong> per project</li>
+                <li><strong>Project values between €30,000 and €5 million</strong></li>
+                <li><strong>Focus on tourism and hospitality infrastructure</strong></li>
+            </ul>
+
+            <div class="cta-box primary">
+                <h3>🧮 Calculate Your Mini PIA Grant Potential</h3>
+                <p>Use our free InvestiScope Classic tool to instantly calculate your eligible grant amount and investment returns.</p>
+                <a href="calculator.html" class="btn btn-primary">Start Analysis</a>
+            </div>
+
+            <h2>Eligibility Requirements</h2>
+
+            <h3>Property Location</h3>
+            <p>The property must be located in <strong>Puglia region</strong>, specifically in areas designated for tourism development. Popular eligible locations include:</p>
+
+            <ul>
+                <li>Bari and surrounding areas</li>
+                <li>Lecce and Salento peninsula</li>
+                <li>Ostuni and the Itria Valley</li>
+                <li>Gargano peninsula</li>
+                <li>Coastal areas of Brindisi and Taranto</li>
+            </ul>
+
+            <h3>Project Types</h3>
+            <p>Eligible projects include:</p>
+
+            <ol>
+                <li><strong>Tourist Accommodation</strong>
+                    <ul>
+                        <li>Hotels and bed & breakfasts</li>
+                        <li>Vacation rentals and agriturismos</li>
+                        <li>Glamping and unique accommodations</li>
+                    </ul>
+                </li>
+                <li><strong>Tourism Services</strong>
+                    <ul>
+                        <li>Restaurants and bars</li>
+                        <li>Wellness centers and spas</li>
+                        <li>Cultural and recreational facilities</li>
+                    </ul>
+                </li>
+                <li><strong>Infrastructure Improvements</strong>
+                    <ul>
+                        <li>Building renovations and restorations</li>
+                        <li>Energy efficiency upgrades</li>
+                        <li>Digital infrastructure</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h2>Financial Benefits Analysis</h2>
+
+            <p>Let's examine a real-world example of Mini PIA grant impact:</p>
+
+            <h3>Example Project: €1.2M Tourist Accommodation</h3>
+            <ul>
+                <li><strong>Total Project Value</strong>: €1,200,000</li>
+                <li><strong>Eligible Costs</strong>: €1,080,000 (90%)</li>
+                <li><strong>Mini PIA Grant (45%)</strong>: €486,000</li>
+                <li><strong>Tax Credit (additional)</strong>: €108,000</li>
+                <li><strong>Total Government Benefit</strong>: €594,000</li>
+                <li><strong>Net Investment Required</strong>: €606,000</li>
+            </ul>
+
+            <blockquote>
+                <strong>ROI Impact</strong>: The government funding reduces the required investment by nearly 50%, dramatically improving return on investment and cash flow.
+            </blockquote>
+
+            <h2>Application Process Step-by-Step</h2>
+
+            <h3>Phase 1: Project Planning (2-3 months)</h3>
+            <ol>
+                <li><strong>Property Identification</strong>
+                    <ul>
+                        <li>Locate suitable properties in eligible areas</li>
+                        <li>Conduct feasibility analysis</li>
+                        <li>Perform due diligence</li>
+                    </ul>
+                </li>
+                <li><strong>Business Plan Development</strong>
+                    <ul>
+                        <li>Financial projections and ROI analysis</li>
+                        <li>Market research and competition analysis</li>
+                        <li>Tourism demand assessment</li>
+                    </ul>
+                </li>
+                <li><strong>Technical Documentation</strong>
+                    <ul>
+                        <li>Architectural plans and designs</li>
+                        <li>Engineering studies</li>
+                        <li>Environmental impact assessments</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <h3>Phase 2: Application Submission (1 month)</h3>
+            <ol>
+                <li><strong>Online Registration</strong>
+                    <ul>
+                        <li>Create profile on PugliaSemplice platform</li>
+                        <li>Complete company registration if needed</li>
+                        <li>Gather required documentation</li>
+                    </ul>
+                </li>
+                <li><strong>Grant Application</strong>
+                    <ul>
+                        <li>Submit detailed project proposal</li>
+                        <li>Provide financial projections</li>
+                        <li>Include technical documentation</li>
+                    </ul>
+                </li>
+                <li><strong>Bank Guarantee</strong>
+                    <ul>
+                        <li>Secure preliminary financing approval</li>
+                        <li>Obtain bank guarantee for project funding</li>
+                        <li>Submit financial commitment letters</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <div class="cta-box secondary">
+                <h3>📞 Need Help with Your Mini PIA Application?</h3>
+                <p>Our experts can guide you through the entire process and maximize your grant potential.</p>
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="mailto:info@marietrulli.com" class="btn btn-secondary">Book Consultation</a>
+                    <a href="https://wa.me/393514001402" class="btn btn-secondary">WhatsApp Us</a>
+                </div>
+            </div>
+
+            <h2>2025 Program Updates</h2>
+
+            <p>The Mini PIA Turismo program has several important updates for 2025:</p>
+
+            <h3>Enhanced Digital Features</h3>
+            <ul>
+                <li>Streamlined online application process</li>
+                <li>Digital document submission</li>
+                <li>Real-time application tracking</li>
+                <li>Automated compliance checking</li>
+            </ul>
+
+            <h3>Increased Funding Allocation</h3>
+            <ul>
+                <li>Expanded budget for 2025 applications</li>
+                <li>Priority for innovative projects</li>
+                <li>Bonus incentives for sustainability</li>
+                <li>Fast-track approval for qualifying projects</li>
+            </ul>
+
+            <h2>Conclusion</h2>
+
+            <p>The Mini PIA Turismo grant program represents an unprecedented opportunity for foreign investors in Italian property. With proper planning, expert guidance, and strategic execution, investors can secure substantial government funding that dramatically improves project economics and return on investment.</p>
+
+            <p>Remember, the Mini PIA grant can provide up to €2.25 million in non-repayable funding – making it one of the most attractive investment incentives available in Europe today.</p>
+
+            <p><strong>Next Steps:</strong></p>
+            <ol>
+                <li>Use our InvestiScope tool to analyze potential projects</li>
+                <li>Identify suitable properties in Puglia</li>
+                <li>Consult with our Mini PIA specialists</li>
+                <li>Begin the application process</li>
+            </ol>
+
+            <hr style="margin: 3rem 0; border: none; height: 1px; background: rgba(255,255,255,0.2);">
+
+            <p><em>This article is part of our comprehensive Italian Property Investment Guide series. For personalized consultation and Mini PIA grant application assistance, contact Marie Trulli International.</em></p>
+        </div>
+
+        <div class="share-section">
+            <h3>Found this helpful? Share it!</h3>
+            <button class="btn" onclick="shareArticle()">📤 Share Article</button>
+        </div>
+    </article>
+
+    <script>
+        function shareArticle() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'How to Maximize Mini PIA Grants for Italian Property Investment in 2025',
+                    text: 'Complete guide to securing up to €2.25M in non-repayable Mini PIA Turismo grants',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback: copy URL to clipboard
+                navigator.clipboard.writeText(window.location.href).then(() => {
+                    alert('Article URL copied to clipboard!');
+                });
+            }
+        }
+    </script>
+</body>
+</html>
+
+<!-- Domain Migration Guide - README.md -->
+# Domain Migration from Wix to Netlify
+
+## Current Setup
+- **Wix Domain**: marietrulli.com (hosted on Wix)
+- **Netlify Site**: investiscope.net (your current site)
+- **Goal**: Move marietrulli.com to point to your Netlify site
+
+## Step-by-Step Migration Process
+
+### Phase 1: Prepare Netlify Site (1-2 days)
+
+1. **Add Blog to Current Site**
+   - Upload `blog.html` to your investiscope.net repository
+   - Upload `blog-mini-pia-grants.html` and other blog post files
+   - Test blog functionality on investiscope.net
+
+2. **Update Navigation**
+   - Add "Blog" link to your existing site navigation
+   - Update footer links to include blog pages
+   - Ensure all internal links work correctly
+
+### Phase 2: Configure Netlify for Custom Domain (1 day)
+
+1. **Add Custom Domain in Netlify**
+   - Go to Netlify Dashboard → Site Settings → Domain Management
+   - Click "Add custom domain"
+   - Enter: `marietrulli.com`
+   - Click "Verify" and "Add domain"
+
+2. **Configure DNS Settings**
+   - Netlify will show you the required DNS records
+   - Note down the DNS settings (you'll need these for Wix)
+
+### Phase 3: Update Domain Settings in Wix (1-2 days)
+
+1. **Access Wix Domain Management**
+   - Login to Wix Dashboard
+   - Go to Settings → Domains
+   - Click on marietrulli.com
+
+2. **Change DNS Settings**
+   - Click "Manage DNS Records"
+   - Delete existing A records
+   - Add new A records pointing to Netlify:
+     ```
+     Type: A
+     Name: @
+     Value: 75.2.60.5
+     
+     Type: A  
+     Name: www
+     Value: 75.2.60.5
+     ```
+
+3. **Add CNAME Record** (if required by Netlify)
+   ```
+   Type: CNAME
+   Name: www
+   Value: [your-netlify-subdomain].netlify.app
+   ```
+
+### Phase 4: SSL Certificate & Final Testing (1-2 days)
+
+1. **Wait for DNS Propagation** (24-48 hours)
+   - DNS changes can take time to propagate globally
+   - Check status using: https://dnschecker.org
+
+2. **Enable SSL in Netlify**
+   - Go to Site Settings → Domain Management
+   - Click "Verify DNS configuration"
+   - Enable "Force HTTPS"
+
+3. **Test Everything**
+   - Visit marietrulli.com - should show your Netlify site
+   - Test all pages and functionality
+   - Verify blog links work correctly
+
+### Phase 5: Set Up Redirects (1 day)
+
+1. **Create _redirects file** in your Netlify site root:
+   ```
+   # Redirect old Wix blog URLs to new blog
+   /blog/mini-pia-grants /blog-mini-pia-grants.html 301
+   /blog/puglia-trends /blog-puglia-trends.html 301
+   /blog/* /blog.html 301
+   
+   # Redirect www to non-www
+   https://www.marietrulli.com/* https://marietrulli.com/:splat 301!
+   ```
+
+2. **Update Google Search Console**
+   - Add marietrulli.com as new property
+   - Submit new sitemap
+   - Use "Change of Address" tool
+
+## Alternative Approach: Keep Both Domains
+
+If you prefer to keep both domains active:
+
+### Option A: Redirect investiscope.net to marietrulli.com
+- Point investiscope.net to redirect to marietrulli.com
+- Use marietrulli.com as primary domain
+
+### Option B: Use Both Domains
+- **marietrulli.com**: Main business website + blog
+- **investiscope.net**: Tools and calculators
+- Cross-link between the two for SEO
+
+## Benefits After Migration
+
+### Cost Savings
+- **Wix subscription**: €300-600/year → €0
+- **Domain management**: Simplified to single provider
+- **Total savings**: €300-600+ annually
+
+### Performance & SEO
+- **Faster loading**: Netlify CDN vs Wix hosting
+- **Better SEO control**: Full access to meta tags, structured data
+- **Improved mobile performance**: Optimized for Core Web Vitals
+
+### Technical Benefits
+- **Full control**: No platform limitations
+- **Custom functionality**: Unlimited integrations
+- **Version control**: GitHub-based updates
+- **Backup & security**: Automated with Netlify
+
+## Troubleshooting Common Issues
+
+### DNS Not Propagating
+- Wait 24-48 hours for full propagation
+- Clear browser cache and DNS cache
+- Test from different locations/devices
+
+### SSL Certificate Issues
+- Ensure DNS is fully propagated first
+- Try disabling and re-enabling SSL in Netlify
+- Contact Netlify support if issues persist
+
+### Email Forwarding
+- If you have email@marietrulli.com setup in Wix
+- Configure email forwarding in your domain registrar
+- Consider using Google Workspace or similar
+
+## Timeline Summary
+
+- **Day 1**: Prepare Netlify site with blog
+- **Day 2**: Configure Netlify domain settings  
+- **Day 3**: Update DNS in Wix
+- **Day 4-5**: Wait for DNS propagation
+- **Day 6**: Test and enable SSL
+- **Day 7**: Set up redirects and final testing
+
+**Total Time**: 1 week for complete migration
+
+## Support Contacts
+
+- **Netlify Support**: https://answers.netlify.com
+- **Wix Support**: For DNS configuration help
+- **Domain Registrar**: For advanced DNS issues
+
+This migration will give you complete control over your marietrulli.com domain while maintaining all the functionality of your current investiscope.net tools.
