@@ -36,19 +36,19 @@ export default function ClassicPage() {
       {/* Load required libraries */}
       <Script 
         src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" 
-        strategy="beforeInteractive"
+        strategy="lazyOnload"
       />
       <Script 
         src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
-        strategy="beforeInteractive"
+        strategy="lazyOnload"
       />
       <Script 
         src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
-        strategy="beforeInteractive"
+        strategy="lazyOnload"
       />
       <Script 
         src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"
-        strategy="beforeInteractive"
+        strategy="lazyOnload"
       />
 
       <div className="classic-app-container">
@@ -258,7 +258,7 @@ export default function ClassicPage() {
           
           .slider-hint {
             font-size: 0.875rem;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.8);
             margin-top: 8px;
             font-style: italic;
           }
@@ -619,7 +619,7 @@ export default function ClassicPage() {
           .privacy-note {
             text-align: center;
             font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(255, 255, 255, 0.8);
             margin-top: 24px;
             line-height: 1.5;
           }
@@ -1113,13 +1113,13 @@ export default function ClassicPage() {
             </form>
             
             <button 
-  type="button"
-  className="whatsapp-button"
-  onClick={() => window.sendWhatsAppDirect && window.sendWhatsAppDirect()}
-  aria-label="Send Report via WhatsApp"
->
+              type="button"
+              className="whatsapp-button"
+              onClick={() => window.sendWhatsAppDirect && window.sendWhatsAppDirect()}
+              aria-label="Send Report via WhatsApp"
+            >
               💬 Send Report via WhatsApp
-            </div>
+            </button>
             
             <p className="privacy-note">
               🔒 Your information is secure and will only be used to send your report.<br />
