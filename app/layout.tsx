@@ -1,4 +1,9 @@
-// app/layout.tsx - SEO-optimized metadata
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="InvestiScope" />
+<link rel="apple-touch-icon" href="/icon-192.png" />
+  
+  // app/layout.tsx - SEO-optimized metadata
 
 import type { Metadata } from 'next'
 import { Inter, Playfair_Display } from 'next/font/google'
