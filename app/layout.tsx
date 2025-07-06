@@ -70,7 +70,34 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        {/* NAVBAR - APPEARS ON ALL PAGES */}
+        <nav className="bg-white shadow-lg sticky top-0 z-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <a href="/" className="text-2xl font-bold text-purple-600 hover:opacity-80 transition-opacity">
+                InvestiScope
+              </a>
+              <div className="hidden md:flex space-x-8">
+                <a href="/" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">Home</a>
+                <a href="/blog" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">Blog</a>
+                <a href="/calculator" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">Calculator</a>
+                <a href="/app.html" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">Tools</a>
+                <a href="mailto:info@marietrulli.com" className="text-gray-700 hover:text-purple-600 font-medium transition-colors">Contact</a>
+              </div>
+              {/* Mobile menu button */}
+              <div className="md:hidden">
+                <button className="text-gray-700 hover:text-purple-600 focus:outline-none">
+                  <svg className="h-6 w-6" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                    <path d="M4 6h16M4 12h16M4 18h16"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </nav>
+        {children}
+      </body>
     </html>
   )
 }
