@@ -1,4 +1,4 @@
-// app/blog/page.tsx - Beautiful blog page with stunning design
+// app/blog/page.tsx - Beautiful blog page with inline styles (FIXED)
 'use client'
 
 export default function BlogPage() {
@@ -82,9 +82,9 @@ export default function BlogPage() {
         <div className="absolute inset-0 bg-black/10"></div>
         
         {/* Animated gradient orbs */}
-        <div className="absolute top-0 -left-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob"></div>
-        <div className="absolute top-0 -right-40 w-80 h-80 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-20 left-20 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
+        <div className="absolute top-0 -left-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
+        <div className="absolute top-0 -right-40 w-80 h-80 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
+        <div className="absolute -bottom-20 left-20 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-pulse"></div>
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 py-24 sm:px-6 lg:px-8">
           <div className="text-center">
@@ -132,7 +132,7 @@ export default function BlogPage() {
             <div className="grid md:grid-cols-2">
               <div className={`bg-gradient-to-br ${featuredPost.categoryColor} p-16 flex items-center justify-center`}>
                 <div className="text-center">
-                  <div className="text-8xl mb-4 animate-float">{featuredPost.image}</div>
+                  <div className="text-8xl mb-4">{featuredPost.image}</div>
                   <div className="bg-white/20 backdrop-blur rounded-full px-4 py-2 text-white font-semibold text-sm">
                     FEATURED ARTICLE
                   </div>
@@ -193,9 +193,6 @@ export default function BlogPage() {
             <article 
               key={post.slug}
               className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 group"
-              style={{
-                animationDelay: `${index * 100}ms`
-              }}
             >
               <div className={`h-48 bg-gradient-to-br ${post.categoryColor} flex items-center justify-center relative overflow-hidden`}>
                 <div className="text-6xl z-10">{post.image}</div>
@@ -295,48 +292,6 @@ export default function BlogPage() {
           </div>
         </div>
       </section>
-
-      <style jsx>{`
-        @keyframes blob {
-          0% {
-            transform: translate(0px, 0px) scale(1);
-          }
-          33% {
-            transform: translate(30px, -50px) scale(1.1);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.9);
-          }
-          100% {
-            transform: translate(0px, 0px) scale(1);
-          }
-        }
-        
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-20px);
-          }
-        }
-        
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-        
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
-        
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
-      `}</style>
     </div>
   )
 }
