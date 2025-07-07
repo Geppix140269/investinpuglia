@@ -1,6 +1,5 @@
-// app/blog/[slug]/page.tsx - Beautiful Magazine-Style Blog Posts
+// app/blog/[slug]/page.tsx - Beautiful Magazine-Style Blog Posts with TypeScript Fix
 import Link from 'next/link'
-import Image from 'next/image'
 
 // Define all your blog post slugs for static generation
 export async function generateStaticParams() {
@@ -14,8 +13,70 @@ export async function generateStaticParams() {
   ]
 }
 
+// Type definitions
+interface Quote {
+  text: string
+  author: string
+}
+
+interface Callout {
+  type: 'success' | 'warning' | 'info'
+  title: string
+  text: string
+}
+
+interface Subsection {
+  subtitle: string
+  points: string[]
+}
+
+interface TimelinePhase {
+  phase: string
+  duration: string
+  tasks: string[]
+}
+
+interface ChartData {
+  type: string
+  data: Array<{ year: string; value: number }>
+}
+
+interface ContentSection {
+  title: string
+  content: string
+  image?: string
+  imageCaption?: string
+  highlights?: string[]
+  stats?: Record<string, string>
+  quote?: Quote
+  callout?: Callout
+  subsections?: Subsection[]
+  timeline?: TimelinePhase[]
+  chart?: ChartData
+}
+
+interface BlogPostContent {
+  intro: string
+  sections: ContentSection[]
+}
+
+interface BlogPostData {
+  title: string
+  subtitle: string
+  author: string
+  authorRole: string
+  date: string
+  readTime: string
+  category: string
+  categoryColor: string
+  heroImage: string
+  authorImage: string
+  tableOfContents?: string[]
+  content: BlogPostContent
+}
+
 // Blog post data with full content
-const blogPosts = {
+const blogPosts: Record<string, BlogPostData> = {
   'mini-pia-grants': {
     title: "How to Get €540,000 in Italian Property Grants",
     subtitle: "The Complete Guide to Mini PIA Funding That Can Transform Your Investment",
@@ -108,6 +169,7 @@ const blogPosts = {
         },
         {
           title: "Step-by-Step Application Process",
+          content: "The Mini PIA application process requires careful planning and attention to detail. Here's a comprehensive timeline to guide you through each phase.",
           timeline: [
             {
               phase: "Phase 1: Preparation",
@@ -184,6 +246,145 @@ const blogPosts = {
               { year: "2025*", value: 4290 },
               { year: "2027*", value: 6600 }
             ]
+          }
+        },
+        {
+          title: "Key Growth Drivers",
+          content: "Several factors are converging to create the perfect storm for property price appreciation in Puglia.",
+          subsections: [
+            {
+              subtitle: "Infrastructure Investment",
+              points: [
+                "€3.2 billion government allocation for Puglia",
+                "High-speed rail connection to Rome by 2026",
+                "47 new direct flight routes to European capitals",
+                "Marina and port expansions"
+              ]
+            },
+            {
+              subtitle: "Tourism Boom",
+              points: [
+                "15+ million annual tourists",
+                "300% increase in luxury accommodation searches",
+                "Ryanair establishing Puglia hub",
+                "UNESCO heritage status applications"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  'ostuni-success-story': {
+    title: "From €200k to €2M: Ostuni Villa Success Story",
+    subtitle: "How One Investor Turned a Ruined Masseria into a Luxury Rental Empire",
+    author: "Giuseppe Funaro",
+    authorRole: "Senior Investment Advisor",
+    date: "November 5, 2024",
+    readTime: "10 min read",
+    category: "Success Stories",
+    categoryColor: "from-purple-500 to-pink-600",
+    heroImage: "https://images.unsplash.com/photo-1573408301185-9146fe634ad0?w=1600&h=800&fit=crop",
+    authorImage: "/Giuseppe Funaro 062025.jpg",
+    content: {
+      intro: "When British investor Michael K. first saw the abandoned masseria on the outskirts of Ostuni, most people would have walked away. Two years later, it's valued at €2 million and generates €180,000 in annual rental income.",
+      sections: [
+        {
+          title: "The Beginning: A Diamond in the Rough",
+          content: "The 400-year-old masseria had been abandoned for decades. The roof had partially collapsed, walls were crumbling, and the 2-hectare land was completely overgrown. But Michael saw potential where others saw problems.",
+          image: "https://images.unsplash.com/photo-1509833903111-9cb142f644e4?w=1200&h=600&fit=crop",
+          stats: {
+            "Purchase Price": "€200,000",
+            "Land Size": "2 hectares",
+            "Building Size": "450 sqm",
+            "Initial Condition": "Ruins"
+          }
+        }
+      ]
+    }
+  },
+  'tax-optimization': {
+    title: "Tax Optimization for Italian Property Investors",
+    subtitle: "Legal Strategies to Maximize Your Returns",
+    author: "Marco Rossi",
+    authorRole: "Tax Advisor",
+    date: "October 28, 2024",
+    readTime: "7 min read",
+    category: "Tax & Legal",
+    categoryColor: "from-yellow-500 to-orange-600",
+    heroImage: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=1600&h=800&fit=crop",
+    authorImage: "https://i.pravatar.cc/150?img=8",
+    content: {
+      intro: "Smart tax planning can make the difference between a good investment and a great one. Here's how to legally minimize your tax burden on Italian property investments.",
+      sections: [
+        {
+          title: "Understanding Italian Property Taxes",
+          content: "Italy's tax system offers several opportunities for optimization, especially for foreign investors who structure their investments correctly.",
+          highlights: [
+            "7% flat tax for new residents",
+            "No wealth tax on foreign assets",
+            "Capital gains exemptions available",
+            "VAT recovery on renovations"
+          ]
+        }
+      ]
+    }
+  },
+  'coastal-towns-puglia': {
+    title: "Best Coastal Towns in Puglia for Investment",
+    subtitle: "Where to Buy Before Prices Skyrocket",
+    author: "Sofia Bianchi",
+    authorRole: "Location Scout",
+    date: "October 20, 2024",
+    readTime: "9 min read",
+    category: "Area Guides",
+    categoryColor: "from-cyan-500 to-blue-600",
+    heroImage: "https://images.unsplash.com/photo-1530176611600-d05c72e63dad?w=1600&h=800&fit=crop",
+    authorImage: "https://i.pravatar.cc/150?img=1",
+    content: {
+      intro: "Puglia's 800km coastline offers countless investment opportunities, but knowing where to look is crucial. These five coastal towns offer the best combination of growth potential and current value.",
+      sections: [
+        {
+          title: "Monopoli: The Rising Star",
+          content: "Once overshadowed by its famous neighbors, Monopoli is now attracting serious investor attention with its authentic charm and untapped potential.",
+          image: "https://images.unsplash.com/photo-1599654080051-e8a6ad7d0303?w=1200&h=600&fit=crop",
+          stats: {
+            "Current Price/sqm": "€2,800",
+            "5-Year Growth": "+180%",
+            "Rental Yield": "8.5%",
+            "Distance to Airport": "45 min"
+          }
+        }
+      ]
+    }
+  },
+  'trullo-renovation-guide': {
+    title: "Complete Guide to Trullo Renovation Costs",
+    subtitle: "Everything You Need to Budget for Your Dream Trullo",
+    author: "Giuseppe Funaro",
+    authorRole: "Senior Investment Advisor", 
+    date: "October 15, 2024",
+    readTime: "11 min read",
+    category: "Renovation",
+    categoryColor: "from-orange-500 to-red-600",
+    heroImage: "https://images.unsplash.com/photo-1613749355006-e1c1e13a3489?w=1600&h=800&fit=crop",
+    authorImage: "/Giuseppe Funaro 062025.jpg",
+    content: {
+      intro: "Renovating a trullo is both an art and a science. With proper planning and realistic budgeting, you can transform these iconic Puglian structures into stunning modern homes while preserving their historic charm.",
+      sections: [
+        {
+          title: "Understanding Trullo Construction",
+          content: "Before diving into costs, it's essential to understand the unique construction of trulli. These conical stone dwellings require specialized restoration techniques.",
+          highlights: [
+            "Dry stone construction without mortar",
+            "Limestone walls up to 2 meters thick",
+            "Conical roofs requiring specialist masons",
+            "Natural insulation properties"
+          ],
+          callout: {
+            type: "warning",
+            title: "Heritage Protection",
+            text: "Many trulli are protected structures. Always verify regulations before starting work."
           }
         }
       ]
