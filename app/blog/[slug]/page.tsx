@@ -1,4 +1,6 @@
 // app/blog/[slug]/page.tsx - Beautiful Magazine-Style Blog Posts with TypeScript Fix
+'use client'
+
 import Link from 'next/link'
 
 // Define all your blog post slugs for static generation
