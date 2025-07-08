@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, Check, FileText, Building, Euro, Briefcase, CreditCard, Hash, AlertCircle } from 'lucide-react';
 
 const PropertyInvestmentTimeline = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -16,6 +15,8 @@ const PropertyInvestmentTimeline = () => {
       duration: "1-2 days",
       description: "Free assessment of your investment goals and property requirements",
       icon: "💬",
+      critical: false,
+      whyImportant: "",
       details: [
         "Discuss investment objectives",
         "Review budget and financing",
@@ -59,6 +60,8 @@ const PropertyInvestmentTimeline = () => {
       duration: "2-4 weeks",
       description: "Curated property options matching your criteria",
       icon: "🔍",
+      critical: false,
+      whyImportant: "",
       details: [
         "Access off-market properties",
         "Virtual tours available",
@@ -72,6 +75,8 @@ const PropertyInvestmentTimeline = () => {
       duration: "7-10 days",
       description: "Comprehensive legal, technical, and financial verification",
       icon: "📋",
+      critical: false,
+      whyImportant: "",
       details: [
         "Title deed verification",
         "Urban planning compliance",
@@ -85,6 +90,8 @@ const PropertyInvestmentTimeline = () => {
       duration: "3-5 days",
       description: "Expert negotiation to secure best terms",
       icon: "💰",
+      critical: false,
+      whyImportant: "",
       details: [
         "Market analysis",
         "Negotiation strategy",
@@ -98,6 +105,8 @@ const PropertyInvestmentTimeline = () => {
       duration: "1-2 days",
       description: "Compromesso - binding agreement with deposit",
       icon: "📝",
+      critical: false,
+      whyImportant: "",
       details: [
         "Contract review",
         "Deposit payment (10-30%)",
@@ -111,6 +120,8 @@ const PropertyInvestmentTimeline = () => {
       duration: "1 day",
       description: "Official property transfer at notary",
       icon: "🏛️",
+      critical: false,
+      whyImportant: "",
       details: [
         "Notary appointment",
         "Final payment",
@@ -124,6 +135,8 @@ const PropertyInvestmentTimeline = () => {
       duration: "Ongoing",
       description: "Utilities, renovations, and property management",
       icon: "🔧",
+      critical: false,
+      whyImportant: "",
       details: [
         "Utility connections",
         "Renovation planning",
@@ -141,6 +154,8 @@ const PropertyInvestmentTimeline = () => {
       duration: "2-3 days",
       description: "Verify property qualifies for Mini PIA funding",
       icon: "✅",
+      critical: false,
+      whyImportant: "",
       details: [
         "Location verification",
         "Investment size check",
@@ -154,6 +169,8 @@ const PropertyInvestmentTimeline = () => {
       duration: "2-3 weeks",
       description: "Comprehensive investment plan for grant application",
       icon: "📊",
+      critical: false,
+      whyImportant: "",
       details: [
         "5-year financial projections",
         "Job creation targets",
@@ -167,6 +184,8 @@ const PropertyInvestmentTimeline = () => {
       duration: "2 weeks",
       description: "Gather all required technical and legal documents",
       icon: "🗂️",
+      critical: false,
+      whyImportant: "",
       details: [
         "Architectural plans",
         "Environmental assessments",
@@ -180,6 +199,8 @@ const PropertyInvestmentTimeline = () => {
       duration: "1 week",
       description: "Submit complete application to Regione Puglia",
       icon: "📤",
+      critical: false,
+      whyImportant: "",
       details: [
         "Online submission",
         "Document upload",
@@ -193,6 +214,8 @@ const PropertyInvestmentTimeline = () => {
       duration: "60-90 days",
       description: "Regional authority review and scoring",
       icon: "⏳",
+      critical: false,
+      whyImportant: "",
       details: [
         "Technical evaluation",
         "Financial assessment",
@@ -206,6 +229,8 @@ const PropertyInvestmentTimeline = () => {
       duration: "1 week",
       description: "Receive formal approval and funding agreement",
       icon: "🎉",
+      critical: false,
+      whyImportant: "",
       details: [
         "Approval notification",
         "Grant agreement",
@@ -219,6 +244,8 @@ const PropertyInvestmentTimeline = () => {
       duration: "30 days",
       description: "Complete purchase with grant funding secured",
       icon: "🏡",
+      critical: false,
+      whyImportant: "",
       details: [
         "Modified purchase contract",
         "Grant disclosure",
@@ -235,7 +262,7 @@ const PropertyInvestmentTimeline = () => {
       }
     }, 3000);
     return () => clearInterval(timer);
-  }, [showMiniPIA, isAnimating]);
+  }, [showMiniPIA, isAnimating, miniPIASteps.length, standardSteps.length]);
 
   const handleStepClick = (index: number) => {
     setIsAnimating(true);
@@ -313,7 +340,13 @@ const PropertyInvestmentTimeline = () => {
                     : 'bg-white border-2 border-gray-300'
                 } ${index <= activeStep ? 'text-white' : ''}`}
               >
-                {index < activeStep ? <Check className="w-6 h-6" /> : step.icon}
+                {index < activeStep ? (
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                ) : (
+                  <span>{step.icon}</span>
+                )}
               </div>
               <div className="mt-2 text-center">
                 <p className={`text-xs font-semibold ${index === activeStep ? 'text-gray-900' : 'text-gray-500'}`}>
@@ -329,7 +362,7 @@ const PropertyInvestmentTimeline = () => {
       </div>
 
       {/* Current Step Details */}
-      <div className="bg-white rounded-2xl p-8 shadow-xl animate-fadeIn">
+      <div className="bg-white rounded-2xl p-8 shadow-xl">
         <div className="flex items-start gap-6">
           <div className={`text-6xl ${currentStep.critical ? 'animate-pulse' : ''}`}>{currentStep.icon}</div>
           <div className="flex-1">
@@ -342,7 +375,9 @@ const PropertyInvestmentTimeline = () => {
               </span>
               {currentStep.critical && (
                 <span className="px-3 py-1 rounded-full text-sm font-semibold bg-red-100 text-red-700 flex items-center gap-1">
-                  <AlertCircle className="w-4 h-4" />
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
                   Critical Step
                 </span>
               )}
@@ -353,7 +388,9 @@ const PropertyInvestmentTimeline = () => {
             {currentStep.whyImportant && (
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
                 <h4 className="font-semibold text-amber-900 mb-2 flex items-center gap-2">
-                  <AlertCircle className="w-5 h-5" />
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
                   Why This Is Critical
                 </h4>
                 <p className="text-amber-800 text-sm">{currentStep.whyImportant}</p>
@@ -363,7 +400,9 @@ const PropertyInvestmentTimeline = () => {
             <div className="grid md:grid-cols-2 gap-3">
               {currentStep.details.map((detail, idx) => (
                 <div key={idx} className="flex items-center gap-2">
-                  <ChevronRight className="w-4 h-4 text-gray-400" />
+                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
                   <span className="text-sm text-gray-700">{detail}</span>
                 </div>
               ))}
