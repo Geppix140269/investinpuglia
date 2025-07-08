@@ -30,6 +30,9 @@ export default function Navbar() {
             <a href="/" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
               Home
             </a>
+            <a href="/investment-process" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
+              Process
+            </a>
             <a href="/tools" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
               Tools
             </a>
@@ -89,6 +92,9 @@ export default function Navbar() {
             <div className="flex flex-col gap-4">
               <a href="/" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
                 Home
+              </a>
+              <a href="/investment-process" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
+                Investment Process
               </a>
               <a href="/tools" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
                 Tools
