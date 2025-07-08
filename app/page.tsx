@@ -1,6 +1,8 @@
-// app/page.tsx - Complete page with intentional design variety
+// app/page.tsx - Complete page with CTAButton tracking integration
 
 'use client'
+
+import CTAButton from '@/components/CTAButton'
 
 export default function HomePage() {
   return (
@@ -69,26 +71,23 @@ export default function HomePage() {
             </div>
           </div>
           
-          {/* Clear CTAs */}
+          {/* Clear CTAs with tracking */}
           <div className="flex flex-col sm:flex-row gap-5 justify-center animate-fadeIn animation-delay-400">
-            <a 
-              href="/calculator" 
-              className="group inline-flex items-center gap-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-8 py-5 rounded-full text-lg font-bold hover:from-emerald-700 hover:to-teal-700 transform hover:-translate-y-1 hover:shadow-2xl transition-all duration-300"
-            >
-              <span>Calculate Your Grant Eligibility</span>
-              <svg className="w-6 h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </a>
-            <a 
+            <CTAButton 
+              variant="calculator"
+              className="text-lg px-8 py-5 rounded-full"
+            />
+            <CTAButton 
+              variant="custom"
               href="#how-it-works"
+              text="Learn How It Works"
+              icon={
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              }
               className="group inline-flex items-center gap-3 bg-white/10 backdrop-blur-md border-2 border-white/30 text-white px-8 py-5 rounded-full text-lg font-bold hover:bg-white hover:text-gray-900 hover:border-white transition-all duration-300"
-            >
-              <span>Learn How It Works</span>
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </a>
+            />
           </div>
           
           {/* Simple trust indicator */}
@@ -284,9 +283,13 @@ export default function HomePage() {
                 <p className="mb-6 text-gray-600 group-hover:text-white/90">
                   AI-powered tools to instantly calculate your eligibility for up to €2.25M in grants
                 </p>
-                <a href="/calculator" className="inline-flex items-center gap-2 font-semibold text-emerald-600 group-hover:text-white">
-                  Try Calculator <span>→</span>
-                </a>
+                <CTAButton 
+                  variant="custom"
+                  href="/calculator"
+                  text="Try Calculator"
+                  className="inline-flex items-center gap-2 font-semibold text-emerald-600 group-hover:text-white"
+                  showIcon={true}
+                />
               </div>
             </div>
             
@@ -298,9 +301,13 @@ export default function HomePage() {
                 <p className="mb-6 text-gray-600 group-hover:text-white/90">
                   Complete due diligence reports - legal, technical, and financial analysis
                 </p>
-                <a href="/surveys" className="inline-flex items-center gap-2 font-semibold text-purple-600 group-hover:text-white">
-                  Learn More <span>→</span>
-                </a>
+                <CTAButton 
+                  variant="custom"
+                  href="/surveys"
+                  text="Learn More"
+                  className="inline-flex items-center gap-2 font-semibold text-purple-600 group-hover:text-white"
+                  showIcon={true}
+                />
               </div>
             </div>
             
@@ -312,9 +319,13 @@ export default function HomePage() {
                 <p className="mb-6 text-gray-600 group-hover:text-white/90">
                   1-on-1 guidance through every step of your investment journey
                 </p>
-                <a href="#advisor" className="inline-flex items-center gap-2 font-semibold text-amber-600 group-hover:text-white">
-                  Meet Giuseppe <span>→</span>
-                </a>
+                <CTAButton 
+                  variant="custom"
+                  href="#advisor"
+                  text="Meet Giuseppe"
+                  className="inline-flex items-center gap-2 font-semibold text-amber-600 group-hover:text-white"
+                  showIcon={true}
+                />
               </div>
             </div>
           </div>
@@ -460,15 +471,10 @@ export default function HomePage() {
               </div>
               
               <div className="mt-8">
-                <a 
-                  href="https://calendly.com/investiscope_pro/30min" 
-                  className="inline-flex items-center gap-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl hover:-translate-y-1 transition-all"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Schedule Your Consultation
-                  <span className="text-2xl">→</span>
-                </a>
+                <CTAButton 
+                  variant="bookCall"
+                  className="text-lg px-8 py-4 rounded-xl"
+                />
               </div>
             </div>
           </div>
@@ -538,21 +544,14 @@ export default function HomePage() {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
-            <a 
-              href="/calculator" 
-              className="inline-flex items-center gap-3 bg-white text-emerald-700 px-10 py-5 rounded-full text-lg font-bold hover:bg-gray-100 hover:-translate-y-1 hover:shadow-2xl transition-all"
-            >
-              Check Grant Eligibility
-              <span className="text-2xl">→</span>
-            </a>
-            <a 
-              href="https://calendly.com/investiscope_pro/30min" 
-              className="inline-flex items-center gap-3 bg-transparent border-2 border-white text-white px-10 py-5 rounded-full text-lg font-bold hover:bg-white hover:text-emerald-700 transition-all"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Book Strategy Call
-            </a>
+            <CTAButton 
+              variant="calculator"
+              className="text-lg px-10 py-5 bg-white text-emerald-700 hover:bg-gray-100 rounded-full"
+            />
+            <CTAButton 
+              variant="bookCall"
+              className="text-lg px-10 py-5 bg-transparent border-2 border-white text-white hover:bg-white hover:text-emerald-700 rounded-full"
+            />
           </div>
           
           <p className="mt-8 text-sm text-white/70">
