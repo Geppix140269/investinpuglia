@@ -6,6 +6,17 @@ const PropertyInvestmentTimeline = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [showMiniPIA, setShowMiniPIA] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if mobile
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Standard property investment process
   const standardSteps = [
@@ -273,7 +284,138 @@ const PropertyInvestmentTimeline = () => {
   const currentSteps = showMiniPIA ? miniPIASteps : standardSteps;
   const currentStep = currentSteps[activeStep];
 
-  return (
+  // Mobile Timeline Component
+  const MobileTimeline = () => (
+    <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 rounded-2xl shadow-xl">
+      {/* Header */}
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+          Your Property Investment Journey in Italy
+        </h2>
+        <p className="text-sm text-gray-600">
+          Navigate the complete process with confidence
+        </p>
+        
+        {/* Path Toggle */}
+        <div className="inline-flex bg-white rounded-full shadow-lg p-1 mt-4 text-sm">
+          <button
+            onClick={() => setShowMiniPIA(false)}
+            className={`px-4 py-2 rounded-full font-semibold transition-all ${
+              !showMiniPIA 
+                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white' 
+                : 'text-gray-600'
+            }`}
+          >
+            Standard
+          </button>
+          <button
+            onClick={() => setShowMiniPIA(true)}
+            className={`px-4 py-2 rounded-full font-semibold transition-all ${
+              showMiniPIA 
+                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white' 
+                : 'text-gray-600'
+            }`}
+          >
+            With Grant
+          </button>
+        </div>
+      </div>
+
+      {/* Progress Indicator */}
+      <div className="mb-4">
+        <div className="flex justify-between text-xs text-gray-600 mb-1">
+          <span>Step {activeStep + 1} of {currentSteps.length}</span>
+          <span>{Math.round(((activeStep + 1) / currentSteps.length) * 100)}%</span>
+        </div>
+        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div 
+            className={`h-full rounded-full transition-all duration-1000 ${
+              showMiniPIA ? 'bg-gradient-to-r from-purple-600 to-indigo-600' : 'bg-gradient-to-r from-emerald-600 to-teal-600'
+            }`}
+            style={{ width: `${((activeStep + 1) / currentSteps.length) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Current Step Card */}
+      <div className="bg-white rounded-xl p-4 shadow-lg mb-4">
+        <div className="flex items-start gap-3">
+          <div className={`text-3xl ${currentStep.critical ? 'animate-pulse' : ''}`}>
+            {currentStep.icon}
+          </div>
+          <div className="flex-1">
+            <div className="flex items-start justify-between mb-2">
+              <h3 className="font-bold text-lg">{currentStep.title}</h3>
+              {currentStep.critical && (
+                <span className="px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
+                  Critical
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-gray-500 mb-2">{currentStep.duration}</p>
+            <p className="text-sm text-gray-600 mb-3">{currentStep.description}</p>
+            
+            {currentStep.whyImportant && (
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-3">
+                <p className="text-xs text-amber-800">
+                  <strong>⚠️ Why Critical:</strong> {currentStep.whyImportant}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Step Navigation Dots */}
+      <div className="flex justify-center gap-2 mb-4">
+        {currentSteps.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => handleStepClick(index)}
+            className={`w-2 h-2 rounded-full transition-all ${
+              index === activeStep 
+                ? showMiniPIA 
+                  ? 'w-8 bg-purple-600' 
+                  : 'w-8 bg-emerald-600'
+                : index < activeStep
+                ? 'bg-gray-400'
+                : 'bg-gray-300'
+            }`}
+          />
+        ))}
+      </div>
+
+      {/* Summary Cards */}
+      <div className="grid grid-cols-3 gap-2 mb-4 text-center">
+        <div className="bg-white rounded-lg p-3">
+          <p className="text-xs text-gray-600">Timeline</p>
+          <p className={`font-bold ${showMiniPIA ? 'text-purple-600' : 'text-emerald-600'}`}>
+            {showMiniPIA ? '4-6 mo' : '6-10 wk'}
+          </p>
+        </div>
+        <div className="bg-white rounded-lg p-3">
+          <p className="text-xs text-gray-600">Support</p>
+          <p className={`font-bold ${showMiniPIA ? 'text-purple-600' : 'text-emerald-600'}`}>
+            {showMiniPIA ? '€2.25M' : 'Full'}
+          </p>
+        </div>
+        <div className="bg-white rounded-lg p-3">
+          <p className="text-xs text-gray-600">Success</p>
+          <p className={`font-bold ${showMiniPIA ? 'text-purple-600' : 'text-emerald-600'}`}>
+            100%
+          </p>
+        </div>
+      </div>
+
+      {/* CTA */}
+      <button className="w-full px-6 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold rounded-full text-sm">
+        Schedule Free Consultation →
+      </button>
+    </div>
+  );
+
+  // Desktop Timeline Component (your original design)
+  const DesktopTimeline = () => (
     <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-8 rounded-3xl shadow-2xl max-w-7xl mx-auto">
       {/* Header */}
       <div className="text-center mb-10">
@@ -449,6 +591,9 @@ const PropertyInvestmentTimeline = () => {
       </div>
     </div>
   );
+
+  // Render based on screen size
+  return isMobile ? <MobileTimeline /> : <DesktopTimeline />;
 };
 
 export default PropertyInvestmentTimeline;
