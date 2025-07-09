@@ -5,22 +5,26 @@ import Link from 'next/link'
 import { trackCTAClick } from '@/lib/database'
 
 interface CTAButtonProps {
-  variant: 'calculator' | 'book-call' | 'whatsapp' | 'custom'
-  location: string
-  children?: React.ReactNode
+  variant: 'calculator' | 'bookCall' | 'whatsapp' | 'custom'
   href?: string
+  text?: string
+  icon?: React.ReactNode
   onClick?: () => void
   className?: string
+  showIcon?: boolean
+  location?: string
   metadata?: Record<string, any>
 }
 
 const CTAButton: React.FC<CTAButtonProps> = ({
   variant,
-  location,
-  children,
   href,
+  text,
+  icon,
   onClick,
   className = '',
+  showIcon = false,
+  location = 'unknown',
   metadata
 }) => {
   // Default configurations for each variant
@@ -28,37 +32,42 @@ const CTAButton: React.FC<CTAButtonProps> = ({
     calculator: {
       text: 'Calculate My Grant',
       href: '/calculator',
-      className: 'cta-button cta-primary'
+      className: 'inline-flex items-center gap-3 bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-full font-bold hover:shadow-xl hover:-translate-y-1 transition-all duration-300',
+      isExternal: false
     },
-    'book-call': {
+    bookCall: {
       text: 'Book Strategy Call',
-      href: 'https://cal.com/giuseppefunaro/puglia-casa-consultation',
-      className: 'cta-button cta-secondary',
+      href: 'https://calendly.com/investiscope_pro/30min',
+      className: 'inline-flex items-center gap-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-8 py-4 rounded-full font-bold hover:shadow-xl hover:-translate-y-1 transition-all duration-300',
       isExternal: true
     },
     whatsapp: {
       text: 'WhatsApp Support',
-      href: 'https://wa.me/393472473466?text=Hi%2C%20I%27m%20interested%20in%20Puglia%20property%20investment%20and%20grants',
-      className: 'cta-button cta-whatsapp',
+      href: 'https://wa.me/393514001402?text=Hi%2C%20I%27m%20interested%20in%20Puglia%20property%20investment%20and%20grants',
+      className: 'inline-flex items-center gap-3 bg-gradient-to-r from-green-500 to-green-600 text-white px-8 py-4 rounded-full font-bold hover:shadow-xl hover:-translate-y-1 transition-all duration-300',
       isExternal: true
     },
     custom: {
-      text: children || 'Click Here',
+      text: text || 'Click Here',
       href: href || '#',
-      className: 'cta-button'
+      className: 'inline-flex items-center gap-3 bg-gradient-to-r from-gray-600 to-gray-700 text-white px-8 py-4 rounded-full font-bold hover:shadow-xl hover:-translate-y-1 transition-all duration-300',
+      isExternal: false
     }
   }
 
   const config = variantConfigs[variant]
+  const finalHref = href || config.href
+  const finalText = text || config.text
   const finalClassName = `${config.className} ${className}`.trim()
+  const isExternal = href ? href.startsWith('http') : config.isExternal
 
   const handleClick = async (e: React.MouseEvent) => {
     // Track the click
     try {
       await trackCTAClick(variant, location, {
         ...metadata,
-        text: config.text,
-        href: config.href
+        text: finalText,
+        href: finalHref
       })
     } catch (error) {
       console.error('Error tracking CTA click:', error)
@@ -68,22 +77,33 @@ const CTAButton: React.FC<CTAButtonProps> = ({
     if (onClick) {
       onClick()
     }
+  }
 
-    // If it's an internal link and no custom onClick, let Next.js handle navigation
-    // If it's external, the browser will handle it naturally
+  // Render icon if provided or showIcon is true
+  const renderIcon = () => {
+    if (icon) return icon
+    if (showIcon) {
+      return (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
+      )
+    }
+    return null
   }
 
   // For external links
-  if (config.isExternal) {
+  if (isExternal) {
     return (
       <a
-        href={config.href}
+        href={finalHref}
         target="_blank"
         rel="noopener noreferrer"
         className={finalClassName}
         onClick={handleClick}
       >
-        {config.text}
+        {finalText}
+        {renderIcon()}
       </a>
     )
   }
@@ -91,26 +111,14 @@ const CTAButton: React.FC<CTAButtonProps> = ({
   // For internal links
   return (
     <Link
-      href={config.href}
+      href={finalHref}
       className={finalClassName}
       onClick={handleClick}
     >
-      {config.text}
+      {finalText}
+      {renderIcon()}
     </Link>
   )
 }
-
-// Pre-configured CTA components for easy use
-export const CalculatorCTA: React.FC<{ location: string; className?: string }> = ({ location, className }) => (
-  <CTAButton variant="calculator" location={location} className={className} />
-)
-
-export const BookCallCTA: React.FC<{ location: string; className?: string }> = ({ location, className }) => (
-  <CTAButton variant="book-call" location={location} className={className} />
-)
-
-export const WhatsAppCTA: React.FC<{ location: string; className?: string }> = ({ location, className }) => (
-  <CTAButton variant="whatsapp" location={location} className={className} />
-)
 
 export default CTAButton
