@@ -391,3 +391,10 @@ A: Yes, all data is encrypted and stored securely with Supabase. We follow indus
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📚 Documentation
+
+- [📊 Project Diagnostic](./docs/PROJECT_DIAGNOSTIC.md) - Comprehensive project audit
+- [🏗️ Architecture Guide](./docs/ARCHITECTURE.md) - Technical architecture details  
+- [🔌 API Reference](./docs/API_REFERENCE.md) - Complete API documentation
+- [🚀 Deployment Guide](./docs/DEPLOYMENT_GUIDE.md) - Deployment and maintenance
