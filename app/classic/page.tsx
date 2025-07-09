@@ -36,7 +36,7 @@ export default function ClassicPage() {
       />
       <Script 
         src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
-        strategy="lazyOnload"
+        strategy="beforeInteractive"
       />
       <Script 
         src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
@@ -752,7 +752,7 @@ export default function ClassicPage() {
         <div className="main-container">
           {/* Success Toast */}
           <div className="success-toast" id="successToast">
-            ✅ Report sent! Check your email inbox.
+            ✅ PDF Report Generated! Check your downloads.
           </div>
           
           {/* Premium Header */}
@@ -1147,8 +1147,10 @@ export default function ClassicPage() {
           
           // Initialize EmailJS
           if (window.emailjs) {
-            emailjs.init(EMAILJS_PUBLIC_KEY);
+            window.emailjs.init(EMAILJS_PUBLIC_KEY);
             console.log('EmailJS initialized successfully');
+          } else {
+            console.error('EmailJS library not loaded');
           }
           
           // Initialize calculations
@@ -1483,7 +1485,7 @@ export default function ClassicPage() {
           console.log('Email template parameters:', templateParams);
           
           try {
-            const response = await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
+            const response = await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams);
             console.log('Email sent successfully:', response);
             return response;
           } catch (error) {
@@ -1572,62 +1574,66 @@ export default function ClassicPage() {
           const timeline = document.getElementById('investmentTimeline').value;
           
           try {
-            // Save to Supabase if available
+            // Save to Supabase if available (optional)
             if (supabase) {
-              const { data: existingLead } = await supabase
-                .from('leads')
-                .select('id')
-                .eq('email', email)
-                .single();
-              
-              let leadId;
-              
-              if (!existingLead) {
-                const { data: newLead } = await supabase
+              try {
+                const { data: existingLead } = await supabase
                   .from('leads')
-                  .insert({
-                    email: email,
-                    name: name,
-                    phone: phone,
-                    source: 'investiscope_classic',
-                    property_location: location,
-                    investment_timeline: timeline
-                  })
-                  .select()
+                  .select('id')
+                  .eq('email', email)
                   .single();
                 
-                leadId = newLead.id;
-              } else {
-                leadId = existingLead.id;
+                let leadId;
                 
+                if (!existingLead) {
+                  const { data: newLead } = await supabase
+                    .from('leads')
+                    .insert({
+                      email: email,
+                      name: name,
+                      phone: phone,
+                      source: 'investiscope_classic',
+                      property_location: location,
+                      investment_timeline: timeline
+                    })
+                    .select()
+                    .single();
+                  
+                  leadId = newLead.id;
+                } else {
+                  leadId = existingLead.id;
+                  
+                  await supabase
+                    .from('leads')
+                    .update({ 
+                      name: name, 
+                      phone: phone,
+                      property_location: location,
+                      investment_timeline: timeline
+                    })
+                    .eq('id', leadId);
+                }
+                
+                // Save analysis
                 await supabase
-                  .from('leads')
-                  .update({ 
-                    name: name, 
-                    phone: phone,
-                    property_location: location,
-                    investment_timeline: timeline
-                  })
-                  .eq('id', leadId);
+                  .from('analyses')
+                  .insert({
+                    lead_id: leadId,
+                    analysis_type: 'classic_integrated',
+                    property_value: calculationResults.propertyPurchase,
+                    renovation_budget: calculationResults.restructuring,
+                    grant_amount: calculationResults.miniPiaGrant,
+                    total_investment: calculationResults.totalProject,
+                    net_investment: calculationResults.netInvestment,
+                    analysis_data: calculationResults
+                  });
+              } catch (dbError) {
+                console.log('Database save failed, continuing with PDF generation:', dbError);
               }
-              
-              // Save analysis
-              await supabase
-                .from('analyses')
-                .insert({
-                  lead_id: leadId,
-                  analysis_type: 'classic_integrated',
-                  property_value: calculationResults.propertyPurchase,
-                  renovation_budget: calculationResults.restructuring,
-                  grant_amount: calculationResults.miniPiaGrant,
-                  total_investment: calculationResults.totalProject,
-                  net_investment: calculationResults.netInvestment,
-                  analysis_data: calculationResults
-                });
             }
             
-            // Send email
-            await sendEmailReport(name, email, phone, location, timeline, calculationResults);
+            // Skip email sending - go straight to PDF generation
+            console.log('Generating PDF report...');
             
             // Generate PDF
             const pdf = generatePDFReport({
@@ -1665,7 +1671,7 @@ export default function ClassicPage() {
             
           } catch (error) {
             console.error('Error:', error);
-            alert('There was an error processing your request. Please try again.');
+            alert('There was an error generating your PDF report. Please try again.');
           }
           
           return false;
