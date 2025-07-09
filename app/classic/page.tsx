@@ -15,7 +15,6 @@ declare global {
     jspdf: any;
   }
 }
-
 export default function ClassicPage() {
   useEffect(() => {
     // Check access on mount
@@ -29,7 +28,7 @@ export default function ClassicPage() {
     }
     
     checkAccess()
-  }, [])
+  }, []);  // <- ADDED SEMICOLON HERE
 
   return (
     <>
