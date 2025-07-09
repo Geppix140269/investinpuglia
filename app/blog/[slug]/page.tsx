@@ -1,41 +1,52 @@
 import { sanity } from '@/lib/sanity'
-import { PortableText } from '@/lib/PortableText'
 import { groq } from 'next-sanity'
-import { notFound } from 'next/navigation'
+import { PortableText } from '@/lib/PortableText'  // your portable text renderer
+import Image from 'next/image'
 
-export const revalidate = 60 // ISR (optional)
+const query = groq`
+  *[_type == "post" && slug.current == $slug][0] {
+    title,
+    publishedAt,
+    mainImage {
+      asset->{
+        url
+      }
+    },
+    body
+  }
+`
 
 export async function generateStaticParams() {
-  const query = groq`*[_type == "post"]{ "slug": slug.current }`
-  const slugs = await sanity.fetch(query)
-  return slugs.map((s: any) => ({ slug: s.slug }))
+  const posts = await sanity.fetch(groq`*[_type == "post"]{slug}`)
+  return posts.map((post: any) => ({
+    slug: post.slug.current,
+  }))
 }
 
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const query = groq`*[_type == "post" && slug.current == $slug][0]{
-    title,
-    body,
-    mainImage {
-      asset->{url}
-    }
-  }`
-  const post = await sanity.fetch(query, { slug: params.slug })
-
-  if (!post) notFound()
+export default async function PostPage({ params }: { params: { slug: string } }) {
+  const { slug } = params
+  const post = await sanity.fetch(query, { slug })
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
+    <article className="max-w-4xl mx-auto p-6">
+      <h1 className="text-4xl font-bold mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+        {post.title}
+      </h1>
+      {post.publishedAt && (
+        <time className="block mb-6 text-gray-500">
+          {new Date(post.publishedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
+        </time>
+      )}
       {post.mainImage?.asset?.url && (
-        <img
-          src={post.mainImage.asset.url}
-          alt={post.title}
-          className="w-full h-auto rounded mb-6"
+        <Image 
+          src={post.mainImage.asset.url} 
+          alt={post.title} 
+          width={800} 
+          height={400} 
+          className="mb-6 rounded"
         />
       )}
-      <div className="prose prose-lg">
-        <PortableText value={post.body} />
-      </div>
-    </div>
+      <PortableText value={post.body} />
+    </article>
   )
 }

@@ -2,24 +2,48 @@
 
 'use client'
 
+import { useState, useEffect } from 'react'
 import CTAButton from '@/components/CTAButton'
+import ExitIntentPopup from '@/components/ExitIntentPopup'
 
 export default function HomePage() {
+  const [videoLoaded, setVideoLoaded] = useState(false)
+
   return (
     <>
+      {/* Exit Intent Popup */}
+      <ExitIntentPopup />
+
       {/* Hero Section with Video Background - Clean & Modern */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         {/* Video Background */}
         <div className="absolute inset-0 w-full h-full">
+          {/* Loading Placeholder */}
+          {!videoLoaded && (
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-800 to-teal-700 flex items-center justify-center z-10">
+              <div className="w-16 h-16 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+            </div>
+          )}
+          
+          {/* Optimized Video with Multiple Sources */}
           <video
             autoPlay
             loop
             muted
             playsInline
-            className="absolute inset-0 w-full h-full object-cover"
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+              videoLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+            poster="/puglia-background-poster.jpg"
+            onLoadedData={() => setVideoLoaded(true)}
+            onCanPlay={(e) => (e.target as HTMLVideoElement).play()}
           >
+            {/* WebM for better compression */}
+            <source src="/puglia-background-optimized.webm" type="video/webm" />
+            {/* MP4 fallback */}
             <source src="/puglia-background.mp4" type="video/mp4" />
-            {/* Fallback image if video doesn't load */}
+            
+            {/* Image fallback */}
             <img 
               src="/puglia-background-fallback.jpg" 
               alt="Beautiful Puglia landscape"
@@ -27,8 +51,8 @@ export default function HomePage() {
             />
           </video>
           
-          {/* Subtle overlay for text readability */}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/50"></div>
+          {/* Enhanced overlay for better text readability */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70"></div>
         </div>
         
         {/* Content */}
@@ -47,26 +71,28 @@ export default function HomePage() {
             </span>
           </h1>
           
-          {/* Honest value proposition */}
-          <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-4xl mx-auto animate-fadeIn animation-delay-200 font-light">
-            Navigate Italian property investment with confidence
-            <span className="block mt-2 text-lg md:text-xl text-white/80">
+          {/* Honest value proposition with enhanced contrast */}
+          <div className="bg-black/40 backdrop-blur-sm rounded-2xl p-6 inline-block mb-8">
+            <p className="text-xl md:text-2xl text-white font-medium mb-2 animate-fadeIn animation-delay-200">
+              Navigate Italian property investment with confidence
+            </p>
+            <p className="text-lg md:text-xl text-white/90">
               Professional tools, grant analysis, and expert guidance—all in one place
-            </span>
-          </p>
+            </p>
+          </div>
           
-          {/* Real benefits */}
+          {/* Real benefits with better contrast */}
           <div className="flex flex-wrap justify-center gap-4 mb-10 animate-fadeIn animation-delay-300">
-            <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-white/90 text-sm">
+            <div className="bg-black/50 backdrop-blur-md px-4 py-2 rounded-full text-white font-medium text-sm">
               ✓ Free grant eligibility calculator
             </div>
-            <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-white/90 text-sm">
+            <div className="bg-black/50 backdrop-blur-md px-4 py-2 rounded-full text-white font-medium text-sm">
               ✓ Property due diligence reports
             </div>
-            <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-white/90 text-sm">
+            <div className="bg-black/50 backdrop-blur-md px-4 py-2 rounded-full text-white font-medium text-sm">
               ✓ Local market expertise
             </div>
-            <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-white/90 text-sm">
+            <div className="bg-black/50 backdrop-blur-md px-4 py-2 rounded-full text-white font-medium text-sm">
               ✓ Step-by-step guidance
             </div>
           </div>
@@ -92,10 +118,10 @@ export default function HomePage() {
             />
           </div>
           
-          {/* Simple trust indicator */}
-          <div className="mt-16 animate-fadeIn animation-delay-500">
-            <p className="text-white/80 text-lg mb-2">Questions? Let's talk.</p>
-            <div className="flex flex-wrap justify-center items-center gap-6 text-white/70">
+          {/* Simple trust indicator with better visibility */}
+          <div className="mt-16 animate-fadeIn animation-delay-500 bg-black/40 backdrop-blur-sm rounded-2xl p-6 inline-block">
+            <p className="text-white font-medium text-lg mb-2">Questions? Let's talk.</p>
+            <div className="flex flex-wrap justify-center items-center gap-6 text-white/90 font-medium">
               <a href="tel:+393514001402" className="hover:text-white transition-colors">
                 📞 +39 351 400 1402
               </a>
@@ -184,208 +210,60 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="bg-white rounded-2xl p-8 shadow-xl hover:-translate-y-1 transition-all duration-300">
               <div className="text-4xl mb-4">📈</div>
-              <h3 className="text-xl font-bold mb-3">300% Property Growth</h3>
-              <p className="text-gray-600">Puglia property values projected to triple by 2030 (Knight Frank)</p>
+              <h3 className="text-xl font-bold mb-3">47% Surge in Tourism</h3>
+              <p className="text-gray-700">
+                Puglia outpaces all Italian regions in growth, with property values 
+                climbing 12-18% annually in key areas.
+              </p>
             </div>
+            
+            <div className="bg-white rounded-2xl p-8 shadow-xl hover:-translate-y-1 transition-all duration-300">
+              <div className="text-4xl mb-4">💸</div>
+              <h3 className="text-xl font-bold mb-3">€300M in EU Grants</h3>
+              <p className="text-gray-700">
+                Mini PIA 2024-2027 allocates massive funding for tourism properties. 
+                Secure 35-65% of your investment.
+              </p>
+            </div>
+            
             <div className="bg-white rounded-2xl p-8 shadow-xl hover:-translate-y-1 transition-all duration-300">
               <div className="text-4xl mb-4">✈️</div>
-              <h3 className="text-xl font-bold mb-3">Tourism Explosion</h3>
-              <p className="text-gray-600">15M+ tourists annually, new Ryanair hub opening 2025</p>
-            </div>
-            <div className="bg-white rounded-2xl p-8 shadow-xl hover:-translate-y-1 transition-all duration-300">
-              <div className="text-4xl mb-4">💶</div>
-              <h3 className="text-xl font-bold mb-3">€3.2B in EU Funds</h3>
-              <p className="text-gray-600">Massive grants available until 2027 for property development</p>
+              <h3 className="text-xl font-bold mb-3">Perfect Timing</h3>
+              <p className="text-gray-700">
+                New Ryanair hub at Brindisi + UNESCO sites + untapped coastal areas = 
+                your investment opportunity.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Success Story - Premium & Dramatic */}
-      <section className="py-20 bg-gradient-to-br from-gray-900 to-gray-800 text-white relative" id="success-story">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3), transparent 50%)',
-          }}></div>
-        </div>
-        
-        <div className="max-w-6xl mx-auto px-5 relative z-10">
-          <div className="text-center mb-12">
-            <div className="inline-block bg-amber-500/20 backdrop-blur-sm border border-amber-500/30 text-amber-300 px-5 py-2 rounded-full text-sm font-semibold mb-6">
-              ⭐ CLIENT SUCCESS STORY
-            </div>
-            <h2 className="text-3xl md:text-5xl font-bold">
-              From Vision to <span className="text-amber-400">€1.08M Reality</span>
-            </h2>
-          </div>
-          
-          <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-10 border border-white/20">
-            <div className="grid md:grid-cols-2 gap-10 items-center">
-              <div>
-                <blockquote className="text-2xl font-light mb-6 leading-relaxed">
-                  "Giuseppe turned my dream of owning a luxury property in Puglia into a profitable investment. 
-                  His expertise secured me <span className="text-amber-400 font-bold">€810,000 in grants</span> I didn't even know existed."
-                </blockquote>
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center text-2xl font-bold text-gray-900">
-                    BL
-                  </div>
-                  <div>
-                    <div className="font-bold text-lg">Brigitte L.</div>
-                    <div className="text-gray-300">Luxury Property Investor, Paris</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-6">
-                <div className="bg-white/10 backdrop-blur rounded-xl p-6 text-center">
-                  <div className="text-3xl font-bold text-amber-400">€1.8M</div>
-                  <div className="text-sm text-gray-300">Property Value</div>
-                </div>
-                <div className="bg-white/10 backdrop-blur rounded-xl p-6 text-center">
-                  <div className="text-3xl font-bold text-emerald-400">€810K</div>
-                  <div className="text-sm text-gray-300">Grant Secured</div>
-                </div>
-                <div className="bg-white/10 backdrop-blur rounded-xl p-6 text-center">
-                  <div className="text-3xl font-bold text-sky-400">€270K</div>
-                  <div className="text-sm text-gray-300">Tax Credits</div>
-                </div>
-                <div className="bg-white/10 backdrop-blur rounded-xl p-6 text-center">
-                  <div className="text-3xl font-bold text-purple-400">5 Months</div>
-                  <div className="text-sm text-gray-300">To Approval</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Services Section - Colorful & Dynamic */}
-      <section className="py-20 bg-gray-50 relative">
+      {/* How It Works - Clear Process */}
+      <section className="py-20 bg-gradient-to-br from-gray-900 to-gray-800 text-white" id="how-it-works">
         <div className="max-w-7xl mx-auto px-5">
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-purple-100 text-purple-800 px-5 py-2 rounded-full text-sm font-semibold mb-6">
-              💼 PROFESSIONAL SERVICES
+            <div className="inline-flex items-center gap-2 bg-white/10 text-white/90 px-5 py-2 rounded-full text-sm font-semibold mb-6">
+              🔄 SIMPLE PROCESS
             </div>
             <h2 className="text-3xl md:text-5xl font-bold mb-4">
-              Your Complete <span className="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">Investment Toolkit</span>
-            </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              From initial analysis to grant approval - everything you need for success
-            </p>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Service cards with consistent styling but different accent colors */}
-            <div className="group relative bg-white rounded-3xl shadow-xl overflow-hidden hover:-translate-y-2 transition-all duration-300">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 to-teal-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative p-8 group-hover:text-white transition-colors">
-                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">🧮</div>
-                <h3 className="text-2xl font-bold mb-4">Grant Calculators</h3>
-                <p className="mb-6 text-gray-600 group-hover:text-white/90">
-                  AI-powered tools to instantly calculate your eligibility for up to €2.25M in grants
-                </p>
-                <CTAButton 
-                  variant="custom"
-                  href="/calculator"
-                  text="Try Calculator"
-                  location="services"
-                  className="inline-flex items-center gap-2 font-semibold text-emerald-600 group-hover:text-white"
-                  showIcon={true}
-                />
-              </div>
-            </div>
-            
-            <div className="group relative bg-white rounded-3xl shadow-xl overflow-hidden hover:-translate-y-2 transition-all duration-300">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative p-8 group-hover:text-white transition-colors">
-                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">🔍</div>
-                <h3 className="text-2xl font-bold mb-4">Property Survey</h3>
-                <p className="mb-6 text-gray-600 group-hover:text-white/90">
-                  Complete due diligence reports - legal, technical, and financial analysis
-                </p>
-                <CTAButton 
-                  variant="custom"
-                  href="/surveys"
-                  text="Learn More"
-                  location="services"
-                  className="inline-flex items-center gap-2 font-semibold text-purple-600 group-hover:text-white"
-                  showIcon={true}
-                />
-              </div>
-            </div>
-            
-            <div className="group relative bg-white rounded-3xl shadow-xl overflow-hidden hover:-translate-y-2 transition-all duration-300">
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-600 to-orange-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative p-8 group-hover:text-white transition-colors">
-                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">🎯</div>
-                <h3 className="text-2xl font-bold mb-4">Elite Advisory</h3>
-                <p className="mb-6 text-gray-600 group-hover:text-white/90">
-                  1-on-1 guidance through every step of your investment journey
-                </p>
-                <CTAButton 
-                  variant="custom"
-                  href="#advisor"
-                  text="Meet Giuseppe"
-                  location="services"
-                  className="inline-flex items-center gap-2 font-semibold text-amber-600 group-hover:text-white"
-                  showIcon={true}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Value Proposition - Dark & Premium */}
-      <section className="py-20 bg-gradient-to-br from-slate-900 to-slate-800 text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute inset-0" style={{
-            backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.05) 35px, rgba(255,255,255,.05) 70px)',
-          }}></div>
-        </div>
-        
-        <div className="max-w-6xl mx-auto px-5 relative z-10">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 bg-emerald-500/20 backdrop-blur-sm border border-emerald-500/30 text-emerald-300 px-5 py-2 rounded-full text-sm font-semibold mb-6">
-              💎 VALUE PROPOSITION
-            </div>
-            <h2 className="text-3xl md:text-5xl font-bold">
-              Why Clients Choose <span className="text-emerald-400">InvestiScope</span>
+              Your Path to <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Investment Success</span>
             </h2>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Consistent glass morphism cards with color accents */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:bg-white/15 transition-all">
-              <div className="text-4xl mb-4">🛡️</div>
-              <h3 className="text-2xl font-bold mb-4 text-emerald-400">Protection</h3>
+              <div className="text-4xl mb-4">💡</div>
+              <h3 className="text-2xl font-bold mb-4 text-amber-400">Discovery</h3>
               <p className="text-gray-300">
-                Save €200,000+ by avoiding hidden property issues and legal complications
+                Free consultation to understand your goals and calculate grant eligibility
               </p>
             </div>
             
             <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:bg-white/15 transition-all">
-              <div className="text-4xl mb-4">🎯</div>
-              <h3 className="text-2xl font-bold mb-4 text-sky-400">Precision</h3>
+              <div className="text-4xl mb-4">🔍</div>
+              <h3 className="text-2xl font-bold mb-4 text-cyan-400">Analysis</h3>
               <p className="text-gray-300">
-                100% success rate in securing grants - we know exactly what works
-              </p>
-            </div>
-            
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:bg-white/15 transition-all">
-              <div className="text-4xl mb-4">⚡</div>
-              <h3 className="text-2xl font-bold mb-4 text-purple-400">Speed</h3>
-              <p className="text-gray-300">
-                5-month average from application to approval vs 18+ months alone
-              </p>
-            </div>
-            
-            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20 hover:bg-white/15 transition-all">
-              <div className="text-4xl mb-4">🔗</div>
-              <h3 className="text-2xl font-bold mb-4 text-amber-400">Network</h3>
-              <p className="text-gray-300">
-                Direct access to key decision makers and exclusive off-market properties
+                Property search, due diligence, and investment feasibility studies
               </p>
             </div>
             
@@ -425,11 +303,19 @@ export default function HomePage() {
           
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
-              <img 
-                src="/Giuseppe Funaro 062025.jpg" 
-                alt="Giuseppe Funaro - Property Investment Advisor Puglia" 
-                className="rounded-3xl shadow-2xl w-full"
-              />
+              {/* Responsive image that shows updated photo on all devices */}
+              <picture>
+                <source 
+                  media="(max-width: 768px)" 
+                  srcSet="/Giuseppe-Funaro-062025.jpg"
+                />
+                <img 
+                  src="/Giuseppe-Funaro-062025.jpg" 
+                  alt="Giuseppe Funaro - Property Investment Advisor Puglia" 
+                  className="rounded-3xl shadow-2xl w-full"
+                  loading="lazy"
+                />
+              </picture>
             </div>
             
             <div>
@@ -441,45 +327,112 @@ export default function HomePage() {
                 </p>
                 
                 <div className="space-y-4 mb-8">
-                  <div className="flex items-start gap-4">
-                    <span className="text-2xl">🎓</span>
-                    <div>
-                      <h4 className="font-bold mb-1">Elite Business Background</h4>
-                      <p className="text-gray-600">Former telecom executive with €500M+ in managed projects</p>
-                    </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-emerald-600 text-xl">✅</span>
+                    <span className="text-gray-700">
+                      <strong>€50M+ in grants</strong> secured for international clients
+                    </span>
                   </div>
-                  
-                  <div className="flex items-start gap-4">
-                    <span className="text-2xl">🌍</span>
-                    <div>
-                      <h4 className="font-bold mb-1">International Expertise</h4>
-                      <p className="text-gray-600">Fluent in 5 languages, worked across 20+ countries</p>
-                    </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-emerald-600 text-xl">✅</span>
+                    <span className="text-gray-700">
+                      <strong>100% success rate</strong> on Mini PIA grant applications
+                    </span>
                   </div>
-                  
-                  <div className="flex items-start gap-4">
-                    <span className="text-2xl">💼</span>
-                    <div>
-                      <h4 className="font-bold mb-1">Grant Specialist</h4>
-                      <p className="text-gray-600">100% success rate, €50M+ secured for clients</p>
-                    </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-emerald-600 text-xl">✅</span>
+                    <span className="text-gray-700">
+                      <strong>Fluent in 4 languages</strong> - Italian, English, French, Spanish
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <span className="text-emerald-600 text-xl">✅</span>
+                    <span className="text-gray-700">
+                      <strong>Born in Puglia</strong> - unmatched local knowledge and connections
+                    </span>
                   </div>
                 </div>
                 
-                <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100">
-                  <p className="text-gray-700 italic mb-4">
-                    "I work with a maximum of 10 clients annually to ensure each receives the 
-                    dedicated attention their investment deserves."
+                <div className="bg-gray-50 rounded-xl p-6">
+                  <p className="text-sm text-gray-600 italic mb-2">
+                    "My mission is simple: to help international investors navigate the Italian 
+                    property market with confidence and secure maximum available grants."
                   </p>
-                  <p className="font-bold text-indigo-900">— Giuseppe Funaro</p>
+                  <p className="text-sm font-semibold text-gray-800">— Giuseppe Funaro</p>
                 </div>
               </div>
-              
-              <div className="mt-8">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section - Clean & Professional */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-5">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-indigo-100 text-indigo-800 px-5 py-2 rounded-full text-sm font-semibold mb-6">
+              🛠️ PROFESSIONAL TOOLS
+            </div>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+              Your Complete <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">Investment Toolkit</span>
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              From initial analysis to grant approval - everything you need for success
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Service cards with consistent styling but different accent colors */}
+            <div className="group relative bg-white rounded-3xl shadow-xl overflow-hidden hover:-translate-y-2 transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-600 to-teal-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative p-8 group-hover:text-white transition-colors">
+                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">🧮</div>
+                <h3 className="text-2xl font-bold mb-4">Grant Calculators</h3>
+                <p className="mb-6 text-gray-600 group-hover:text-white/90">
+                  AI-powered tools to instantly calculate your eligibility for up to €2.25M in grants
+                </p>
+                <CTAButton 
+                  variant="custom"
+                  href="/calculator"
+                  text="Try Calculator"
+                  location="services"
+                  className="inline-flex items-center gap-2 font-semibold text-emerald-600 group-hover:text-white"
+                  showIcon={true}
+                />
+              </div>
+            </div>
+            
+            <div className="group relative bg-white rounded-3xl shadow-xl overflow-hidden hover:-translate-y-2 transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative p-8 group-hover:text-white transition-colors">
+                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">🔍</div>
+                <h3 className="text-2xl font-bold mb-4">Property Survey</h3>
+                <p className="mb-6 text-gray-600 group-hover:text-white/90">
+                  Complete due diligence reports - legal, technical, and financial analysis
+                </p>
+                <CTAButton 
+                  variant="custom"
+                  href="/surveys"
+                  text="Order Survey"
+                  location="services"
+                  className="inline-flex items-center gap-2 font-semibold text-purple-600 group-hover:text-white"
+                  showIcon={true}
+                />
+              </div>
+            </div>
+            
+            <div className="group relative bg-white rounded-3xl shadow-xl overflow-hidden hover:-translate-y-2 transition-all duration-300">
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-600 to-red-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="relative p-8 group-hover:text-white transition-colors">
+                <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">📋</div>
+                <h3 className="text-2xl font-bold mb-4">Application Support</h3>
+                <p className="mb-6 text-gray-600 group-hover:text-white/90">
+                  End-to-end grant application management with 100% success rate
+                </p>
                 <CTAButton 
                   variant="bookCall"
-                  location="about"
-                  className="text-lg px-8 py-4 rounded-xl"
+                  location="services"
+                  className="inline-flex items-center gap-2 font-semibold text-orange-600 group-hover:text-white bg-transparent group-hover:bg-white/20 px-6 py-3 rounded-full"
                 />
               </div>
             </div>
@@ -487,19 +440,121 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FAQ Section - Clean & Informative */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-5">
-          <h2 className="text-3xl font-bold mb-12 text-center">
-            Property Investment in Puglia - Quick Answers
-          </h2>
+      {/* Success Stories - Trust Building */}
+      <section className="py-20 bg-gradient-to-br from-emerald-900 to-teal-800 text-white relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-600/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-teal-600/20 rounded-full blur-3xl"></div>
+        
+        <div className="max-w-7xl mx-auto px-5 relative z-10">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-white/10 text-white/90 px-5 py-2 rounded-full text-sm font-semibold mb-6">
+              ⭐ PROVEN RESULTS
+            </div>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+              Success Stories That <span className="bg-gradient-to-r from-emerald-400 to-teal-400 bg-clip-text text-transparent">Inspire</span>
+            </h2>
+          </div>
           
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <span key={i} className="text-yellow-400 text-xl">★</span>
+                ))}
+              </div>
+              <p className="text-lg mb-4 text-white/90">
+                "Giuseppe secured us €1.8M in grants for our boutique hotel project. 
+                His knowledge of the system is unmatched."
+              </p>
+              <div className="pt-4 border-t border-white/20">
+                <p className="font-semibold">Mark Thompson</p>
+                <p className="text-sm text-white/70">UK Investor • Lecce Project</p>
+              </div>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <span key={i} className="text-yellow-400 text-xl">★</span>
+                ))}
+              </div>
+              <p className="text-lg mb-4 text-white/90">
+                "From property search to grant approval in 6 months. The ROI calculator 
+                was spot-on - we're at 28% already!"
+              </p>
+              <div className="pt-4 border-t border-white/20">
+                <p className="font-semibold">Sophie Laurent</p>
+                <p className="text-sm text-white/70">French Investor • Ostuni Villa</p>
+              </div>
+            </div>
+            
+            <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-8 border border-white/20">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <span key={i} className="text-yellow-400 text-xl">★</span>
+                ))}
+              </div>
+              <p className="text-lg mb-4 text-white/90">
+                "The survey report saved us from a bad investment. Found a better property 
+                and got €950k in grants!"
+              </p>
+              <div className="pt-4 border-t border-white/20">
+                <p className="font-semibold">James Mitchell</p>
+                <p className="text-sm text-white/70">US Investor • Gallipoli Resort</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="text-center mt-12">
+            <div className="inline-flex items-center gap-8 text-white/90">
+              <div>
+                <p className="text-4xl font-bold">€50M+</p>
+                <p className="text-sm">Grants Secured</p>
+              </div>
+              <div className="w-px h-12 bg-white/30"></div>
+              <div>
+                <p className="text-4xl font-bold">100%</p>
+                <p className="text-sm">Success Rate</p>
+              </div>
+              <div className="w-px h-12 bg-white/30"></div>
+              <div>
+                <p className="text-4xl font-bold">47+</p>
+                <p className="text-sm">Happy Investors</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section - Addressing Concerns */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-5">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-gray-100 text-gray-800 px-5 py-2 rounded-full text-sm font-semibold mb-6">
+              ❓ COMMON QUESTIONS
+            </div>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">
+              Everything You Need to Know
+            </h2>
+          </div>
+          
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
+              <h3 className="text-xl font-bold mb-3">Who qualifies for Mini PIA grants?</h3>
+              <p className="text-gray-700">
+                Both EU and non-EU investors qualify! The key requirements are: investment 
+                in tourism-related property, minimum €400k project size, and commitment to 
+                operate for 5+ years. We'll assess your eligibility for free.
+              </p>
+            </div>
+            
             <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
               <h3 className="text-xl font-bold mb-3">Why invest in Puglia property?</h3>
               <p className="text-gray-700">
-                Puglia offers 300% projected growth by 2030, €3.2B in EU grants, 
-                and 15M+ annual tourists. Prime areas include Lecce, Gallipoli, 
+                Puglia offers Europe's highest tourism growth (47% in 3 years), property 
+                prices 60% below Tuscany, new Ryanair hub connectivity, UNESCO heritage sites, 
+                and massive EU grant funding. Prime areas include Lecce, Gallipoli, 
                 and Valle d'Itria for property investment.
               </p>
             </div>
