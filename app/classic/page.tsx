@@ -40,7 +40,7 @@ export default function ClassicPage() {
       />
       <Script 
         src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
-        strategy="lazyOnload"
+        strategy="beforeInteractive"
       />
       <Script 
         src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"
@@ -1496,6 +1496,12 @@ export default function ClassicPage() {
         
         // Generate PDF Report
         function generatePDFReport(data) {
+          // Check if jsPDF is loaded
+          if (!window.jspdf || !window.jspdf.jsPDF) {
+            console.error('jsPDF library not loaded');
+            throw new Error('PDF library not available');
+          }
+          
           const { jsPDF } = window.jspdf;
           const doc = new jsPDF();
           
@@ -1963,6 +1969,25 @@ export default function ClassicPage() {
             // Skip email sending - go straight to PDF generation
             console.log('Generating PDF report...');
             
+            // Check if jsPDF is available
+            if (!window.jspdf || !window.jspdf.jsPDF) {
+              console.error('jsPDF not loaded. Waiting for library...');
+              // Try to load it dynamically
+              await new Promise((resolve) => {
+                const checkJsPDF = setInterval(() => {
+                  if (window.jspdf && window.jspdf.jsPDF) {
+                    clearInterval(checkJsPDF);
+                    resolve();
+                  }
+                }, 100);
+                // Timeout after 5 seconds
+                setTimeout(() => {
+                  clearInterval(checkJsPDF);
+                  resolve();
+                }, 5000);
+              });
+            }
+            
             // Generate PDF
             const pdf = generatePDFReport({
               name: name,
@@ -1999,7 +2024,11 @@ export default function ClassicPage() {
             
           } catch (error) {
             console.error('Error:', error);
-            alert('There was an error generating your PDF report. Please try again.');
+            if (error.message && error.message.includes('PDF')) {
+              alert('The PDF generator is still loading. Please try again in a few seconds.');
+            } else {
+              alert('There was an error generating your PDF report. Please check the console for details and try again.');
+            }
           }
           
           return false;
