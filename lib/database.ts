@@ -1,105 +1,64 @@
-import { createClient } from '@supabase/supabase-js'
+import { supabase, getSessionId, type Lead, type Analysis, type CTAClick, type PageView } from './supabase'
 
-// Initialize Supabase client
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ''
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
-
-// Types
-export interface Lead {
-  id?: string
-  email: string
-  name?: string
-  phone?: string
-  investment_range?: string
-  property_type?: string
-  timeline?: string
-  message?: string
-  source: string
-  created_at?: string
-  session_id?: string
-}
-
-export interface Analysis {
-  id?: string
-  lead_id?: string
-  property_price: number
-  renovation_cost: number
-  grant_amount: number
-  grant_percentage: number
-  total_investment: number
-  net_investment: number
-  created_at?: string
-}
-
-export interface PageView {
-  id?: string
-  page_path: string
-  page_title: string
-  referrer?: string
-  session_id: string
-  created_at?: string
-}
-
-export interface CTAClick {
-  id?: string
-  button_type: string
-  button_text: string
-  page_path: string
-  session_id: string
-  created_at?: string
-}
-
-// Session management
-export const getSessionId = (): string => {
-  if (typeof window === 'undefined') return ''
-  
-  let sessionId = sessionStorage.getItem('investiscope_session')
-  if (!sessionId) {
-    sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    sessionStorage.setItem('investiscope_session', sessionId)
-  }
-  return sessionId
-}
-
-// Lead management functions
-export const createLead = async (leadData: Omit<Lead, 'id' | 'created_at' | 'session_id'>): Promise<Lead | null> => {
+// Lead Management
+export async function createLead(leadData: Omit<Lead, 'id' | 'created_at' | 'updated_at'>): Promise<Lead | null> {
   try {
-    const session_id = getSessionId()
+    // Check if lead already exists
+    const { data: existingLead } = await supabase
+      .from('leads')
+      .select('*')
+      .eq('email', leadData.email)
+      .single()
+
+    if (existingLead) {
+      // Update existing lead
+      const { data, error } = await supabase
+        .from('leads')
+        .update({
+          ...leadData,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', existingLead.id)
+        .select()
+        .single()
+
+      if (error) throw error
+      return data
+    }
+
+    // Create new lead
     const { data, error } = await supabase
       .from('leads')
-      .insert([{ ...leadData, session_id }])
+      .insert([leadData])
       .select()
       .single()
 
     if (error) throw error
     return data
   } catch (error) {
-    console.error('Error creating lead:', error)
+    console.error('Error creating/updating lead:', error)
     return null
   }
 }
 
-export const updateLead = async (id: string, updates: Partial<Lead>): Promise<Lead | null> => {
+export async function getLeadByEmail(email: string): Promise<Lead | null> {
   try {
     const { data, error } = await supabase
       .from('leads')
-      .update(updates)
-      .eq('id', id)
-      .select()
+      .select('*')
+      .eq('email', email)
       .single()
 
     if (error) throw error
     return data
   } catch (error) {
-    console.error('Error updating lead:', error)
+    console.error('Error fetching lead:', error)
     return null
   }
 }
 
-// Analysis functions
-export const saveAnalysis = async (analysisData: Omit<Analysis, 'id' | 'created_at'>): Promise<Analysis | null> => {
+// Analysis Management
+export async function saveAnalysis(analysisData: Omit<Analysis, 'id' | 'created_at'>): Promise<Analysis | null> {
   try {
     const { data, error } = await supabase
       .from('analyses')
@@ -115,57 +74,96 @@ export const saveAnalysis = async (analysisData: Omit<Analysis, 'id' | 'created_
   }
 }
 
-// Analytics functions
-export const trackPageView = async (pagePath: string, pageTitle: string): Promise<void> => {
+// CTA Click Tracking
+export async function trackCTAClick(
+  ctaType: string,
+  ctaLocation: string,
+  metadata?: Record<string, any>
+): Promise<void> {
   try {
-    const session_id = getSessionId()
-    const referrer = document.referrer || null
+    const sessionId = getSessionId()
+    const clickData: Omit<CTAClick, 'id' | 'timestamp'> = {
+      session_id: sessionId,
+      cta_type: ctaType,
+      cta_location: ctaLocation,
+      page_url: window.location.href,
+      user_agent: navigator.userAgent,
+      metadata: metadata || {}
+    }
 
-    await supabase
+    const { error } = await supabase
+      .from('cta_clicks')
+      .insert([clickData])
+
+    if (error) throw error
+
+    // Also track with Google Analytics if available
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'cta_click', {
+        cta_type: ctaType,
+        cta_location: ctaLocation,
+        page_location: window.location.href
+      })
+    }
+  } catch (error) {
+    console.error('Error tracking CTA click:', error)
+    // Don't throw - we don't want tracking errors to break the user experience
+  }
+}
+
+// Page View Tracking
+export async function trackPageView(
+  pageUrl?: string,
+  referrer?: string
+): Promise<void> {
+  try {
+    const sessionId = getSessionId()
+    const viewData: Omit<PageView, 'id' | 'timestamp'> = {
+      session_id: sessionId,
+      page_url: pageUrl || window.location.href,
+      referrer: referrer || document.referrer,
+      user_agent: navigator.userAgent
+    }
+
+    const { error } = await supabase
       .from('page_views')
-      .insert([{
-        page_path: pagePath,
-        page_title: pageTitle,
-        referrer,
-        session_id
-      }])
+      .insert([viewData])
+
+    if (error) throw error
+
+    // Also track with Google Analytics if available
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'page_view', {
+        page_location: pageUrl || window.location.href,
+        page_referrer: referrer || document.referrer
+      })
+    }
   } catch (error) {
     console.error('Error tracking page view:', error)
+    // Don't throw - we don't want tracking errors to break the user experience
   }
 }
 
-export const trackClick = async (
-  buttonType: string,
-  buttonText: string,
-  pagePath: string = window.location.pathname
-): Promise<void> => {
+// Update time on page when user leaves
+export async function updateTimeOnPage(pageUrl: string, timeOnPage: number): Promise<void> {
   try {
-    const session_id = getSessionId()
+    const sessionId = getSessionId()
+    
+    const { error } = await supabase
+      .from('page_views')
+      .update({ time_on_page: timeOnPage })
+      .eq('session_id', sessionId)
+      .eq('page_url', pageUrl)
+      .order('timestamp', { ascending: false })
+      .limit(1)
 
-    await supabase
-      .from('cta_clicks')
-      .insert([{
-        button_type: buttonType,
-        button_text: buttonText,
-        page_path: pagePath,
-        session_id
-      }])
+    if (error) throw error
   } catch (error) {
-    console.error('Error tracking click:', error)
+    console.error('Error updating time on page:', error)
   }
 }
 
-// Utility function to check if user has already submitted a form
-export const hasUserSubmittedForm = async (email: string): Promise<boolean> => {
-  try {
-    const { data, error } = await supabase
-      .from('leads')
-      .select('id')
-      .eq('email', email)
-      .single()
-
-    return !!data && !error
-  } catch {
-    return false
-  }
+// Helper function to check if Supabase is properly configured
+export function isSupabaseConfigured(): boolean {
+  return !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
 }
