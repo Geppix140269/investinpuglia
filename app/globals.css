@@ -123,6 +123,53 @@
   }
 }
 
+/* CTA Button Styles */
+.cta-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.cta-primary {
+  background: linear-gradient(135deg, #16a34a 0%, #059669 100%);
+  color: white;
+}
+
+.cta-primary:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.cta-secondary {
+  background: linear-gradient(135deg, #9333ea 0%, #6366f1 100%);
+  color: white;
+}
+
+.cta-secondary:hover {
+  background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);
+}
+
+.cta-whatsapp {
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: white;
+}
+
+.cta-whatsapp:hover {
+  background: linear-gradient(135deg, #128C7E 0%, #075E54 100%);
+}
+
 /* ===== DESIGN SYSTEM ===== */
 
 :root {
