@@ -15,20 +15,17 @@ declare global {
     jspdf: any;
   }
 }
+
 export default function ClassicPage() {
   useEffect(() => {
     // Check access on mount
-    const checkAccess = () => {
-      const accessToken = localStorage.getItem('investiscope_access_token')
-      const userEmail = localStorage.getItem('investiscope_user_email')
-      
-      if (!accessToken || !userEmail) {
-        window.location.href = '/classic/register'
-      }
-    }
+    const accessToken = localStorage.getItem('investiscope_access_token')
+    const userEmail = localStorage.getItem('investiscope_user_email')
     
-    checkAccess()
-  }, []);  // <- ADDED SEMICOLON HERE
+    if (!accessToken || !userEmail) {
+      window.location.href = '/classic/register'
+    }
+  }, [])
 
   return (
     <>
@@ -1633,33 +1630,33 @@ export default function ClassicPage() {
             await sendEmailReport(name, email, phone, location, timeline, calculationResults);
             
             // Generate PDF
-const pdf = generatePDFReport({
-  name: name,
-  email: email,
-  location: location,
-  totalProject: calculationResults.totalProject,
-  miniPiaGrant: calculationResults.miniPiaGrant,
-  taxCredit: calculationResults.taxCredit,
-  netInvestment: calculationResults.netInvestment,
-  propertyPurchase: calculationResults.propertyPurchase,
-  restructuring: calculationResults.restructuring,
-  fixtures: calculationResults.fixtures,
-  innovation: calculationResults.innovation,
-  environmental: calculationResults.environmental,
-  designPm: calculationResults.designPm,
-  preliminaryStudies: calculationResults.preliminaryStudies,
-  totalEligible: calculationResults.totalEligible,
-  agencyFees: calculationResults.agencyFees,
-  registrationTax: calculationResults.registrationTax,
-  notaryFees: calculationResults.notaryFees,
-  consultingFees: calculationResults.consultingFees,
-  totalNonEligible: calculationResults.totalNonEligible,
-  integratedPercent: calculationResults.integratedPercent,
-  professionalCosts: calculationResults.professionalCosts || 0
-});
+            const pdf = generatePDFReport({
+              name: name,
+              email: email,
+              location: location,
+              totalProject: calculationResults.totalProject,
+              miniPiaGrant: calculationResults.miniPiaGrant,
+              taxCredit: calculationResults.taxCredit,
+              netInvestment: calculationResults.netInvestment,
+              propertyPurchase: calculationResults.propertyPurchase,
+              restructuring: calculationResults.restructuring,
+              fixtures: calculationResults.fixtures,
+              innovation: calculationResults.innovation,
+              environmental: calculationResults.environmental,
+              designPm: calculationResults.designPm,
+              preliminaryStudies: calculationResults.preliminaryStudies,
+              totalEligible: calculationResults.totalEligible,
+              agencyFees: calculationResults.agencyFees,
+              registrationTax: calculationResults.registrationTax,
+              notaryFees: calculationResults.notaryFees,
+              consultingFees: calculationResults.consultingFees,
+              totalNonEligible: calculationResults.totalNonEligible,
+              integratedPercent: calculationResults.integratedPercent,
+              professionalCosts: calculationResults.professionalCosts || 0
+            });
 
-// Download the PDF
-pdf.save(`InvestiScope_Report_${name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`);
+            // Download the PDF
+            pdf.save('InvestiScope_Report_' + name.replace(/\\s+/g, '_') + '_' + new Date().toISOString().split('T')[0] + '.pdf');
 
             // Close modal and show success
             closeModal();
