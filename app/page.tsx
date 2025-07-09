@@ -75,12 +75,14 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-5 justify-center animate-fadeIn animation-delay-400">
             <CTAButton 
               variant="calculator"
+              location="hero"
               className="text-lg px-8 py-5 rounded-full"
             />
             <CTAButton 
               variant="custom"
               href="#how-it-works"
               text="Learn How It Works"
+              location="hero"
               icon={
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -287,6 +289,7 @@ export default function HomePage() {
                   variant="custom"
                   href="/calculator"
                   text="Try Calculator"
+                  location="services"
                   className="inline-flex items-center gap-2 font-semibold text-emerald-600 group-hover:text-white"
                   showIcon={true}
                 />
@@ -305,6 +308,7 @@ export default function HomePage() {
                   variant="custom"
                   href="/surveys"
                   text="Learn More"
+                  location="services"
                   className="inline-flex items-center gap-2 font-semibold text-purple-600 group-hover:text-white"
                   showIcon={true}
                 />
@@ -323,6 +327,7 @@ export default function HomePage() {
                   variant="custom"
                   href="#advisor"
                   text="Meet Giuseppe"
+                  location="services"
                   className="inline-flex items-center gap-2 font-semibold text-amber-600 group-hover:text-white"
                   showIcon={true}
                 />
@@ -473,6 +478,7 @@ export default function HomePage() {
               <div className="mt-8">
                 <CTAButton 
                   variant="bookCall"
+                  location="about"
                   className="text-lg px-8 py-4 rounded-xl"
                 />
               </div>
@@ -546,10 +552,12 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <CTAButton 
               variant="calculator"
+              location="footer-cta"
               className="text-lg px-10 py-5 bg-white text-emerald-700 hover:bg-gray-100 rounded-full"
             />
             <CTAButton 
               variant="bookCall"
+              location="footer-cta"
               className="text-lg px-10 py-5 bg-transparent border-2 border-white text-white hover:bg-white hover:text-emerald-700 rounded-full"
             />
           </div>
