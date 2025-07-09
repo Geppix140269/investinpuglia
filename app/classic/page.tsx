@@ -1633,6 +1633,35 @@ export default function ClassicPage() {
             // Send email
             await sendEmailReport(name, email, phone, location, timeline, calculationResults);
             
+            // Generate PDF
+const pdf = generatePDFReport({
+  name: name,
+  email: email,
+  location: location,
+  totalProject: calculationResults.totalProject,
+  miniPiaGrant: calculationResults.miniPiaGrant,
+  taxCredit: calculationResults.taxCredit,
+  netInvestment: calculationResults.netInvestment,
+  propertyPurchase: calculationResults.propertyPurchase,
+  restructuring: calculationResults.restructuring,
+  fixtures: calculationResults.fixtures,
+  innovation: calculationResults.innovation,
+  environmental: calculationResults.environmental,
+  designPm: calculationResults.designPm,
+  preliminaryStudies: calculationResults.preliminaryStudies,
+  totalEligible: calculationResults.totalEligible,
+  agencyFees: calculationResults.agencyFees,
+  registrationTax: calculationResults.registrationTax,
+  notaryFees: calculationResults.notaryFees,
+  consultingFees: calculationResults.consultingFees,
+  totalNonEligible: calculationResults.totalNonEligible,
+  integratedPercent: calculationResults.integratedPercent,
+  professionalCosts: calculationResults.professionalCosts || 0
+});
+
+// Download the PDF
+pdf.save(`InvestiScope_Report_${name.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`);
+
             // Close modal and show success
             closeModal();
             document.getElementById('reportForm').reset();
