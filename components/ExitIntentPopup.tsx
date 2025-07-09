@@ -9,6 +9,12 @@ export default function ExitIntentPopup() {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
+    // Check if user has already registered
+    const hasRegistered = localStorage.getItem('miniPIAGuideRegistered')
+    if (hasRegistered) {
+      return // Don't set up exit intent if already registered
+    }
+
     let exitIntentShown = false
     let lastScrollTop = 0
     let scrollUpCount = 0
@@ -82,6 +88,10 @@ export default function ExitIntentPopup() {
       console.log('API Response status:', response.status)
       
       if (response.ok) {
+        // Mark as registered to prevent future popups
+        localStorage.setItem('miniPIAGuideRegistered', 'true')
+        localStorage.setItem('miniPIAGuideRegisteredDate', new Date().toISOString())
+        
         // Trigger immediate download
         const link = document.createElement('a')
         link.href = '/Mini-PIA-Grant-Guide-2025.pdf' // Put PDF in public folder
@@ -107,6 +117,12 @@ export default function ExitIntentPopup() {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  // Also check on popup render in case localStorage was cleared elsewhere
+  if (showPopup && localStorage.getItem('miniPIAGuideRegistered')) {
+    setShowPopup(false)
+    return null
   }
 
   if (!showPopup) return null
