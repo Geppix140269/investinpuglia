@@ -112,7 +112,6 @@ export const PortableText = ({ value }: { value: any }) => {
               </div>
             )
           },
-          // Custom component for callout boxes
           callout: ({ value }) => {
             const icons = {
               info: '💡',
@@ -120,18 +119,18 @@ export const PortableText = ({ value }: { value: any }) => {
               success: '✅',
               error: '❌'
             }
-            
+
             const colors = {
               info: 'bg-blue-50 border-blue-500 text-blue-900',
               warning: 'bg-yellow-50 border-yellow-500 text-yellow-900',
               success: 'bg-green-50 border-green-500 text-green-900',
               error: 'bg-red-50 border-red-500 text-red-900'
             }
-            
+
             return (
-              <div className={`my-8 p-6 rounded-lg border-l-4 ${colors[value.type || 'info']}`}>
+              <div className={`my-8 p-6 rounded-lg border-l-4 ${colors[(value.type as keyof typeof colors) || 'info']}`}>
                 <div className="flex items-start">
-                  <span className="text-2xl mr-3">{icons[value.type || 'info']}</span>
+                  <span className="text-2xl mr-3">{icons[(value.type as keyof typeof icons) || 'info']}</span>
                   <div>
                     {value.title && (
                       <h4 className="font-bold mb-2">{value.title}</h4>
@@ -142,7 +141,6 @@ export const PortableText = ({ value }: { value: any }) => {
               </div>
             )
           },
-          // Custom component for feature lists
           featureList: ({ value }) => {
             return (
               <div className="my-10 grid md:grid-cols-2 gap-4">
