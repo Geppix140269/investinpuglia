@@ -1,12 +1,18 @@
-export const getAllPosts = `
-  *[_type == "post"] | order(_createdAt desc) {
+// lib/queries.ts
+export const getAllPosts = groq`
+  *[_type == "post"] | order(publishedAt desc) {
     _id,
     title,
     slug,
+    publishedAt,
     mainImage {
-      asset->{
-        url
-      }
+      asset->{url}
+    },
+    categories[]->{
+      title
+    },
+    author->{
+      name
     }
   }
 `
