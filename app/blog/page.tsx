@@ -1,4 +1,5 @@
 import { sanity } from '@/lib/sanity'
+import { getAllPosts } from '@/lib/queries'
 import { groq } from 'next-sanity'
 import Link from 'next/link'
 import Image from 'next/image'
