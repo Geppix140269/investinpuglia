@@ -144,15 +144,6 @@ export class CalculatorConfigService {
     
     try {
       const result = await sanity.create(doc)
-      
-      // Track in analytics
-if (typeof window !== 'undefined' && (window as any).gtag) {
-  (window as any).gtag('event', 'calculation_completed', {
-    event_category: 'calculator',
-    event_label: config.name,
-    value: results.grantAmount
-  })
-}
       return result._id
     } catch (error) {
       console.error('Error saving calculation:', error)
