@@ -8,7 +8,7 @@ import Link from 'next/link'
 export const revalidate = 60
 
 // Dynamic metadata for SEO and social sharing
-export async function generateMetadata({ params }) {
+export async function generateMetadata({ params }: { params: { slug: string } }) {
   const query = groq`*[_type == "post" && slug.current == $slug][0]{
     title,
     "slug": slug.current,
