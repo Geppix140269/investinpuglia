@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 export const revalidate = 60
 
-// Dynamic metadata for SEO and social sharing
+// ✅ Dynamic metadata for social sharing (uses blog post image)
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const query = groq`*[_type == "post" && slug.current == $slug][0]{
     title,
@@ -21,6 +21,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const post = await sanity.fetch(query, { slug: params.slug })
   if (!post) return {}
 
+  const imageUrl = post.mainImage?.asset?.url || 'https://investiscope.net/default-og-image.jpg'
+
   return {
     title: post.title,
     description: post.description || 'Read insights on investing in Puglia real estate.',
@@ -32,7 +34,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       type: 'article',
       images: [
         {
-          url: post.mainImage?.asset?.url || 'https://investiscope.net/default-og-image.jpg',
+          url: imageUrl,
           width: 1200,
           height: 630,
           alt: post.title,
@@ -43,19 +45,19 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       card: 'summary_large_image',
       title: post.title,
       description: post.description,
-      images: [post.mainImage?.asset?.url || 'https://investiscope.net/default-og-image.jpg'],
+      images: [imageUrl],
     },
   }
 }
 
-// Static path generation
+// ⚙️ Static path generation
 export async function generateStaticParams() {
   const query = groq`*[_type == "post"]{ "slug": slug.current }`
   const slugs = await sanity.fetch(query)
   return slugs.map((s: any) => ({ slug: s.slug }))
 }
 
-// Blog post rendering
+// ✨ Blog post rendering
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
   const query = groq`*[_type == "post" && slug.current == $slug][0]{
     title,
@@ -145,16 +147,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
 
         <div className="max-w-4xl mx-auto px-5 py-12">
           <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-xl p-8 md:p-12 border border-white/50">
-            <div className="prose prose-lg md:prose-xl max-w-none 
-              prose-headings:font-bold prose-headings:text-gray-900
-              prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6
-              prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4
-              prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6
-              prose-li:text-gray-700 prose-li:mb-2
-              prose-strong:text-emerald-700 prose-strong:font-semibold
-              prose-a:text-emerald-600 prose-a:no-underline hover:prose-a:underline
-              prose-blockquote:border-l-4 prose-blockquote:border-emerald-500 
-              prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-gray-600">
+            <div className="prose prose-lg md:prose-xl max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6 prose-li:text-gray-700 prose-li:mb-2 prose-strong:text-emerald-700 prose-strong:font-semibold prose-a:text-emerald-600 prose-a:no-underline hover:prose-a:underline prose-blockquote:border-l-4 prose-blockquote:border-emerald-500 prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-gray-600">
               <PortableText value={post.body} />
             </div>
           </div>
