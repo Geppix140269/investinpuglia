@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useRef, useEffect } from 'react'
+import emailjs from '@emailjs/browser'
 
 interface FormData {
   // Quadro A
@@ -87,9 +88,17 @@ export default function FiscalCodeForm() {
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
+  const [applicationId, setApplicationId] = useState('')
   const signatureCanvasRef = useRef<HTMLCanvasElement>(null)
   const [isDrawing, setIsDrawing] = useState(false)
+
+  // Initialize EmailJS
+  useEffect(() => {
+    emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!)
+  }, [])
 
   // Countries list
   const countries = [
@@ -216,16 +225,82 @@ export default function FiscalCodeForm() {
     setFormData(prev => ({ ...prev, firmaDigitale: '' }))
   }
 
+  const sendEmails = async (applicationId: string) => {
+    try {
+      // Send user confirmation email
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_FISCAL_USER_TEMPLATE_ID!,
+        {
+          to_email: formData.sottoscrittoEmail,
+          user_name: `${formData.nome} ${formData.cognome}`,
+          application_id: applicationId,
+          submission_date: new Date().toLocaleDateString()
+        }
+      )
+
+      // Send agency notification email
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_FISCAL_AGENCY_TEMPLATE_ID!,
+        {
+          applicant_name: `${formData.nome} ${formData.cognome}`,
+          applicant_email: formData.sottoscrittoEmail,
+          applicant_phone: formData.sottoscrittoTelefono,
+          birth_date: formData.dataNascita,
+          birth_place: formData.comuneNascita,
+          country: formData.statoEstero,
+          application_id: applicationId,
+          submission_date: new Date().toLocaleDateString()
+        }
+      )
+    } catch (error) {
+      console.error('Email send error:', error)
+      // Don't throw - emails are secondary to database save
+    }
+  }
+
   const handleSubmit = async () => {
+    setSubmitError('')
     
     if (!validateForm()) {
       window.scrollTo({ top: 0, behavior: 'smooth' })
       return
     }
     
-    // Here you would submit to your API
-    console.log('Form submitted:', formData)
-    setShowSuccess(true)
+    setIsSubmitting(true)
+    
+    try {
+      // Submit to API
+      const response = await fetch('/api/fiscal-code-applications', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      })
+      
+      const data = await response.json()
+      
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to submit application')
+      }
+      
+      // Save application ID
+      setApplicationId(data.id)
+      
+      // Send emails (don't await - let it run in background)
+      sendEmails(data.id)
+      
+      // Show success
+      setShowSuccess(true)
+      
+    } catch (error) {
+      console.error('Submission error:', error)
+      setSubmitError(error instanceof Error ? error.message : 'Failed to submit application. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   if (showSuccess) {
@@ -235,9 +310,23 @@ export default function FiscalCodeForm() {
           <div className="bg-white rounded-3xl shadow-2xl p-12 text-center">
             <div className="text-6xl mb-6">✅</div>
             <h1 className="text-3xl font-bold mb-4 text-gray-900">Application Submitted Successfully!</h1>
-            <p className="text-xl text-gray-600 mb-8">
+            <p className="text-xl text-gray-600 mb-4">
               We've received your fiscal code application and will process it within 2-3 business days.
             </p>
+            <p className="text-lg text-gray-600 mb-8">
+              Your application ID is: <span className="font-mono font-bold text-emerald-600">{applicationId}</span>
+            </p>
+            <p className="text-gray-600">
+              You will receive a confirmation email at <strong>{formData.sottoscrittoEmail}</strong> shortly.
+            </p>
+            <div className="mt-8">
+              <a 
+                href="/"
+                className="inline-block px-8 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-medium rounded-full hover:shadow-lg transition-all"
+              >
+                Return to Home
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -273,6 +362,15 @@ export default function FiscalCodeForm() {
           </p>
         </div>
       </div>
+
+      {/* Error Alert */}
+      {submitError && (
+        <div className="max-w-4xl mx-auto px-4 mt-4">
+          <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
+            <strong>Error:</strong> {submitError}
+          </div>
+        </div>
+      )}
 
       {/* Main Form */}
       <div className="max-w-4xl mx-auto px-4 py-8">
@@ -827,12 +925,17 @@ export default function FiscalCodeForm() {
             <button
               type="button"
               onClick={handleSubmit}
-              className="px-12 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-lg rounded-full hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200"
+              disabled={isSubmitting}
+              className={`px-12 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-lg rounded-full transition-all duration-200 ${
+                isSubmitting 
+                  ? 'opacity-50 cursor-not-allowed' 
+                  : 'hover:shadow-xl transform hover:-translate-y-1'
+              }`}
             >
-              Submit Application - €99
+              {isSubmitting ? 'Submitting...' : 'Submit Application - €99'}
             </button>
             <p className="text-sm text-gray-600 mt-4">
-              Secure payment • Official processing • 2-3 day delivery
+              Secure submission • Official processing • 2-3 day delivery
             </p>
           </div>
         </div>
