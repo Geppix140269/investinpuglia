@@ -1,3 +1,4 @@
+// components/Navbar.tsx
 'use client'
 
 import { useState } from 'react'
@@ -65,6 +66,9 @@ export default function Navbar() {
             
             <a href="/surveys" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
               Surveys
+            </a>
+            <a href="/fiscal-code" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
+              Fiscal Code
             </a>
             <a href="/contact" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
               Contact
@@ -135,6 +139,9 @@ export default function Navbar() {
               
               <a href="/surveys" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
                 Surveys
+              </a>
+              <a href="/fiscal-code" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
+                Fiscal Code
               </a>
               <a href="/contact" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
                 Contact
