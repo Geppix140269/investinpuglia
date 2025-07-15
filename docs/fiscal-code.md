@@ -1,4 +1,272 @@
-# InvestiScope Project Architecture
+# PROJECT_UPDATE.md
+**Project**: InvestiScope - Italian Property Investment Platform  
+**URL**: https://investiscope.net  
+**Last Updated**: January 2025  
+**Status**: 🟡 RECOVERING - Build cache issues
+
+---
+
+## 🚨 CRITICAL WORKFLOW RULES - READ FIRST
+
+### TOP INSTRUCTIONS FOR ALL COLLABORATORS:
+
+1. **NO FILE MODIFICATIONS** - User does NOT edit files. Only accepts COMPLETE files ready to copy-paste.
+2. **NO LOCAL STORAGE** - All work via GitHub → Netlify. No local development.
+3. **ALWAYS ASK FOR CURRENT FILES** - Never assume file contents. Always request: "Show me your current [filename]"
+4. **COMPLETE FILES ONLY** - Never provide snippets, partial updates, or "change line X" instructions.
+5. **PRESERVE EXISTING CONTENT** - When updating files, maintain ALL existing dependencies and code.
+
+---
+
+## 📊 Current Project Status
+
+### Working Features ✅
+- Property Investment Calculator (Mini PIA Turismo)
+- Sanity CMS Integration
+- EmailJS Integration
+- Supabase Database
+- Contact Forms
+- SEO Optimization
+- Google Analytics
+
+### In Progress 🔄
+- Fiscal Code Application System
+  - ✅ Form design completed
+  - ✅ PDF generation logic created
+  - ✅ API routes prepared
+  - ⚠️ Deployment blocked by cache issues
+
+### Recent Issues 🔴
+- **Package.json Corruption** - RESOLVED
+  - Dependencies were accidentally deleted
+  - Restored from 3-day-old backup
+  - Added jspdf for PDF generation
+- **Netlify Build Cache** - CURRENT ISSUE
+  - Cache not recognizing existing dependencies
+  - Solution: Clear cache and redeploy
+
+---
+
+## 🏗️ Project Architecture
+
+### Tech Stack
+```
+Frontend:       Next.js 14.2.0 (App Router)
+Styling:        Tailwind CSS
+CMS:           Sanity v3
+Database:       Supabase
+Email:         EmailJS
+PDF:           jsPDF
+Deployment:    GitHub → Netlify (automatic)
+```
+
+### Critical Dependencies (DO NOT REMOVE)
+```json
+{
+  "@emailjs/browser": "^3.11.0",
+  "@portabletext/react": "^3.2.1",
+  "@sanity/icons": "^3.7.4",
+  "@sanity/image-url": "^1.1.0",
+  "@sanity/vision": "^3.98.0",
+  "@supabase/supabase-js": "^2.50.3",
+  "sanity": "^3.98.0",
+  "next-sanity": "^9.12.0",
+  "jspdf": "^2.5.1"
+}
+```
+
+### Environment Variables (Set in Netlify)
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `G-LPJCZYGWWG` (Google Analytics)
+
+---
+
+## 📁 File Structure
+
+```
+investiscope/
+├── app/
+│   ├── api/
+│   │   ├── fiscal-code-applications/
+│   │   │   └── route.ts
+│   │   └── contact/
+│   │       └── route.ts
+│   ├── fiscal-code/
+│   │   └── page.tsx (NEW - to be added)
+│   ├── services/
+│   │   └── page.tsx (NEW - ready to add)
+│   ├── classic/
+│   │   └── page.tsx (Calculator)
+│   ├── layout.tsx (Has EmailJS scripts)
+│   └── page.tsx
+├── components/
+│   ├── Navbar.tsx
+│   ├── Footer.tsx
+│   ├── LeadCaptureForm.tsx
+│   └── FiscalCodeForm.tsx (NEW - to be added)
+├── lib/
+│   ├── sanity.ts
+│   ├── supabase.ts
+│   └── pdf-generation.ts (NEW - to be added)
+├── package.json (RESTORED)
+└── netlify.toml
+```
+
+---
+
+## 🔥 Current Action Items
+
+### Immediate (Fix Build)
+1. **Clear Netlify Cache**
+   - Go to Netlify → Deploys
+   - Click "Trigger deploy" → "Clear cache and deploy site"
+
+### Next Steps (After Build Fixed)
+1. **Add Fiscal Code Page**
+   - Create `/app/fiscal-code/page.tsx`
+   - Already designed and ready
+
+2. **Add PDF Generation**
+   - Create `/lib/pdf-generation.ts`
+   - Code complete and tested
+
+3. **Add Services Page**
+   - Create `/app/services/page.tsx`
+   - Design completed
+
+---
+
+## ⚠️ Known Issues & Solutions
+
+### Issue: Netlify Build Fails - Missing Modules
+**Status**: Active  
+**Error**: Module not found: @sanity/client, @portabletext/react, etc.  
+**Cause**: Netlify build cache outdated  
+**Solution**: Clear cache and redeploy in Netlify dashboard  
+
+### Issue: Package.json Dependencies Deleted
+**Status**: Resolved  
+**Error**: Build failed due to missing Sanity packages  
+**Cause**: Incomplete package.json provided without checking existing content  
+**Solution**: Restored from backup, added jspdf  
+**Prevention**: Always request current file before updates  
+
+---
+
+## 📈 Deployment History
+
+| Date | Action | Status | Notes |
+|------|--------|--------|-------|
+| Jan 2025 | Add fiscal code form | 🔴 Failed | Package.json corrupted |
+| Jan 2025 | Restore package.json | 🟡 Pending | Cache issues |
+| Jan 2025 | Add services page | ⏳ Waiting | Blocked by build |
+| Dec 2024 | Launch calculator | ✅ Success | Working perfectly |
+
+---
+
+## 🛡️ Safeguards & Best Practices
+
+### Before ANY Changes:
+1. **Check current file**: "Show me your current package.json"
+2. **List dependencies**: What packages are needed?
+3. **Backup critical files**: Note current working state
+4. **Test one change**: Deploy single changes before multiple
+
+### Communication Template:
+```
+User: "I need to add [feature]"
+Assistant: "I'll need to see:
+1. Your current [relevant files]
+2. Current package.json
+Let me check what exists first."
+```
+
+### File Update Protocol:
+```
+1. Request current file
+2. Preserve ALL existing content
+3. Add only necessary changes
+4. Provide COMPLETE file
+5. Document what changed
+```
+
+---
+
+## 💡 Lessons Learned
+
+1. **Never assume file contents** - Led to deleted dependencies
+2. **Netlify cache can be problematic** - "Clear cache" often needed
+3. **Complete files prevent errors** - Partial updates cause issues
+4. **Backup before major changes** - Saved us today
+5. **Document everything** - This file helps maintain context
+
+---
+
+## 🎯 Success Metrics
+
+- ✅ 5 pages live and working
+- ✅ Calculator generating leads
+- ✅ SEO optimized and ranking
+- ✅ EmailJS sending confirmations
+- 🔄 Fiscal code system 90% complete
+- 📊 47+ satisfied clients
+
+---
+
+## 📞 Quick References
+
+### When Build Fails:
+1. Check Netlify logs
+2. Verify package.json has all dependencies
+3. Clear cache and redeploy
+4. Check environment variables
+
+### When Adding Features:
+1. Create new files (don't modify existing)
+2. Add dependencies to package.json
+3. Test individually
+4. Document changes
+
+### Emergency Contacts:
+- Site: https://investiscope.net
+- Deploy: Netlify dashboard
+- Database: Supabase dashboard
+- CMS: Sanity studio
+
+---
+
+## 🔄 Next Session Checklist
+
+When starting a new session, paste this:
+
+```
+PROJECT: InvestiScope
+STATUS: [Check this file]
+
+RULES:
+1. I only accept COMPLETE files
+2. Always ask for current files first
+3. No local development
+4. GitHub → Netlify only
+
+CURRENT TASK: [Your specific goal]
+
+WORKING FEATURES:
+- Calculator ✓
+- Sanity CMS ✓
+- EmailJS ✓
+- Supabase ✓
+
+DO NOT TOUCH:
+- Package.json without seeing current
+- Any Sanity dependencies
+- Existing working features
+```
+
+---
+
+*This document is the source of truth for InvestiScope project status. Update after each significant change or issue resolution.*# InvestiScope Project Architecture
 
 ## 🏗️ Current Infrastructure (ALREADY IMPLEMENTED)
 
