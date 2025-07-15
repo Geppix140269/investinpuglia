@@ -1380,6 +1380,96 @@ export default function FiscalCodeForm() {
             </div>
           </div>
 
+          {/* DELEGA - Delegation Section (as per PDF) */}
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-12 h-12 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-full flex items-center justify-center font-bold text-lg">👤</span>
+              <h3 className="text-2xl font-bold text-gray-800">DELEGA - Delegation</h3>
+            </div>
+
+            <div className="space-y-6">
+              <p className="text-gray-700">
+                _l_ sottoscritt_ (The undersigned) delegates someone to:
+              </p>
+
+              <div className="p-4 bg-gray-50 rounded-lg">
+                <p className="text-sm text-gray-700 mb-2">
+                  <strong>a presentare il modello per suo conto e a ritirare l'eventuale certificazione rilasciata dall'ufficio</strong>
+                </p>
+                <p className="text-sm text-gray-600 italic">
+                  (to submit this form on their behalf and collect any certification issued by the office)
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nome e Cognome del Delegato (Delegate's Full Name)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Full name of person you're delegating"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Nato/a a (Born in)
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Place of birth"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    il (on date)
+                  </label>
+                  <input
+                    type="date"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Codice Fiscale del Delegato
+                  </label>
+                  <input
+                    type="text"
+                    maxLength={16}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors font-mono uppercase"
+                    placeholder="Delegate's fiscal code (if available)"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    DATA (Date)
+                  </label>
+                  <input
+                    type="date"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    FIRMA del Delegante (Signature of Delegator)
+                  </label>
+                  <div className="border-2 border-gray-300 rounded-lg p-4 text-center text-gray-500">
+                    Signature space - to be signed on printed form
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Submit Button */}
           <div className="text-center py-8">
             <button
