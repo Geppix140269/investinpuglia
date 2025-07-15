@@ -2,7 +2,18 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { getCountries, getItalianProvinces, getCities } from '@/lib/locations'
+import { getCountries, getItalianProvinces } from '@/lib/locations'
+
+interface Country {
+  code: string
+  name: string
+  flag: string
+}
+
+interface Province {
+  code: string
+  name: string
+}
 
 export default function FiscalCodeForm() {
   const [formData, setFormData] = useState({
@@ -25,16 +36,21 @@ export default function FiscalCodeForm() {
     notes: ''
   })
 
-  const [countries, setCountries] = useState([])
-  const [provinces, setProvinces] = useState([])
+  const [countries, setCountries] = useState<Country[]>([])
+  const [provinces, setProvinces] = useState<Province[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
 
   // Load countries on mount
   useEffect(() => {
-    getCountries().then(setCountries).catch(console.error)
-    getItalianProvinces().then(setProvinces).catch(console.error)
+    getCountries()
+      .then((data) => setCountries(data))
+      .catch(console.error)
+    
+    getItalianProvinces()
+      .then((data) => setProvinces(data))
+      .catch(console.error)
   }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -59,7 +75,7 @@ export default function FiscalCodeForm() {
       // Redirect to payment or success page
       window.location.href = `/fiscal-code/success?id=${data.data.id}`
       
-    } catch (err) {
+    } catch (err: any) {
       setError(err.message || 'Something went wrong')
     } finally {
       setIsSubmitting(false)
@@ -134,7 +150,7 @@ export default function FiscalCodeForm() {
               className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500"
             >
               <option value="">Select Country</option>
-              {countries.map((country: any) => (
+              {countries.map((country) => (
                 <option key={country.code} value={country.name}>
                   {country.flag} {country.name}
                 </option>
@@ -163,7 +179,7 @@ export default function FiscalCodeForm() {
                 className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500"
               >
                 <option value="">Select Province</option>
-                {provinces.map((prov: any) => (
+                {provinces.map((prov) => (
                   <option key={prov.code} value={prov.code}>{prov.name}</option>
                 ))}
               </select>
@@ -186,7 +202,7 @@ export default function FiscalCodeForm() {
               className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500"
             >
               <option value="">Select Country</option>
-              {countries.map((country: any) => (
+              {countries.map((country) => (
                 <option key={country.code} value={country.name}>
                   {country.flag} {country.name}
                 </option>
@@ -238,7 +254,7 @@ export default function FiscalCodeForm() {
                   className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-emerald-500"
                 >
                   <option value="">Select</option>
-                  {provinces.map((prov: any) => (
+                  {provinces.map((prov) => (
                     <option key={prov.code} value={prov.code}>{prov.name}</option>
                   ))}
                 </select>
