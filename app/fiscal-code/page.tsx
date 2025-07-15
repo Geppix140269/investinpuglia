@@ -179,9 +179,9 @@ export default function FiscalCodePage() {
     additionalNotes: ''
   })
 
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState<Record<string, boolean>>({})
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({
       ...prev,
@@ -193,7 +193,7 @@ export default function FiscalCodePage() {
     }
   }
 
-  const validateField = (name, value) => {
+  const validateField = (name: string, value: string): boolean => {
     switch (name) {
       case 'email':
         return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
@@ -227,7 +227,7 @@ export default function FiscalCodePage() {
     return Object.keys(newErrors).length === 0
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if (!validateForm()) {
