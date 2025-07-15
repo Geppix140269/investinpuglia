@@ -1,166 +1,120 @@
-// app/api/fiscal-code-applications/route.ts
-import { NextRequest, NextResponse } from 'next/server';
+// app/api/fiscal-code-applications/route.js
+// Simple API route that uses EXISTING Supabase table and EmailJS templates
+
+import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import emailjs from '@emailjs/browser';
 
-// Initialize Supabase
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
+// Initialize Supabase with YOUR existing credentials
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+);
 
-// Initialize EmailJS
-emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!);
-
-export async function POST(request: NextRequest) {
+export async function POST(request) {
   try {
+    // Get the form data
     const body = await request.json();
     
-    // Validate required fields
-    if (!body.name || !body.surname || !body.email) {
-      return NextResponse.json(
-        { error: 'Missing required fields: name, surname, and email' },
-        { status: 400 }
-      );
+    // Simple validation - just check if fields exist
+    const requiredFields = [
+      'name', 'surname', 'birth_date', 'birth_place', 
+      'birth_country', 'gender', 'email', 'phone', 
+      'passport_number', 'purpose'
+    ];
+    
+    for (const field of requiredFields) {
+      if (!body[field]) {
+        return NextResponse.json(
+          { error: `Missing ${field}` },
+          { status: 400 }
+        );
+      }
     }
-
-    // Prepare data for database
-    const applicationData = {
-      request_type: 'attribution',
-      name: body.name,
-      surname: body.surname,
-      sex: body.gender === 'male' ? 'M' : 'F',
-      birth_date: body.birthDate || null,
-      birth_municipality: body.birthCity || '',
-      birth_province: body.birthProvince || '',
-      birth_foreign: body.birthCountry && body.birthCountry !== 'Italy',
-      birth_foreign_country: body.birthCountry !== 'Italy' ? body.birthCountry : '',
-      
-      residence_address: body.address || '',
-      residence_number: body.streetNumber || '',
-      residence_municipality: body.city || '',
-      residence_province: body.province || '',
-      residence_cap: body.postalCode || '',
-      
-      email: body.email,
-      phone: body.phone || '',
-      
-      delegator_name: `${body.name} ${body.surname}`,
-      delegator_email: body.email,
-      delegator_phone: body.phone || '',
-      
-      status: 'pending',
-      payment_status: 'test_mode',
-      submitted_at: new Date().toISOString(),
-      
-      codice_fiscale: '',
-      document_type: '',
-      document_number: '',
-      document_issue_date: null,
-      document_expiry_date: null,
-      document_issued_by: '',
-      
-      foreign_country: body.country !== 'Italy' ? body.country : '',
-      foreign_address: body.country !== 'Italy' ? `${body.address} ${body.streetNumber}, ${body.city} ${body.postalCode}` : '',
-      
-      terms_accepted: true,
-      privacy_accepted: true,
-      
-      notes: body.notes || '',
-      purpose: body.purpose || 'property_investment',
-      
-      ip_address: request.headers.get('x-forwarded-for') || 'unknown',
-      user_agent: request.headers.get('user-agent') || 'unknown'
-    };
-
-    // Insert into database
+    
+    // Insert into YOUR EXISTING fiscal_code_applications table
     const { data, error } = await supabase
       .from('fiscal_code_applications')
-      .insert([applicationData])
+      .insert([{
+        name: body.name,
+        surname: body.surname,
+        birth_date: body.birth_date,
+        birth_place: body.birth_place,
+        birth_country: body.birth_country,
+        gender: body.gender,
+        email: body.email,
+        phone: body.phone,
+        passport_number: body.passport_number,
+        current_address: body.current_address || '',
+        purpose: body.purpose,
+        urgency: body.urgency || 'standard',
+        status: 'pending',
+        created_at: new Date().toISOString()
+      }])
       .select()
       .single();
-
+    
     if (error) {
-      console.error('Database error:', error);
+      console.error('Supabase error:', error);
       return NextResponse.json(
-        { error: 'Failed to save application', details: error.message },
+        { error: 'Database error' },
         { status: 500 }
       );
     }
-
-    const applicationId = data.id;
-
-    // Send emails
-    try {
-      // Email to agency/admin
-      const agencyEmailParams = {
-        to_email: 'admin@investiscope.net',
-        application_id: applicationId,
-        applicant_name: `${body.name} ${body.surname}`,
-        applicant_email: body.email,
-        birth_date: body.birthDate || 'Not provided',
-        birth_place: body.birthCity || 'Not provided',
-        phone: body.phone || 'Not provided',
-        purpose: body.purpose || 'property_investment',
-        submitted_at: new Date().toLocaleString('it-IT', { timeZone: 'Europe/Rome' })
-      };
-
-      // Email to user
-      const userEmailParams = {
-        to_email: body.email,
-        to_name: body.name,
-        application_id: applicationId,
-        full_name: `${body.name} ${body.surname}`,
-        submission_date: new Date().toLocaleDateString('en-US')
-      };
-
-      // Send both emails
-      await Promise.all([
-        emailjs.send(
-          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-          process.env.NEXT_PUBLIC_EMAILJS_FISCAL_AGENCY_TEMPLATE_ID!,
-          agencyEmailParams
-        ),
-        emailjs.send(
-          process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-          process.env.NEXT_PUBLIC_EMAILJS_FISCAL_USER_TEMPLATE_ID!,
-          userEmailParams
-        )
-      ]);
-
-      console.log('Emails sent successfully');
-    } catch (emailError) {
-      console.error('Email error (non-blocking):', emailError);
-      // Don't fail the request if email fails
-    }
-
-    return NextResponse.json(
-      {
-        success: true,
-        applicationId: applicationId,
-        message: 'Application submitted successfully'
-      },
-      { status: 200 }
-    );
-
+    
+    // Generate simple reference number
+    const reference = `FC${String(data.id).padStart(6, '0')}`;
+    
+    // Return success with reference
+    return NextResponse.json({
+      success: true,
+      id: data.id,
+      reference: reference
+    });
+    
   } catch (error) {
-    console.error('API error:', error);
+    console.error('Error:', error);
     return NextResponse.json(
-      { 
-        error: 'Internal server error',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
+      { error: 'Server error' },
       { status: 500 }
     );
   }
 }
 
-export async function GET() {
-  return NextResponse.json(
-    { 
-      status: 'Fiscal Code API is working',
-      timestamp: new Date().toISOString(),
-      mode: 'production'
-    },
-    { status: 200 }
-  );
+// GET endpoint to check application status
+export async function GET(request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const email = searchParams.get('email');
+    
+    if (!email) {
+      return NextResponse.json(
+        { error: 'Email required' },
+        { status: 400 }
+      );
+    }
+    
+    const { data, error } = await supabase
+      .from('fiscal_code_applications')
+      .select('*')
+      .eq('email', email)
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      return NextResponse.json(
+        { error: 'Database error' },
+        { status: 500 }
+      );
+    }
+    
+    return NextResponse.json({
+      success: true,
+      applications: data || []
+    });
+    
+  } catch (error) {
+    return NextResponse.json(
+      { error: 'Server error' },
+      { status: 500 }
+    );
+  }
 }
