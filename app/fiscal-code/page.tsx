@@ -1,59 +1,113 @@
-// app/fiscal-code/page.tsx
+import React, { useState, useRef, useEffect } from 'react'
 
-'use client'
+interface FormData {
+  // Quadro A
+  tipologiaRichiedente: 'D' | 'T'
+  codiceFiscaleRichiedente?: string
+  codiceFiscaleSottoscrittore?: string
+  tipoRichiesta: string
+  richiestaTesterinoCodiceFiscale?: boolean
+  motivazione?: string
+  dataDecesso?: string
+  
+  // Quadro B
+  codiceFiscale?: string
+  cognome: string
+  nome: string
+  sesso: 'M' | 'F' | ''
+  dataNascita: string
+  comuneNascita: string
+  provinciaNascita: string
+  
+  // Quadro C
+  tipologiaVia: string
+  indirizzo: string
+  numeroCivico: string
+  frazione: string
+  comune: string
+  provincia: string
+  cap: string
+  
+  // Quadro D
+  statoEstero: string
+  statoFederato: string
+  localitaResidenza: string
+  indirizzoEstero: string
+  codicePostale: string
+  
+  // Quadro E
+  altroCodiceFiscale1: string
+  altroCodiceFiscale2: string
+  
+  // Delega
+  delegaNome?: string
+  delegaLuogoNascita?: string
+  delegaDataNascita?: string
+  delegaCodiceFiscale?: string
+  
+  // Authorization
+  sottoscrittoNome: string
+  sottoscrittoEmail: string
+  sottoscrittoTelefono: string
+  dataFirma: string
+  firmaDigitale: string
+}
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-
-export default function FiscalCodePage() {
-  const router = useRouter()
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [showSuccess, setShowSuccess] = useState(false)
-  const [formData, setFormData] = useState({
-    // Section A - Request Type
-    requestType: 'attribution',
-    deathDate: '',
-    
-    // Section B - Personal Data
-    fiscalCode: '',
-    surname: '',
-    name: '',
-    sex: '',
-    birthDate: '',
-    birthMunicipality: '',
-    birthProvince: '',
-    
-    // Section C - Italian Residence
-    residenceType: 'via',
-    residenceAddress: '',
-    residenceNumber: '',
-    residenceMunicipality: '',
-    residenceProvince: '',
-    residenceCAP: '',
-    residenceFraction: '',
-    
-    // Section D - Foreign Residence
-    foreignCountry: '',
-    foreignState: '',
-    foreignAddress: '',
-    foreignPostalCode: '',
-    
-    // Section E - Other Fiscal Codes
-    otherFiscalCode1: '',
-    otherFiscalCode2: '',
-    
-    // Delegation Information
-    delegatorName: '',
-    delegatorBirthPlace: '',
-    delegatorBirthDate: '',
-    delegatorEmail: '',
-    delegatorPhone: '',
-    
-    // Agreement
-    termsAccepted: false,
-    privacyAccepted: false,
-    delegationAccepted: false
+export default function FiscalCodeForm() {
+  const [formData, setFormData] = useState<FormData>({
+    tipologiaRichiedente: 'D',
+    tipoRichiesta: '1',
+    cognome: '',
+    nome: '',
+    sesso: '',
+    dataNascita: '',
+    comuneNascita: '',
+    provinciaNascita: '',
+    tipologiaVia: 'Via',
+    indirizzo: '',
+    numeroCivico: '',
+    frazione: '',
+    comune: '',
+    provincia: '',
+    cap: '',
+    statoEstero: '',
+    statoFederato: '',
+    localitaResidenza: '',
+    indirizzoEstero: '',
+    codicePostale: '',
+    altroCodiceFiscale1: '',
+    altroCodiceFiscale2: '',
+    sottoscrittoNome: '',
+    sottoscrittoEmail: '',
+    sottoscrittoTelefono: '',
+    dataFirma: new Date().toISOString().split('T')[0],
+    firmaDigitale: ''
   })
+
+  const [errors, setErrors] = useState<Record<string, string>>({})
+  const [showSuccess, setShowSuccess] = useState(false)
+  const signatureCanvasRef = useRef<HTMLCanvasElement>(null)
+  const [isDrawing, setIsDrawing] = useState(false)
+
+  // Countries list
+  const countries = [
+    'United States', 'United Kingdom', 'Canada', 'Australia', 'Germany', 'France', 'Spain', 
+    'Italy', 'Netherlands', 'Switzerland', 'Austria', 'Belgium', 'Sweden', 'Norway', 'Denmark',
+    'Brazil', 'Argentina', 'Mexico', 'China', 'Japan', 'India', 'South Korea', 'Singapore',
+    'UAE', 'Saudi Arabia', 'South Africa', 'Russia', 'Other'
+  ]
+
+  // Italian provinces
+  const provinces = [
+    'AG', 'AL', 'AN', 'AO', 'AR', 'AP', 'AT', 'AV', 'BA', 'BT', 'BL', 'BN', 'BG', 'BI', 
+    'BO', 'BZ', 'BS', 'BR', 'CA', 'CL', 'CB', 'CE', 'CT', 'CZ', 'CH', 'CO', 'CS', 'CR',
+    'KR', 'CN', 'EN', 'FM', 'FE', 'FI', 'FG', 'FC', 'FR', 'GE', 'GO', 'GR', 'IM', 'IS',
+    'SP', 'AQ', 'LT', 'LE', 'LC', 'LI', 'LO', 'LU', 'MC', 'MN', 'MS', 'MT', 'ME', 'MI',
+    'MO', 'MB', 'NA', 'NO', 'NU', 'OR', 'PD', 'PA', 'PR', 'PV', 'PG', 'PU', 'PE', 'PC',
+    'PI', 'PT', 'PN', 'PZ', 'PO', 'RG', 'RA', 'RC', 'RE', 'RI', 'RN', 'RM', 'RO', 'SA',
+    'SS', 'SV', 'SI', 'SR', 'SO', 'TA', 'TE', 'TR', 'TO', 'TP', 'TN', 'TV', 'TS', 'UD',
+    'VA', 'VE', 'VB', 'VC', 'VR', 'VV', 'VI', 'VT'
+  ]
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target
@@ -64,73 +118,112 @@ export default function FiscalCodePage() {
     } else {
       setFormData(prev => ({ ...prev, [name]: value }))
     }
-  }
-
-  const setQuickCountry = (field: string, country: string) => {
-    setFormData(prev => ({ ...prev, [field]: country }))
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
-
-    try {
-      // Send email notification using EmailJS
-      if (typeof window !== 'undefined' && (window as any).emailjs) {
-        try {
-          // Send confirmation email to user
-          await (window as any).emailjs.send(
-            'service_w6tghqr',
-            'template_j0xsdcl',
-            {
-              to_email: formData.delegatorEmail,
-              user_name: formData.delegatorName || `${formData.name} ${formData.surname}`,
-              application_type: 'Fiscal Code Application',
-              status: 'received'
-            }
-          )
-
-          // Send notification to agency
-          await (window as any).emailjs.send(
-            'service_w6tghqr',
-            'template_pkjko4e',
-            {
-              applicant_name: `${formData.name} ${formData.surname}`,
-              applicant_email: formData.delegatorEmail,
-              applicant_phone: formData.delegatorPhone,
-              request_type: formData.requestType,
-              birth_date: formData.birthDate,
-              country: formData.foreignCountry
-            }
-          )
-        } catch (emailError) {
-          console.error('Email error:', emailError)
-        }
-      }
-
-      // Save to Supabase
-      const response = await fetch('/api/fiscal-code-applications', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          submittedAt: new Date().toISOString()
-        })
-      })
-
-      if (response.ok) {
-        setShowSuccess(true)
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      } else {
-        const error = await response.json()
-        alert(`Error: ${error.error || 'Failed to submit application'}`)
-      }
-    } catch (error) {
-      console.error('Submission error:', error)
-      alert('There was an error submitting your application. Please try again.')
-    } finally {
-      setIsSubmitting(false)
+    
+    // Clear error when user types
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }))
     }
+  }
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {}
+    
+    // Required fields validation
+    if (!formData.cognome) newErrors.cognome = 'Surname is required'
+    if (!formData.nome) newErrors.nome = 'Name is required'
+    if (!formData.sesso) newErrors.sesso = 'Sex is required'
+    if (!formData.dataNascita) newErrors.dataNascita = 'Date of birth is required'
+    if (!formData.comuneNascita) newErrors.comuneNascita = 'Place of birth is required'
+    if (!formData.statoEstero) newErrors.statoEstero = 'Country is required'
+    if (!formData.indirizzoEstero) newErrors.indirizzoEstero = 'Address is required'
+    if (!formData.sottoscrittoEmail) newErrors.sottoscrittoEmail = 'Email is required'
+    if (!formData.sottoscrittoTelefono) newErrors.sottoscrittoTelefono = 'Phone is required'
+    if (!formData.firmaDigitale) newErrors.firmaDigitale = 'Signature is required'
+    
+    // Email validation
+    if (formData.sottoscrittoEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.sottoscrittoEmail)) {
+      newErrors.sottoscrittoEmail = 'Invalid email format'
+    }
+    
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  // Signature pad functionality
+  const startDrawing = (e: React.MouseEvent | React.TouchEvent) => {
+    setIsDrawing(true)
+    const canvas = signatureCanvasRef.current
+    if (!canvas) return
+
+    const rect = canvas.getBoundingClientRect()
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    let x, y
+    if ('touches' in e) {
+      x = e.touches[0].clientX - rect.left
+      y = e.touches[0].clientY - rect.top
+    } else {
+      x = e.clientX - rect.left
+      y = e.clientY - rect.top
+    }
+
+    ctx.beginPath()
+    ctx.moveTo(x, y)
+  }
+
+  const draw = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isDrawing) return
+
+    const canvas = signatureCanvasRef.current
+    if (!canvas) return
+
+    const rect = canvas.getBoundingClientRect()
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    let x, y
+    if ('touches' in e) {
+      x = e.touches[0].clientX - rect.left
+      y = e.touches[0].clientY - rect.top
+    } else {
+      x = e.clientX - rect.left
+      y = e.clientY - rect.top
+    }
+
+    ctx.lineTo(x, y)
+    ctx.stroke()
+  }
+
+  const stopDrawing = () => {
+    if (isDrawing && signatureCanvasRef.current) {
+      setIsDrawing(false)
+      const dataUrl = signatureCanvasRef.current.toDataURL()
+      setFormData(prev => ({ ...prev, firmaDigitale: dataUrl }))
+    }
+  }
+
+  const clearSignature = () => {
+    const canvas = signatureCanvasRef.current
+    if (!canvas) return
+
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    setFormData(prev => ({ ...prev, firmaDigitale: '' }))
+  }
+
+  const handleSubmit = async () => {
+    
+    if (!validateForm()) {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
+    
+    // Here you would submit to your API
+    console.log('Form submitted:', formData)
+    setShowSuccess(true)
   }
 
   if (showSuccess) {
@@ -141,31 +234,8 @@ export default function FiscalCodePage() {
             <div className="text-6xl mb-6">✅</div>
             <h1 className="text-3xl font-bold mb-4 text-gray-900">Application Submitted Successfully!</h1>
             <p className="text-xl text-gray-600 mb-8">
-              We've received your Fiscal Code application and will process it within 2-3 business days.
+              We've received your fiscal code application and will process it within 2-3 business days.
             </p>
-            <div className="bg-emerald-50 rounded-2xl p-6 mb-8">
-              <h3 className="font-bold text-emerald-900 mb-3">What happens next?</h3>
-              <ol className="text-left space-y-2 text-emerald-800">
-                <li>1. We'll review your application and prepare the documents</li>
-                <li>2. Submit your application to the Italian tax authorities</li>
-                <li>3. Receive your Fiscal Code within 2-3 business days</li>
-                <li>4. We'll email you the official document</li>
-              </ol>
-            </div>
-            <div className="flex gap-4 justify-center">
-              <button
-                onClick={() => router.push('/')}
-                className="px-8 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-full font-bold hover:shadow-xl transition-all"
-              >
-                Back to Home
-              </button>
-              <button
-                onClick={() => router.push('/contact')}
-                className="px-8 py-4 bg-white border-2 border-emerald-600 text-emerald-600 rounded-full font-bold hover:bg-emerald-50 transition-all"
-              >
-                Contact Support
-              </button>
-            </div>
           </div>
         </div>
       </div>
@@ -173,478 +243,598 @@ export default function FiscalCodePage() {
   }
 
   return (
-    <>
-      {/* Hero Section */}
-      <section className="py-20 bg-gradient-to-br from-emerald-50 to-teal-50">
-        <div className="max-w-6xl mx-auto px-5 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-            Get Your Italian Fiscal Code
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-700 mb-8 max-w-3xl mx-auto">
-            Official Codice Fiscale application service for foreigners. 
-            Process your application remotely in 2-3 business days.
+    <div className="min-h-screen bg-gradient-to-br from-emerald-50 to-teal-50">
+      {/* Header */}
+      <header className="bg-white shadow-md sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+          <div className="flex items-center gap-4">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+              InvestiScope™
+            </h1>
+            <span className="text-sm text-gray-600">Official Form AA4/8</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm">
+            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+            <span className="text-gray-600">Secure Application</span>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero */}
+      <div className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-12 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-4">
+            DOMANDA DI ATTRIBUZIONE CODICE FISCALE
+          </h2>
+          <p className="text-xl opacity-90">
+            Fiscal Code Application for International Citizens
           </p>
-          
-          <div className="bg-white rounded-3xl shadow-xl p-8 max-w-2xl mx-auto">
-            <div className="flex flex-wrap justify-center gap-6 text-sm md:text-base">
-              <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>Official Application</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>2-3 Days Processing</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064" />
-                </svg>
-                <span>€99 Service Fee</span>
-              </div>
-            </div>
-          </div>
         </div>
-      </section>
+      </div>
 
-      {/* Why You Need It Section */}
-      <section className="py-16 bg-white">
-        <div className="max-w-6xl mx-auto px-5">
-          <h2 className="text-3xl font-bold text-center mb-12">Why You Need a Fiscal Code</h2>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">🏦</span>
-              </div>
-              <h3 className="font-bold text-xl mb-3">Open Bank Accounts</h3>
-              <p className="text-gray-600">Required by all Italian banks to open personal or business accounts</p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">🏠</span>
-              </div>
-              <h3 className="font-bold text-xl mb-3">Buy Property</h3>
-              <p className="text-gray-600">Essential for all property transactions and notary procedures</p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-3xl">📋</span>
-              </div>
-              <h3 className="font-bold text-xl mb-3">Official Business</h3>
-              <p className="text-gray-600">Needed for contracts, utilities, taxes, and all official procedures</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Application Form */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-5">
-          <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-xl p-8 md:p-12">
-            <h2 className="text-3xl font-bold mb-8 text-center">Fiscal Code Application Form</h2>
-            
-            {/* Section A - Request Type */}
-            <div className="mb-10 p-6 bg-blue-50 rounded-xl">
-              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm">A</span>
-                Type of Request
-              </h3>
-              
-              <div className="space-y-3">
-                <label className="flex items-center gap-3">
-                  <input
-                    type="radio"
-                    name="requestType"
-                    value="attribution"
-                    checked={formData.requestType === 'attribution'}
-                    onChange={handleInputChange}
-                    className="w-4 h-4 text-blue-600"
-                  />
-                  <span>Attribution of Fiscal Code (First Time)</span>
-                </label>
-                
-                <label className="flex items-center gap-3">
-                  <input
-                    type="radio"
-                    name="requestType"
-                    value="variation"
-                    checked={formData.requestType === 'variation'}
-                    onChange={handleInputChange}
-                    className="w-4 h-4 text-blue-600"
-                  />
-                  <span>Data Variation</span>
-                </label>
-                
-                <label className="flex items-center gap-3">
-                  <input
-                    type="radio"
-                    name="requestType"
-                    value="duplicate"
-                    checked={formData.requestType === 'duplicate'}
-                    onChange={handleInputChange}
-                    className="w-4 h-4 text-blue-600"
-                  />
-                  <span>Duplicate Card</span>
-                </label>
-              </div>
+      {/* Main Form */}
+      <div className="max-w-4xl mx-auto px-4 py-8">
+        <div className="space-y-8">
+          {/* QUADRO A - Request Type */}
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-12 h-12 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-full flex items-center justify-center font-bold text-lg">A</span>
+              <h3 className="text-2xl font-bold text-gray-800">QUADRO A - Tipo Richiesta</h3>
             </div>
 
-            {/* Section B - Personal Data */}
-            <div className="mb-10 p-6 bg-green-50 rounded-xl">
-              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center text-sm">B</span>
-                Personal Data
-              </h3>
-              
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block font-semibold mb-2">
-                    Surname <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="surname"
-                    value={formData.surname}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block font-semibold mb-2">
-                    Name <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block font-semibold mb-2">
-                    Sex <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    name="sex"
-                    value={formData.sex}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none"
-                  >
-                    <option value="">Select...</option>
-                    <option value="M">Male (M)</option>
-                    <option value="F">Female (F)</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label className="block font-semibold mb-2">
-                    Date of Birth <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="date"
-                    name="birthDate"
-                    value={formData.birthDate}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block font-semibold mb-2">
-                    Municipality of Birth <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="birthMunicipality"
-                    value={formData.birthMunicipality}
-                    onChange={handleInputChange}
-                    required
-                    placeholder="City or foreign country"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block font-semibold mb-2">
-                    Province of Birth
-                  </label>
-                  <input
-                    type="text"
-                    name="birthProvince"
-                    value={formData.birthProvince}
-                    onChange={handleInputChange}
-                    placeholder="If born in Italy"
-                    maxLength={2}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Section D - Foreign Residence */}
-            <div className="mb-10 p-6 bg-orange-50 rounded-xl">
-              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 bg-orange-600 text-white rounded-full flex items-center justify-center text-sm">D</span>
-                Foreign Residence
-              </h3>
-              
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="md:col-span-2">
-                  <label className="block font-semibold mb-2">
-                    Country <span className="text-red-500">*</span>
-                  </label>
-                  <div className="flex gap-2">
+            <div className="space-y-6">
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">Sezione I - Tipologia richiedente</label>
+                <div className="grid grid-cols-2 gap-4">
+                  <label className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${formData.tipologiaRichiedente === 'D' ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 hover:border-gray-300'}`}>
                     <input
-                      type="text"
-                      name="foreignCountry"
-                      value={formData.foreignCountry}
+                      type="radio"
+                      name="tipologiaRichiedente"
+                      value="D"
+                      checked={formData.tipologiaRichiedente === 'D'}
                       onChange={handleInputChange}
-                      required
-                      className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none"
+                      className="mr-2"
                     />
-                    <button
-                      type="button"
-                      onClick={() => setQuickCountry('foreignCountry', 'United States')}
-                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm"
-                    >
-                      USA
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setQuickCountry('foreignCountry', 'United Kingdom')}
-                      className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm"
-                    >
-                      UK
-                    </button>
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="block font-semibold mb-2">
-                    State/Province/Region
+                    <span className="font-medium">Direct Request (D)</span>
+                    <p className="text-sm text-gray-600 mt-1">For yourself</p>
                   </label>
+                  <label className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${formData.tipologiaRichiedente === 'T' ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                    <input
+                      type="radio"
+                      name="tipologiaRichiedente"
+                      value="T"
+                      checked={formData.tipologiaRichiedente === 'T'}
+                      onChange={handleInputChange}
+                      className="mr-2"
+                    />
+                    <span className="font-medium">Third Party (T)</span>
+                    <p className="text-sm text-gray-600 mt-1">On behalf of someone</p>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">Sezione II - Tipo richiesta</label>
+                <select
+                  name="tipoRichiesta"
+                  value={formData.tipoRichiesta}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                >
+                  <option value="1">1 - Attribuzione Codice Fiscale (First Time Application)</option>
+                  <option value="2">2 - Variazione Dati (Data Update)</option>
+                  <option value="3">3 - Comunicazione Decesso (Death Notification)</option>
+                  <option value="4">4 - Richiesta Certificato (Certificate Request)</option>
+                  <option value="5">5 - Richiesta Duplicato (Duplicate Request)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* QUADRO B - Personal Data */}
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-12 h-12 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-full flex items-center justify-center font-bold text-lg">B</span>
+              <h3 className="text-2xl font-bold text-gray-800">QUADRO B - Dati Anagrafici</h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Cognome (Surname) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="cognome"
+                  value={formData.cognome}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${errors.cognome ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-emerald-500'}`}
+                  placeholder="As shown in passport"
+                />
+                {errors.cognome && <p className="text-red-500 text-sm mt-1">{errors.cognome}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Nome (Given Names) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="nome"
+                  value={formData.nome}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${errors.nome ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-emerald-500'}`}
+                  placeholder="All given names"
+                />
+                {errors.nome && <p className="text-red-500 text-sm mt-1">{errors.nome}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Sesso (Sex) <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="sesso"
+                  value={formData.sesso}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${errors.sesso ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-emerald-500'}`}
+                >
+                  <option value="">Select...</option>
+                  <option value="M">M - Male</option>
+                  <option value="F">F - Female</option>
+                </select>
+                {errors.sesso && <p className="text-red-500 text-sm mt-1">{errors.sesso}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Data di Nascita (Date of Birth) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="date"
+                  name="dataNascita"
+                  value={formData.dataNascita}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${errors.dataNascita ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-emerald-500'}`}
+                />
+                {errors.dataNascita && <p className="text-red-500 text-sm mt-1">{errors.dataNascita}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Comune di Nascita (Birth Municipality) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="comuneNascita"
+                  value={formData.comuneNascita}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${errors.comuneNascita ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-emerald-500'}`}
+                  placeholder="City or country if foreign"
+                />
+                {errors.comuneNascita && <p className="text-red-500 text-sm mt-1">{errors.comuneNascita}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Provincia (Province - if born in Italy)
+                </label>
+                <select
+                  name="provinciaNascita"
+                  value={formData.provinciaNascita}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                >
+                  <option value="">Not applicable</option>
+                  {provinces.map(prov => (
+                    <option key={prov} value={prov}>{prov}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          {/* QUADRO C - Italian Residence (Optional) */}
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-12 h-12 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-full flex items-center justify-center font-bold text-lg">C</span>
+              <h3 className="text-2xl font-bold text-gray-800">QUADRO C - Residenza in Italia (Optional)</h3>
+            </div>
+
+            <p className="text-gray-600 mb-6">Complete only if you have an Italian residence</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Tipologia e Indirizzo (Street Type and Name)
+                </label>
+                <div className="flex gap-4">
+                  <select
+                    name="tipologiaVia"
+                    value={formData.tipologiaVia}
+                    onChange={handleInputChange}
+                    className="w-32 px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                  >
+                    <option value="Via">Via</option>
+                    <option value="Piazza">Piazza</option>
+                    <option value="Corso">Corso</option>
+                    <option value="Viale">Viale</option>
+                    <option value="Largo">Largo</option>
+                  </select>
                   <input
                     type="text"
-                    name="foreignState"
-                    value={formData.foreignState}
+                    name="indirizzo"
+                    value={formData.indirizzo}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none"
+                    className="flex-1 px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                    placeholder="Street name"
                   />
-                </div>
-                
-                <div className="md:col-span-2">
-                  <label className="block font-semibold mb-2">
-                    Full Address <span className="text-red-500">*</span>
-                  </label>
                   <input
                     type="text"
-                    name="foreignAddress"
-                    value={formData.foreignAddress}
+                    name="numeroCivico"
+                    value={formData.numeroCivico}
                     onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none"
-                  />
-                </div>
-                
-                <div>
-                  <label className="block font-semibold mb-2">
-                    Postal Code
-                  </label>
-                  <input
-                    type="text"
-                    name="foreignPostalCode"
-                    value={formData.foreignPostalCode}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none"
+                    className="w-24 px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                    placeholder="No."
                   />
                 </div>
               </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Comune (Municipality)
+                </label>
+                <input
+                  type="text"
+                  name="comune"
+                  value={formData.comune}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Provincia (Province)
+                </label>
+                <select
+                  name="provincia"
+                  value={formData.provincia}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                >
+                  <option value="">Select...</option>
+                  {provinces.map(prov => (
+                    <option key={prov} value={prov}>{prov}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  C.A.P. (Postal Code)
+                </label>
+                <input
+                  type="text"
+                  name="cap"
+                  value={formData.cap}
+                  onChange={handleInputChange}
+                  maxLength={5}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                  placeholder="00000"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Frazione/Altro
+                </label>
+                <input
+                  type="text"
+                  name="frazione"
+                  value={formData.frazione}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* QUADRO D - Foreign Residence */}
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-12 h-12 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-full flex items-center justify-center font-bold text-lg">D</span>
+              <h3 className="text-2xl font-bold text-gray-800">QUADRO D - Residenza Estera</h3>
             </div>
 
-            {/* Delegation Section */}
-            <div className="mb-10 p-6 bg-yellow-50 rounded-xl">
-              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <span className="w-8 h-8 bg-yellow-600 text-white rounded-full flex items-center justify-center text-sm">✍️</span>
-                Delegation Authorization
-              </h3>
-              
-              <p className="text-gray-700 mb-6">
-                By completing this section, you authorize Giuseppe Funaro / InvestiScope to submit this application on your behalf.
-              </p>
-              
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="md:col-span-2">
-                  <label className="block font-semibold mb-2">
-                    Your Full Name
-                  </label>
-                  <input
-                    type="text"
-                    name="delegatorName"
-                    value={formData.delegatorName}
-                    onChange={handleInputChange}
-                    placeholder="Leave blank to use name from Section B"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none"
-                  />
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Stato Estero (Foreign Country) <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="statoEstero"
+                  value={formData.statoEstero}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${errors.statoEstero ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-emerald-500'}`}
+                >
+                  <option value="">Select your country...</option>
+                  {countries.map(country => (
+                    <option key={country} value={country}>{country}</option>
+                  ))}
+                </select>
+                {errors.statoEstero && <p className="text-red-500 text-sm mt-1">{errors.statoEstero}</p>}
                 
-                <div>
-                  <label className="block font-semibold mb-2">
-                    Email <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    name="delegatorEmail"
-                    value={formData.delegatorEmail}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none"
-                  />
+                {/* Quick select buttons */}
+                <div className="flex gap-2 mt-2 flex-wrap">
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, statoEstero: 'United States' }))}
+                    className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm transition-colors"
+                  >
+                    🇺🇸 USA
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, statoEstero: 'United Kingdom' }))}
+                    className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm transition-colors"
+                  >
+                    🇬🇧 UK
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, statoEstero: 'Canada' }))}
+                    className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm transition-colors"
+                  >
+                    🇨🇦 Canada
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, statoEstero: 'Germany' }))}
+                    className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm transition-colors"
+                  >
+                    🇩🇪 Germany
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, statoEstero: 'France' }))}
+                    className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm transition-colors"
+                  >
+                    🇫🇷 France
+                  </button>
                 </div>
-                
-                <div>
-                  <label className="block font-semibold mb-2">
-                    Phone <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="tel"
-                    name="delegatorPhone"
-                    value={formData.delegatorPhone}
-                    onChange={handleInputChange}
-                    required
-                    placeholder="+1234567890"
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none"
-                  />
-                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Stato Federato/Provincia/Contea
+                </label>
+                <input
+                  type="text"
+                  name="statoFederato"
+                  value={formData.statoFederato}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                  placeholder="State/Province/County"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Località di Residenza (City)
+                </label>
+                <input
+                  type="text"
+                  name="localitaResidenza"
+                  value={formData.localitaResidenza}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                  placeholder="City name"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Indirizzo (Street Address) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="indirizzoEstero"
+                  value={formData.indirizzoEstero}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${errors.indirizzoEstero ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-emerald-500'}`}
+                  placeholder="Full street address"
+                />
+                {errors.indirizzoEstero && <p className="text-red-500 text-sm mt-1">{errors.indirizzoEstero}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Codice Postale (Postal Code)
+                </label>
+                <input
+                  type="text"
+                  name="codicePostale"
+                  value={formData.codicePostale}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                  placeholder="ZIP/Postal Code"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* QUADRO E - Other Fiscal Codes */}
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-12 h-12 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-full flex items-center justify-center font-bold text-lg">E</span>
+              <h3 className="text-2xl font-bold text-gray-800">QUADRO E - Altri Codici Fiscali (Optional)</h3>
+            </div>
+
+            <p className="text-gray-600 mb-6">List any other fiscal codes previously assigned</p>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Codice Fiscale 1
+                </label>
+                <input
+                  type="text"
+                  name="altroCodiceFiscale1"
+                  value={formData.altroCodiceFiscale1}
+                  onChange={handleInputChange}
+                  maxLength={16}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors font-mono uppercase"
+                  placeholder="XXXXXXXXXXXXXXXX"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Codice Fiscale 2
+                </label>
+                <input
+                  type="text"
+                  name="altroCodiceFiscale2"
+                  value={formData.altroCodiceFiscale2}
+                  onChange={handleInputChange}
+                  maxLength={16}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors font-mono uppercase"
+                  placeholder="XXXXXXXXXXXXXXXX"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Sottoscrizione - Signature Section */}
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-12 h-12 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-full flex items-center justify-center font-bold text-lg">✍️</span>
+              <h3 className="text-2xl font-bold text-gray-800">Sottoscrizione - Authorization</h3>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Il/La sottoscritto/a (Full Name) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="sottoscrittoNome"
+                  value={formData.sottoscrittoNome}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                  placeholder="Your full legal name"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Email <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="email"
+                  name="sottoscrittoEmail"
+                  value={formData.sottoscrittoEmail}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${errors.sottoscrittoEmail ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-emerald-500'}`}
+                  placeholder="your@email.com"
+                />
+                {errors.sottoscrittoEmail && <p className="text-red-500 text-sm mt-1">{errors.sottoscrittoEmail}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Telefono (Phone) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="tel"
+                  name="sottoscrittoTelefono"
+                  value={formData.sottoscrittoTelefono}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${errors.sottoscrittoTelefono ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-emerald-500'}`}
+                  placeholder="+1 234 567 8900"
+                />
+                {errors.sottoscrittoTelefono && <p className="text-red-500 text-sm mt-1">{errors.sottoscrittoTelefono}</p>}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Data (Date)
+                </label>
+                <input
+                  type="date"
+                  name="dataFirma"
+                  value={formData.dataFirma}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                />
               </div>
             </div>
 
-            {/* Terms and Conditions */}
-            <div className="mb-10 p-6 bg-red-50 rounded-xl">
-              <h3 className="text-xl font-bold mb-4">Declaration and Agreement</h3>
-              
-              <div className="space-y-4">
-                <label className="flex items-start gap-3">
-                  <input
-                    type="checkbox"
-                    name="termsAccepted"
-                    checked={formData.termsAccepted}
-                    onChange={handleInputChange}
-                    required
-                    className="mt-1 w-4 h-4"
-                  />
-                  <span className="text-sm text-gray-700">
-                    I declare that all information provided is true and accurate. 
-                    False declarations are punishable under Italian law.
-                  </span>
+            {/* Digital Signature */}
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-sm font-medium text-gray-700">
+                  Firma (Signature) <span className="text-red-500">*</span>
                 </label>
-                
-                <label className="flex items-start gap-3">
-                  <input
-                    type="checkbox"
-                    name="privacyAccepted"
-                    checked={formData.privacyAccepted}
-                    onChange={handleInputChange}
-                    required
-                    className="mt-1 w-4 h-4"
-                  />
-                  <span className="text-sm text-gray-700">
-                    I consent to the processing of my personal data by the Italian Ministry of Economy and Finance and the Revenue Agency 
-                    for the purpose of fiscal code attribution, as per D.Lgs. n. 196/2003.
-                  </span>
-                </label>
-                
-                <label className="flex items-start gap-3">
-                  <input
-                    type="checkbox"
-                    name="delegationAccepted"
-                    checked={formData.delegationAccepted}
-                    onChange={handleInputChange}
-                    required
-                    className="mt-1 w-4 h-4"
-                  />
-                  <span className="text-sm text-gray-700">
-                    I hereby delegate Giuseppe Funaro / InvestiScope to submit this fiscal code application on my behalf 
-                    and to handle all related communications with the Italian tax authorities. Service fee: €99.
-                  </span>
-                </label>
+                {formData.firmaDigitale && (
+                  <button
+                    type="button"
+                    onClick={clearSignature}
+                    className="text-sm text-red-600 hover:text-red-700"
+                  >
+                    Clear Signature
+                  </button>
+                )}
               </div>
-            </div>
-
-            {/* Submit Button */}
-            <div className="text-center">
-              <button
-                type="submit"
-                disabled={isSubmitting || !formData.termsAccepted || !formData.privacyAccepted || !formData.delegationAccepted}
-                className={`px-12 py-5 rounded-full font-bold text-lg transition-all ${
-                  isSubmitting || !formData.termsAccepted || !formData.privacyAccepted || !formData.delegationAccepted
-                    ? 'bg-gray-400 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:shadow-xl hover:-translate-y-1'
-                }`}
-              >
-                {isSubmitting ? 'Submitting...' : 'Submit Application'}
-              </button>
               
-              <p className="text-sm text-gray-600 mt-4">
-                You will receive payment instructions via email after submission
-              </p>
+              <div className={`border-2 rounded-lg p-2 bg-gray-50 ${errors.firmaDigitale ? 'border-red-500' : 'border-gray-300'}`}>
+                <canvas
+                  ref={signatureCanvasRef}
+                  width={600}
+                  height={150}
+                  className="w-full h-40 bg-white rounded cursor-crosshair"
+                  onMouseDown={startDrawing}
+                  onMouseMove={draw}
+                  onMouseUp={stopDrawing}
+                  onMouseLeave={stopDrawing}
+                  onTouchStart={startDrawing}
+                  onTouchMove={draw}
+                  onTouchEnd={stopDrawing}
+                  style={{ touchAction: 'none' }}
+                />
+              </div>
+              {errors.firmaDigitale && <p className="text-red-500 text-sm mt-1">{errors.firmaDigitale}</p>}
+              <p className="text-sm text-gray-600 mt-2">Please sign above using your mouse or finger</p>
             </div>
-          </form>
-        </div>
-      </section>
 
-      {/* FAQ Section */}
-      <section className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-5">
-          <h2 className="text-3xl font-bold text-center mb-12">Frequently Asked Questions</h2>
-          
-          <div className="space-y-6">
-            <div className="bg-gray-50 rounded-2xl p-8">
-              <h3 className="text-xl font-bold mb-3">How long does it take to receive my Fiscal Code?</h3>
-              <p className="text-gray-700">
-                Typically 2-3 business days from submission. We handle everything remotely - 
-                you don't need to visit any Italian offices.
-              </p>
-            </div>
-            
-            <div className="bg-gray-50 rounded-2xl p-8">
-              <h3 className="text-xl font-bold mb-3">What documents will I receive?</h3>
-              <p className="text-gray-700">
-                You'll receive the official Fiscal Code certificate and card via email. 
-                The physical card can be collected at an Italian consulate if needed.
-              </p>
-            </div>
-            
-            <div className="bg-gray-50 rounded-2xl p-8">
-              <h3 className="text-xl font-bold mb-3">Is this the official process?</h3>
-              <p className="text-gray-700">
-                Yes, this is the official AA4/8 form from the Italian Revenue Agency. 
-                We submit it directly to the authorities on your behalf.
-              </p>
-            </div>
-            
-            <div className="bg-gray-50 rounded-2xl p-8">
-              <h3 className="text-xl font-bold mb-3">What if I need to update my information later?</h3>
-              <p className="text-gray-700">
-                You can use this same form to request data variations. Just select 
-                "Data Variation" in the request type and we'll handle the update.
+            {/* Legal Declaration */}
+            <div className="mt-8 p-6 bg-amber-50 border border-amber-200 rounded-lg">
+              <h4 className="font-semibold text-amber-900 mb-2">⚖️ Legal Declaration</h4>
+              <p className="text-sm text-amber-800">
+                By signing this form, I declare that all information provided is true and accurate. 
+                I understand that false declarations are punishable under Italian law. I authorize 
+                InvestiScope to submit this application on my behalf to the Italian Revenue Agency.
               </p>
             </div>
           </div>
+
+          {/* Submit Button */}
+          <div className="text-center py-8">
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="px-12 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-bold text-lg rounded-full hover:shadow-xl transform hover:-translate-y-1 transition-all duration-200"
+            >
+              Submit Application - €99
+            </button>
+            <p className="text-sm text-gray-600 mt-4">
+              Secure payment • Official processing • 2-3 day delivery
+            </p>
+          </div>
         </div>
-      </section>
-    </>
+      </div>
+    </div>
   )
 }
