@@ -14,26 +14,7 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 export async function POST(request: Request) {
   try {
-    // Handle both FormData (with PDF) and JSON requests
-    const contentType = request.headers.get('content-type')
-    let data: any
-    let pdfFile: File | null = null
-    
-    if (contentType?.includes('multipart/form-data')) {
-      const formData = await request.formData()
-      pdfFile = formData.get('pdf') as File
-      
-      // Extract all other fields from FormData
-      data = {}
-      formData.forEach((value, key) => {
-        if (key !== 'pdf') {
-          data[key] = value
-        }
-      })
-    } else {
-      // Regular JSON request (backward compatibility)
-      data = await request.json()
-    }
+    const data = await request.json()
     
     // Validate required fields
     const requiredFields = [
@@ -58,50 +39,84 @@ export async function POST(request: Request) {
       }
     }
     
-    // Map frontend field names to database column names
+    // Map ALL form fields to database columns - EVERYTHING from the PDF
     const dbData = {
-      // Request info
-      request_type: data.tipoRichiesta,
-      applicant_type: data.tipologiaRichiedente || 'D',
+      // QUADRO A - Tipo Richiesta
+      tipologia_richiedente: data.tipologiaRichiedente || 'D',
+      codice_fiscale_richiedente: data.codiceFiscaleRichiedente || null,
+      codice_fiscale_sottoscrittore: data.codiceFiscaleSottoscrittore || null,
+      tipo_richiesta: data.tipoRichiesta,
+      richiesta_tesserino: data.richiestaTesterinoCodiceFiscale || false,
+      motivazione: data.motivazione || null,
+      data_decesso: data.dataDecesso || null,
       
-      // Personal data
-      surname: data.cognome,
-      name: data.nome,
-      sex: data.sesso,
-      birth_date: data.dataNascita,
-      birth_municipality: data.comuneNascita,
-      birth_province: data.provinciaNascita || null,
+      // QUADRO B - Dati Anagrafici
+      codice_fiscale: data.codiceFiscale || null,
+      cognome: data.cognome,
+      nome: data.nome,
+      sesso: data.sesso,
+      data_nascita: data.dataNascita,
+      comune_nascita: data.comuneNascita,
+      provincia_nascita: data.provinciaNascita || null,
+      stato_nascita: data.statoNascita || 'ESTERO',
       
-      // Italian residence (optional)
-      residence_type: data.tipologiaVia || null,
-      residence_address: data.indirizzo || null,
-      residence_number: data.numeroCivico || null,
-      residence_municipality: data.comune || null,
-      residence_province: data.provincia || null,
-      residence_cap: data.cap || null,
-      residence_fraction: data.frazione || null,
+      // QUADRO C - Residenza in Italia
+      tipologia_via: data.tipologiaVia || null,
+      indirizzo: data.indirizzo || null,
+      numero_civico: data.numeroCivico || null,
+      frazione: data.frazione || null,
+      comune: data.comune || null,
+      provincia: data.provincia || null,
+      cap: data.cap || null,
       
-      // Foreign residence
-      foreign_country: data.statoEstero,
-      foreign_state: data.statoFederato || null,
-      foreign_city: data.localitaResidenza || null,
-      foreign_address: data.indirizzoEstero,
-      foreign_postal_code: data.codicePostale || null,
+      // QUADRO D - Residenza Estera
+      stato_estero: data.statoEstero,
+      stato_federato: data.statoFederato || null,
+      localita_residenza: data.localitaResidenza || null,
+      indirizzo_estero: data.indirizzoEstero,
+      codice_postale: data.codicePostale || null,
       
-      // Other fiscal codes
-      other_fiscal_code_1: data.altroCodiceFiscale1 || null,
-      other_fiscal_code_2: data.altroCodiceFiscale2 || null,
+      // QUADRO E - Altri Codici Fiscali
+      altro_codice_fiscale_1: data.altroCodiceFiscale1 || null,
+      altro_codice_fiscale_2: data.altroCodiceFiscale2 || null,
       
-      // Contact info
-      delegator_name: data.sottoscrittoNome,
-      delegator_email: data.sottoscrittoEmail,
-      delegator_phone: data.sottoscrittoTelefono,
+      // QUADRO F - Rappresentante Legale
+      rappresentante_legale: data.rappresentanteLegale || false,
+      rappresentante_nome: data.rappresentanteNome || null,
+      rappresentante_cognome: data.rappresentanteCognome || null,
+      rappresentante_codice_fiscale: data.rappresentanteCodiceFiscale || null,
+      rappresentante_qualifica: data.rappresentanteQualifica || null,
+      
+      // DELEGA - Chi presenta la domanda
+      presentata_da: data.presentataDa || 'delegato',
+      delegato_nome: data.delegatoNome || null,
+      delegato_cognome: data.delegatoCognome || null,
+      delegato_codice_fiscale: data.delegatoCodiceFiscale || null,
+      delegato_qualifica: data.delegatoQualifica || null,
+      
+      // Autorizzazione InvestiScope
+      autorizza_investiscope: data.autorizzaInvestiscope || true,
+      
+      // Documenti Allegati
+      documento_identita: data.documentoIdentita || true,
+      documento_soggiorno: data.documentoSoggiorno || false,
+      altri_documenti: data.altriDocumenti || null,
+      
+      // SOTTOSCRIZIONE
+      sottoscritto_nome: data.sottoscrittoNome,
+      sottoscritto_email: data.sottoscrittoEmail,
+      sottoscritto_telefono: data.sottoscrittoTelefono,
+      sottoscritto_indirizzo: data.sottoscrittoIndirizzo,
+      data_firma: data.dataFirma,
+      
+      // Firma
+      firma_digitale: data.firmaDigitale || null,
+      firma_file: data.firmaFile || null,
+      firma_file_name: data.firmaFileName || null,
       
       // Meta
       status: 'pending',
-      submitted_at: new Date().toISOString(),
-      has_signature: !!data.firmaDigitale,
-      pdf_uploaded: !!pdfFile
+      submitted_at: new Date().toISOString()
     }
     
     // Save to database
@@ -113,48 +128,22 @@ export async function POST(request: Request) {
     
     if (error) {
       console.error('Database error:', error)
+      console.error('Data being sent:', dbData)
       return NextResponse.json(
-        { error: 'Failed to save application' },
+        { error: `Failed to save application: ${error.message}` },
         { status: 500 }
       )
     }
     
-    // Upload PDF if provided
-    let pdfUrl = null
-    if (pdfFile && application.id) {
-      const fileName = `fiscal-code-applications/${application.id}/form-aa4-8.pdf`
-      
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('documents')
-        .upload(fileName, pdfFile, {
-          contentType: 'application/pdf',
-          upsert: true
-        })
-      
-      if (uploadError) {
-        console.error('PDF upload error:', uploadError)
-      } else {
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-          .from('documents')
-          .getPublicUrl(fileName)
-        
-        pdfUrl = publicUrl
-        
-        // Update record with PDF URL
-        await supabase
-          .from('fiscal_code_applications')
-          .update({ pdf_url: pdfUrl })
-          .eq('id', application.id)
-      }
-    }
+    // TODO: Generate PDF with all the data filled in
+    // This is where you'll use a PDF library to fill the official AA4/8 form
+    // with all the data from dbData
     
     return NextResponse.json(
       { 
         success: true, 
         message: 'Application submitted successfully',
-        id: application.id,
-        pdfUrl: pdfUrl
+        id: application.id
       },
       { status: 200 }
     )
