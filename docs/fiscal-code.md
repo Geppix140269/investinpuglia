@@ -1,7 +1,7 @@
 # PROJECT_UPDATE.md
 **Project**: InvestiScope - Italian Property Investment Platform  
 **URL**: https://investiscope.net  
-**Last Updated**: January 2025  
+**Last Updated**: 15th July 2025  
 **Status**: 🟡 RECOVERING - Build cache issues
 
 ---
