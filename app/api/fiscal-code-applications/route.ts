@@ -1,162 +1,132 @@
 // app/api/fiscal-code-applications/route.ts
-
+import { createClient } from '@/lib/supabase'
 import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
 
 export async function POST(request: Request) {
   try {
-    const data = await request.json()
+    const body = await request.json()
+    const supabase = createClient()
     
-    // Validate required fields
-    const requiredFields = [
-      'requestType',
-      'surname',
-      'name',
-      'sex',
-      'birthDate',
-      'birthMunicipality',
-      'foreignCountry',
-      'foreignAddress',
-      'delegatorEmail',
-      'delegatorPhone'
-    ]
-    
-    for (const field of requiredFields) {
-      if (!data[field]) {
-        return NextResponse.json(
-          { error: `Missing required field: ${field}` },
-          { status: 400 }
-        )
-      }
-    }
-    
-    // Save to database
-    const { data: application, error } = await supabase
+    // Insert application into database
+    const { data, error } = await supabase
       .from('fiscal_code_applications')
       .insert([{
-        request_type: data.requestType,
-        death_date: data.deathDate,
-        fiscal_code: data.fiscalCode,
-        surname: data.surname,
-        name: data.name,
-        sex: data.sex,
-        birth_date: data.birthDate,
-        birth_municipality: data.birthMunicipality,
-        birth_province: data.birthProvince,
-        residence_type: data.residenceType,
-        residence_address: data.residenceAddress,
-        residence_number: data.residenceNumber,
-        residence_municipality: data.residenceMunicipality,
-        residence_province: data.residenceProvince,
-        residence_cap: data.residenceCAP,
-        residence_fraction: data.residenceFraction,
-        foreign_country: data.foreignCountry,
-        foreign_state: data.foreignState,
-        foreign_address: data.foreignAddress,
-        foreign_postal_code: data.foreignPostalCode,
-        other_fiscal_code_1: data.otherFiscalCode1,
-        other_fiscal_code_2: data.otherFiscalCode2,
-        delegator_name: data.delegatorName,
-        delegator_birth_place: data.delegatorBirthPlace,
-        delegator_birth_date: data.delegatorBirthDate,
-        delegator_email: data.delegatorEmail,
-        delegator_phone: data.delegatorPhone,
-        terms_accepted: data.termsAccepted,
-        privacy_accepted: data.privacyAccepted,
-        delegation_accepted: data.delegationAccepted,
+        // Personal Information
+        first_name: body.firstName,
+        last_name: body.lastName,
+        date_of_birth: body.dateOfBirth,
+        place_of_birth: body.placeOfBirth,
+        country_of_birth: body.countryOfBirth,
+        gender: body.gender,
+        
+        // Contact Information
+        email: body.email,
+        phone: body.phone,
+        
+        // Current Address
+        current_address: body.currentAddress,
+        current_city: body.currentCity,
+        current_country: body.currentCountry,
+        current_postal_code: body.currentPostalCode,
+        
+        // Italian Address (if applicable)
+        italian_address: body.italianAddress,
+        italian_city: body.italianCity,
+        italian_province: body.italianProvince,
+        italian_postal_code: body.italianPostalCode,
+        
+        // Document Information
+        passport_number: body.passportNumber,
+        passport_country: body.passportCountry,
+        
+        // Application Details
+        purpose: body.purpose,
+        urgency: body.urgency,
+        additional_notes: body.additionalNotes,
+        
+        // Meta
         status: 'pending',
-        submitted_at: data.submittedAt
+        payment_status: 'pending',
+        created_at: new Date().toISOString()
       }])
       .select()
       .single()
     
     if (error) {
-      console.error('Database error:', error)
+      console.error('Supabase error:', error)
       return NextResponse.json(
-        { error: 'Failed to save application' },
-        { status: 500 }
+        { error: 'Failed to submit application' },
+        { status: 400 }
       )
     }
     
-    // Send notification email using EmailJS
-    if (typeof window !== 'undefined' && window.emailjs) {
-      try {
-        await window.emailjs.send(
-          'service_w6tghqr',
-          'template_fiscal_code', // You'll need to create this template
-          {
-            to_email: 'info@investiscope.net',
-            applicant_name: `${data.name} ${data.surname}`,
-            applicant_email: data.delegatorEmail,
-            applicant_phone: data.delegatorPhone,
-            request_type: data.requestType,
-            birth_date: data.birthDate,
-            country: data.foreignCountry,
-            application_id: application.id
-          }
-        )
-      } catch (emailError) {
-        console.error('Email notification failed:', emailError)
-        // Don't fail the request if email fails
+    // Send email notification
+    try {
+      // EmailJS implementation
+      const emailData = {
+        to_email: 'info@investiscope.net',
+        from_email: body.email,
+        from_name: `${body.firstName} ${body.lastName}`,
+        subject: 'New Fiscal Code Application',
+        message: `
+          New fiscal code application received:
+          
+          Name: ${body.firstName} ${body.lastName}
+          Email: ${body.email}
+          Phone: ${body.phone}
+          Purpose: ${body.purpose}
+          Urgency: ${body.urgency}
+          
+          Application ID: ${data.id}
+        `
       }
+      
+      // Send confirmation email to applicant
+      const confirmationEmail = {
+        to_email: body.email,
+        subject: 'Fiscal Code Application Received',
+        message: `
+          Dear ${body.firstName},
+          
+          We have received your fiscal code application. 
+          
+          Application ID: ${data.id}
+          
+          Next steps:
+          1. Complete payment of €99
+          2. We will process your application within 2-3 business days
+          3. You will receive your fiscal code via email
+          
+          If you have any questions, please contact us at info@investiscope.net
+          
+          Best regards,
+          InvestiScope Team
+        `
+      }
+      
+      // Add your EmailJS implementation here
+      
+    } catch (emailError) {
+      console.error('Email error:', emailError)
+      // Don't fail the request if email fails
     }
     
-    // Return success with application ID for payment processing
-    return NextResponse.json({
-      success: true,
-      applicationId: application.id,
-      paymentUrl: `https://paypal.me/marietrulliint/99EUR?country.x=ES&locale.x=en_US`
+    return NextResponse.json({ 
+      success: true, 
+      data,
+      message: 'Application submitted successfully'
     })
     
   } catch (error) {
-    console.error('Application submission error:', error)
+    console.error('API error:', error)
     return NextResponse.json(
-      { error: 'Failed to submit application' },
+      { error: 'Internal server error' },
       { status: 500 }
     )
   }
 }
 
 export async function GET(request: Request) {
-  try {
-    // Get application status by ID
-    const { searchParams } = new URL(request.url)
-    const applicationId = searchParams.get('id')
-    
-    if (!applicationId) {
-      return NextResponse.json(
-        { error: 'Application ID required' },
-        { status: 400 }
-      )
-    }
-    
-    const { data, error } = await supabase
-      .from('fiscal_code_applications')
-      .select('*')
-      .eq('id', applicationId)
-      .single()
-    
-    if (error) {
-      return NextResponse.json(
-        { error: 'Application not found' },
-        { status: 404 }
-      )
-    }
-    
-    // Return sanitized data
-    return NextResponse.json({
-      id: data.id,
-      status: data.status,
-      submittedAt: data.submitted_at,
-      processedAt: data.processed_at,
-      fiscalCode: data.fiscal_code
-    })
-    
-  } catch (error) {
-    console.error('Error fetching application:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch application' },
-      { status: 500 }
-    )
-  }
+  // Optional: Add admin endpoint to retrieve applications
+  return NextResponse.json({ message: 'Method not allowed' }, { status: 405 })
 }
