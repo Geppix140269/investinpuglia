@@ -4,16 +4,16 @@ import React, { useState, useRef, useEffect } from 'react'
 import emailjs from '@emailjs/browser'
 
 interface FormData {
-  // Quadro A
+  // Quadro A - Tipo Richiesta
   tipologiaRichiedente: 'D' | 'T'
   codiceFiscaleRichiedente?: string
   codiceFiscaleSottoscrittore?: string
   tipoRichiesta: string
-  richiestaTesterinoCodiceFiscale?: boolean
+  richiestaTesterinoCodiceFiscale: boolean
   motivazione?: string
   dataDecesso?: string
   
-  // Quadro B
+  // Quadro B - Dati Anagrafici
   codiceFiscale?: string
   cognome: string
   nome: string
@@ -21,8 +21,9 @@ interface FormData {
   dataNascita: string
   comuneNascita: string
   provinciaNascita: string
+  statoNascita: string
   
-  // Quadro C
+  // Quadro C - Residenza in Italia
   tipologiaVia: string
   indirizzo: string
   numeroCivico: string
@@ -31,41 +32,66 @@ interface FormData {
   provincia: string
   cap: string
   
-  // Quadro D
+  // Quadro D - Residenza Estera
   statoEstero: string
   statoFederato: string
   localitaResidenza: string
   indirizzoEstero: string
   codicePostale: string
   
-  // Quadro E
+  // Quadro E - Altri Codici Fiscali
   altroCodiceFiscale1: string
   altroCodiceFiscale2: string
   
-  // Delega
-  delegaNome?: string
-  delegaLuogoNascita?: string
-  delegaDataNascita?: string
-  delegaCodiceFiscale?: string
+  // Quadro F - Rappresentante Legale
+  rappresentanteLegale: boolean
+  rappresentanteNome?: string
+  rappresentanteCognome?: string
+  rappresentanteCodiceFiscale?: string
+  rappresentanteQualifica?: string
   
-  // Authorization
+  // Delega - Chi presenta la domanda
+  presentataDa: 'interessato' | 'delegato' | 'erede'
+  delegatoNome?: string
+  delegatoCognome?: string
+  delegatoCodiceFiscale?: string
+  delegatoQualifica?: string
+  
+  // Autorizzazione InvestiScope
+  autorizzaInvestiscope: boolean
+  
+  // Documenti Allegati
+  documentoIdentita: boolean
+  documentoSoggiorno?: boolean
+  altriDocumenti?: string
+  
+  // Sottoscrizione
   sottoscrittoNome: string
   sottoscrittoEmail: string
   sottoscrittoTelefono: string
+  sottoscrittoIndirizzo: string
   dataFirma: string
   firmaDigitale: string
+  firmaFile?: File | null
 }
 
 export default function FiscalCodeForm() {
   const [formData, setFormData] = useState<FormData>({
+    // Quadro A
     tipologiaRichiedente: 'D',
     tipoRichiesta: '1',
+    richiestaTesterinoCodiceFiscale: false,
+    
+    // Quadro B
     cognome: '',
     nome: '',
     sesso: '',
     dataNascita: '',
     comuneNascita: '',
     provinciaNascita: '',
+    statoNascita: 'ESTERO',
+    
+    // Quadro C
     tipologiaVia: 'Via',
     indirizzo: '',
     numeroCivico: '',
@@ -73,18 +99,38 @@ export default function FiscalCodeForm() {
     comune: '',
     provincia: '',
     cap: '',
+    
+    // Quadro D
     statoEstero: '',
     statoFederato: '',
     localitaResidenza: '',
     indirizzoEstero: '',
     codicePostale: '',
+    
+    // Quadro E
     altroCodiceFiscale1: '',
     altroCodiceFiscale2: '',
+    
+    // Quadro F
+    rappresentanteLegale: false,
+    
+    // Delega
+    presentataDa: 'delegato',
+    
+    // Autorizzazione
+    autorizzaInvestiscope: true,
+    
+    // Documenti
+    documentoIdentita: true,
+    
+    // Sottoscrizione
     sottoscrittoNome: '',
     sottoscrittoEmail: '',
     sottoscrittoTelefono: '',
+    sottoscrittoIndirizzo: '',
     dataFirma: new Date().toISOString().split('T')[0],
-    firmaDigitale: ''
+    firmaDigitale: '',
+    firmaFile: null
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -99,6 +145,16 @@ export default function FiscalCodeForm() {
   useEffect(() => {
     emailjs.init(process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!)
   }, [])
+
+  // Helper function to convert file to base64
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = error => reject(error)
+    })
+  }
 
   // Countries list
   const countries = [
@@ -149,7 +205,8 @@ export default function FiscalCodeForm() {
     if (!formData.indirizzoEstero) newErrors.indirizzoEstero = 'Address is required'
     if (!formData.sottoscrittoEmail) newErrors.sottoscrittoEmail = 'Email is required'
     if (!formData.sottoscrittoTelefono) newErrors.sottoscrittoTelefono = 'Phone is required'
-    if (!formData.firmaDigitale) newErrors.firmaDigitale = 'Signature is required'
+    if (!formData.sottoscrittoIndirizzo) newErrors.sottoscrittoIndirizzo = 'Address is required'
+    if (!formData.firmaDigitale && !formData.firmaFile) newErrors.firmaDigitale = 'Signature is required (draw or upload)'
     
     // Email validation
     if (formData.sottoscrittoEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.sottoscrittoEmail)) {
@@ -251,7 +308,12 @@ export default function FiscalCodeForm() {
           birth_place: formData.comuneNascita,
           country: formData.statoEstero,
           application_id: applicationId,
-          submission_date: new Date().toLocaleDateString()
+          submission_date: new Date().toLocaleDateString(),
+          // Add authorization info
+          presented_by: formData.presentataDa === 'delegato' ? 'InvestiScope S.r.l. (Authorized Delegate)' : 
+                       formData.presentataDa === 'erede' ? `Heir: ${formData.delegatoNome} ${formData.delegatoCognome}` : 
+                       'Direct Applicant',
+          request_type: formData.tipoRichiesta
         }
       )
     } catch (error) {
@@ -271,13 +333,21 @@ export default function FiscalCodeForm() {
     setIsSubmitting(true)
     
     try {
+      // Prepare form data
+      const submitData = {
+        ...formData,
+        // Convert file to base64 if exists
+        firmaFile: formData.firmaFile ? await fileToBase64(formData.firmaFile) : null,
+        firmaFileName: formData.firmaFile?.name || null
+      }
+
       // Submit to API
       const response = await fetch('/api/fiscal-code-applications', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(submitData)
       })
       
       const data = await response.json()
@@ -326,6 +396,277 @@ export default function FiscalCodeForm() {
               >
                 Return to Home
               </a>
+            </div>
+          </div>
+
+          {/* QUADRO F - Rappresentante Legale */}
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-12 h-12 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-full flex items-center justify-center font-bold text-lg">F</span>
+              <h3 className="text-2xl font-bold text-gray-800">QUADRO F - Rappresentante Legale (Legal Representative)</h3>
+            </div>
+
+            <div className="space-y-4">
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="rappresentanteLegale"
+                  checked={formData.rappresentanteLegale}
+                  onChange={handleInputChange}
+                  className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+                />
+                <span className="text-sm font-medium text-gray-700">
+                  Richiesta presentata da rappresentante legale (Request submitted by legal representative)
+                </span>
+              </label>
+
+              {formData.rappresentanteLegale && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Cognome Rappresentante (Representative Surname)
+                    </label>
+                    <input
+                      type="text"
+                      name="rappresentanteCognome"
+                      value={formData.rappresentanteCognome || ''}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Nome Rappresentante (Representative Name)
+                    </label>
+                    <input
+                      type="text"
+                      name="rappresentanteNome"
+                      value={formData.rappresentanteNome || ''}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Codice Fiscale Rappresentante
+                    </label>
+                    <input
+                      type="text"
+                      name="rappresentanteCodiceFiscale"
+                      value={formData.rappresentanteCodiceFiscale || ''}
+                      onChange={handleInputChange}
+                      maxLength={16}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors font-mono uppercase"
+                      placeholder="XXXXXXXXXXXXXXXX"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Qualifica (Title/Role)
+                    </label>
+                    <input
+                      type="text"
+                      name="rappresentanteQualifica"
+                      value={formData.rappresentanteQualifica || ''}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                      placeholder="e.g., Parent, Guardian, etc."
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Delega Section - Who is submitting */}
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-12 h-12 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-full flex items-center justify-center font-bold text-lg">📋</span>
+              <h3 className="text-2xl font-bold text-gray-800">Presentazione Domanda - Application Submission</h3>
+            </div>
+
+            <div className="space-y-6">
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-2 block">La domanda è presentata da:</label>
+                <div className="space-y-3">
+                  <label className={`p-4 border-2 rounded-lg cursor-pointer transition-all flex items-start gap-3 ${formData.presentataDa === 'interessato' ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                    <input
+                      type="radio"
+                      name="presentataDa"
+                      value="interessato"
+                      checked={formData.presentataDa === 'interessato'}
+                      onChange={handleInputChange}
+                      className="mt-1"
+                    />
+                    <div>
+                      <span className="font-medium">Direttamente dall'interessato</span>
+                      <p className="text-sm text-gray-600 mt-1">Directly by the applicant</p>
+                    </div>
+                  </label>
+
+                  <label className={`p-4 border-2 rounded-lg cursor-pointer transition-all flex items-start gap-3 ${formData.presentataDa === 'delegato' ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                    <input
+                      type="radio"
+                      name="presentataDa"
+                      value="delegato"
+                      checked={formData.presentataDa === 'delegato'}
+                      onChange={handleInputChange}
+                      className="mt-1"
+                    />
+                    <div>
+                      <span className="font-medium">Da persona delegata</span>
+                      <p className="text-sm text-gray-600 mt-1">By authorized delegate</p>
+                    </div>
+                  </label>
+
+                  <label className={`p-4 border-2 rounded-lg cursor-pointer transition-all flex items-start gap-3 ${formData.presentataDa === 'erede' ? 'border-emerald-500 bg-emerald-50' : 'border-gray-200 hover:border-gray-300'}`}>
+                    <input
+                      type="radio"
+                      name="presentataDa"
+                      value="erede"
+                      checked={formData.presentataDa === 'erede'}
+                      onChange={handleInputChange}
+                      className="mt-1"
+                    />
+                    <div>
+                      <span className="font-medium">Da erede</span>
+                      <p className="text-sm text-gray-600 mt-1">By heir (for deceased persons)</p>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              {formData.presentataDa === 'delegato' && (
+                <div className="p-6 bg-emerald-50 border border-emerald-200 rounded-lg">
+                  <h4 className="font-semibold text-emerald-900 mb-4">✅ Autorizzazione InvestiScope</h4>
+                  <p className="text-sm text-emerald-800 mb-4">
+                    Il sottoscritto autorizza <strong>InvestiScope S.r.l.</strong> a presentare questa domanda 
+                    per suo conto presso l'Agenzia delle Entrate italiana.
+                  </p>
+                  <p className="text-sm text-emerald-800">
+                    The undersigned authorizes <strong>InvestiScope S.r.l.</strong> to submit this application 
+                    on their behalf to the Italian Revenue Agency.
+                  </p>
+                </div>
+              )}
+
+              {(formData.presentataDa === 'delegato' || formData.presentataDa === 'erede') && formData.presentataDa !== 'interessato' && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Cognome {formData.presentataDa === 'erede' ? 'Erede' : 'Delegato'} (Surname)
+                    </label>
+                    <input
+                      type="text"
+                      name="delegatoCognome"
+                      value={formData.delegatoCognome || ''}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Nome {formData.presentataDa === 'erede' ? 'Erede' : 'Delegato'} (Name)
+                    </label>
+                    <input
+                      type="text"
+                      name="delegatoNome"
+                      value={formData.delegatoNome || ''}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Codice Fiscale {formData.presentataDa === 'erede' ? 'Erede' : 'Delegato'}
+                    </label>
+                    <input
+                      type="text"
+                      name="delegatoCodiceFiscale"
+                      value={formData.delegatoCodiceFiscale || ''}
+                      onChange={handleInputChange}
+                      maxLength={16}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors font-mono uppercase"
+                      placeholder="XXXXXXXXXXXXXXXX"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {formData.presentataDa === 'erede' ? 'Grado di parentela' : 'In qualità di'} (Relationship/Role)
+                    </label>
+                    <input
+                      type="text"
+                      name="delegatoQualifica"
+                      value={formData.delegatoQualifica || ''}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                      placeholder={formData.presentataDa === 'erede' ? 'e.g., Son, Daughter' : 'e.g., Accountant, Lawyer'}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Documenti Allegati - Required Documents */}
+          <div className="bg-white rounded-2xl shadow-lg p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <span className="w-12 h-12 bg-gradient-to-r from-emerald-600 to-teal-600 text-white rounded-full flex items-center justify-center font-bold text-lg">📎</span>
+              <h3 className="text-2xl font-bold text-gray-800">Documenti Allegati - Required Documents</h3>
+            </div>
+
+            <div className="space-y-4">
+              <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  The following documents must be presented when collecting the fiscal code:
+                </p>
+              </div>
+
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="documentoIdentita"
+                  checked={formData.documentoIdentita}
+                  onChange={handleInputChange}
+                  className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+                />
+                <span className="text-sm font-medium text-gray-700">
+                  Documento di identità in corso di validità (Valid ID document) <span className="text-red-500">*</span>
+                </span>
+              </label>
+
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="documentoSoggiorno"
+                  checked={formData.documentoSoggiorno || false}
+                  onChange={handleInputChange}
+                  className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+                />
+                <span className="text-sm font-medium text-gray-700">
+                  Permesso di soggiorno (Residence permit - if applicable)
+                </span>
+              </label>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Altri documenti (Other documents - if any)
+                </label>
+                <textarea
+                  name="altriDocumenti"
+                  value={formData.altriDocumenti || ''}
+                  onChange={handleInputChange}
+                  rows={2}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                  placeholder="List any additional documents..."
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -428,6 +769,36 @@ export default function FiscalCodeForm() {
                   <option value="5">5 - Richiesta Duplicato (Duplicate Request)</option>
                 </select>
               </div>
+
+              <div>
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    name="richiestaTesterinoCodiceFiscale"
+                    checked={formData.richiestaTesterinoCodiceFiscale}
+                    onChange={handleInputChange}
+                    className="w-4 h-4 text-emerald-600 border-gray-300 rounded focus:ring-emerald-500"
+                  />
+                  <span className="text-sm font-medium text-gray-700">
+                    Richiesta tesserino codice fiscale (Request fiscal code card)
+                  </span>
+                </label>
+              </div>
+
+              {formData.tipoRichiesta === '3' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Data Decesso (Date of Death)
+                  </label>
+                  <input
+                    type="date"
+                    name="dataDecesso"
+                    value={formData.dataDecesso || ''}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                  />
+                </div>
+              )}
             </div>
           </div>
 
@@ -529,6 +900,21 @@ export default function FiscalCodeForm() {
                   {provinces.map(prov => (
                     <option key={prov} value={prov}>{prov}</option>
                   ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Stato di Nascita (Country of Birth) <span className="text-red-500">*</span>
+                </label>
+                <select
+                  name="statoNascita"
+                  value={formData.statoNascita}
+                  onChange={handleInputChange}
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                >
+                  <option value="ITALIA">Italia</option>
+                  <option value="ESTERO">Estero (Foreign)</option>
                 </select>
               </div>
             </div>
@@ -858,6 +1244,21 @@ export default function FiscalCodeForm() {
                 {errors.sottoscrittoTelefono && <p className="text-red-500 text-sm mt-1">{errors.sottoscrittoTelefono}</p>}
               </div>
 
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Indirizzo (Address) <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="sottoscrittoIndirizzo"
+                  value={formData.sottoscrittoIndirizzo}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-colors ${errors.sottoscrittoIndirizzo ? 'border-red-500 focus:border-red-500' : 'border-gray-200 focus:border-emerald-500'}`}
+                  placeholder="Full address including city and country"
+                />
+                {errors.sottoscrittoIndirizzo && <p className="text-red-500 text-sm mt-1">{errors.sottoscrittoIndirizzo}</p>}
+              </div>
+
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Data (Date)
@@ -878,35 +1279,79 @@ export default function FiscalCodeForm() {
                 <label className="block text-sm font-medium text-gray-700">
                   Firma (Signature) <span className="text-red-500">*</span>
                 </label>
-                {formData.firmaDigitale && (
-                  <button
-                    type="button"
-                    onClick={clearSignature}
-                    className="text-sm text-red-600 hover:text-red-700"
-                  >
-                    Clear Signature
-                  </button>
-                )}
               </div>
-              
-              <div className={`border-2 rounded-lg p-2 bg-gray-50 ${errors.firmaDigitale ? 'border-red-500' : 'border-gray-300'}`}>
-                <canvas
-                  ref={signatureCanvasRef}
-                  width={600}
-                  height={150}
-                  className="w-full h-40 bg-white rounded cursor-crosshair"
-                  onMouseDown={startDrawing}
-                  onMouseMove={draw}
-                  onMouseUp={stopDrawing}
-                  onMouseLeave={stopDrawing}
-                  onTouchStart={startDrawing}
-                  onTouchMove={draw}
-                  onTouchEnd={stopDrawing}
-                  style={{ touchAction: 'none' }}
-                />
+
+              {/* Signature Options */}
+              <div className="space-y-4">
+                {/* Option 1: Draw Signature */}
+                <div className="border-2 border-gray-200 rounded-lg p-4">
+                  <h4 className="font-medium text-gray-900 mb-3">Option 1: Draw Your Signature</h4>
+                  
+                  {formData.firmaDigitale && !formData.firmaFile && (
+                    <button
+                      type="button"
+                      onClick={clearSignature}
+                      className="text-sm text-red-600 hover:text-red-700 mb-2"
+                    >
+                      Clear Signature
+                    </button>
+                  )}
+                  
+                  <div className={`border-2 rounded-lg p-2 bg-gray-50 ${errors.firmaDigitale ? 'border-red-500' : 'border-gray-300'}`}>
+                    <canvas
+                      ref={signatureCanvasRef}
+                      width={600}
+                      height={150}
+                      className="w-full h-40 bg-white rounded cursor-crosshair"
+                      onMouseDown={startDrawing}
+                      onMouseMove={draw}
+                      onMouseUp={stopDrawing}
+                      onMouseLeave={stopDrawing}
+                      onTouchStart={startDrawing}
+                      onTouchMove={draw}
+                      onTouchEnd={stopDrawing}
+                      style={{ touchAction: 'none' }}
+                    />
+                  </div>
+                  <p className="text-sm text-gray-600 mt-2">Sign above using your mouse or finger</p>
+                </div>
+
+                {/* Option 2: Upload Signature */}
+                <div className="border-2 border-gray-200 rounded-lg p-4">
+                  <h4 className="font-medium text-gray-900 mb-3">Option 2: Upload Signature File</h4>
+                  
+                  <input
+                    type="file"
+                    accept="image/*,.pdf"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0]
+                      if (file) {
+                        setFormData(prev => ({ ...prev, firmaFile: file }))
+                        // Clear drawn signature if file is uploaded
+                        if (prev => prev.firmaDigitale) {
+                          clearSignature()
+                        }
+                      }
+                    }}
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:border-emerald-500 focus:outline-none transition-colors"
+                  />
+                  {formData.firmaFile && (
+                    <div className="mt-2 flex items-center justify-between">
+                      <p className="text-sm text-green-600">✓ File uploaded: {formData.firmaFile.name}</p>
+                      <button
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, firmaFile: null }))}
+                        className="text-sm text-red-600 hover:text-red-700"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+                  <p className="text-sm text-gray-600 mt-2">Accepted formats: JPG, PNG, PDF</p>
+                </div>
               </div>
-              {errors.firmaDigitale && <p className="text-red-500 text-sm mt-1">{errors.firmaDigitale}</p>}
-              <p className="text-sm text-gray-600 mt-2">Please sign above using your mouse or finger</p>
+
+              {errors.firmaDigitale && <p className="text-red-500 text-sm mt-2">{errors.firmaDigitale}</p>}
             </div>
 
             {/* Legal Declaration */}
