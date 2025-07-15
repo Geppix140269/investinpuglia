@@ -1,76 +1,60 @@
-import { createClient } from '@supabase/supabase-js'
+// lib/supabase.ts
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+// Supabase configuration
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.Supabase_URL || ''
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || process.env.Supabase_API || ''
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables')
+  console.warn('Missing Supabase environment variables')
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-  },
-  db: {
-    schema: 'public'
-  }
-})
+// Export the createClient function
+export function createClient() {
+  return createSupabaseClient(supabaseUrl, supabaseAnonKey)
+}
 
-// Types for our database tables
-export interface Lead {
-  id?: string
-  email: string
-  name?: string
-  phone?: string
-  source?: string
-  created_at?: string
-  updated_at?: string
+// Export a singleton instance for convenience
+export const supabase = createClient()
+
+// Database helper functions
+export async function trackCTAClick(
+  variant: string,
+  location: string,
   metadata?: Record<string, any>
-}
-
-export interface Analysis {
-  id?: string
-  lead_id: string
-  analysis_type: string
-  property_value?: number
-  renovation_budget?: number
-  grant_amount?: number
-  total_investment?: number
-  roi_percentage?: number
-  analysis_data?: Record<string, any>
-  created_at?: string
-}
-
-export interface CTAClick {
-  id?: string
-  session_id: string
-  cta_type: string
-  cta_location: string
-  page_url: string
-  timestamp?: string
-  user_agent?: string
-  metadata?: Record<string, any>
-}
-
-export interface PageView {
-  id?: string
-  session_id: string
-  page_url: string
-  referrer?: string
-  timestamp?: string
-  time_on_page?: number
-  user_agent?: string
-}
-
-// Helper to get or create session ID
-export function getSessionId(): string {
-  if (typeof window === 'undefined') return ''
-  
-  let sessionId = localStorage.getItem('investiscope_session_id')
-  if (!sessionId) {
-    sessionId = `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    localStorage.setItem('investiscope_session_id', sessionId)
+) {
+  try {
+    const { error } = await supabase
+      .from('cta_clicks')
+      .insert([{
+        variant,
+        location,
+        metadata,
+        user_agent: typeof window !== 'undefined' ? window.navigator.userAgent : null
+      }])
+    
+    if (error) throw error
+  } catch (error) {
+    console.error('Error tracking CTA click:', error)
   }
-  return sessionId
+}
+
+export async function trackPageView(
+  page_path: string,
+  metadata?: Record<string, any>
+) {
+  try {
+    const { error } = await supabase
+      .from('page_views')
+      .insert([{
+        page_path,
+        referrer: typeof document !== 'undefined' ? document.referrer : null,
+        user_agent: typeof window !== 'undefined' ? window.navigator.userAgent : null,
+        metadata
+      }])
+    
+    if (error) throw error
+  } catch (error) {
+    console.error('Error tracking page view:', error)
+  }
 }
