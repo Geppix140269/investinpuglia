@@ -15,7 +15,7 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export async function POST(request) {
+export async function POST(request: Request) {
   try {
     // Get the form data
     const body = await request.json();
@@ -86,7 +86,7 @@ export async function POST(request) {
 }
 
 // GET endpoint to check application status
-export async function GET(request) {
+export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const email = searchParams.get('email');
