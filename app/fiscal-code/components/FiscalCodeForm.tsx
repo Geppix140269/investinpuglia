@@ -59,9 +59,9 @@ export default function FiscalCodeForm() {
     setError('')
 
     try {
-      // Map form data to match API expectations
+      // Map form data to match API expectations - THIS IS THE FIX!
       const submissionData = {
-        // Required fields
+        // Map firstName -> name, lastName -> surname
         name: formData.firstName,
         surname: formData.lastName,
         email: formData.email,
@@ -125,6 +125,7 @@ export default function FiscalCodeForm() {
       // Store application ID for success page
       if (data.applicationId) {
         sessionStorage.setItem('applicationId', data.applicationId)
+        sessionStorage.setItem('applicationData', JSON.stringify(submissionData))
       }
       
       // Redirect to success page
