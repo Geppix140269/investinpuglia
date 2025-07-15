@@ -209,7 +209,7 @@ export default function FiscalCodePage() {
   }
 
   const validateForm = () => {
-    const newErrors = {}
+ const newErrors: Record<string, boolean> = {}
     const requiredFields = [
       'firstName', 'lastName', 'gender', 'nationality', 'passportNumber',
       'birthDay', 'birthMonth', 'birthYear', 'birthCountry', 'birthCity',
