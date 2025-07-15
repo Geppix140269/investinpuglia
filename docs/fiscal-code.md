@@ -139,3 +139,110 @@ NEXT_PUBLIC_EMAILJS_FISCAL_AGENCY_TEMPLATE_ID=template_pkjko4e
 5. Test and deploy
 
 **This is a straightforward form → database → email flow. Nothing complex.**
+# InvestiScope File Paths Guide
+
+## 📁 File Locations
+
+### 1. **Fiscal Code Form Component**
+```
+Path: /components/FiscalCodeForm.js
+```
+OR if you prefer to keep it in the app directory:
+```
+Path: /app/fiscal-code/FiscalCodeForm.js
+```
+
+### 2. **API Route (MUST be in this exact location)**
+```
+Path: /app/api/fiscal-code-applications/route.js
+```
+⚠️ **IMPORTANT**: In Next.js 13+ App Router, API routes MUST be named `route.js` and placed in the `/app/api/` directory structure.
+
+### 3. **Fiscal Code Page (where users see the form)**
+```
+Path: /app/fiscal-code/page.js
+```
+
+### 4. **EmailJS Script (add to your root layout)**
+```
+Path: /app/layout.js
+```
+Add this before closing `</body>` tag:
+```html
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+```
+
+## 📋 Complete File Structure
+
+```
+investiscope/
+├── app/
+│   ├── api/
+│   │   └── fiscal-code-applications/
+│   │       └── route.js              ← API endpoint HERE
+│   ├── fiscal-code/
+│   │   └── page.js                   ← Page that displays the form
+│   └── layout.js                     ← Add EmailJS script here
+├── components/
+│   └── FiscalCodeForm.js             ← Form component HERE
+└── .env.local                        ← Your environment variables (already exists)
+```
+
+## 🔧 Implementation Steps
+
+### Step 1: Create the Form Component
+```bash
+# Create the component file
+touch components/FiscalCodeForm.js
+```
+Then paste the fiscal code form component code.
+
+### Step 2: Create the API Route
+```bash
+# Create the API directory structure
+mkdir -p app/api/fiscal-code-applications
+touch app/api/fiscal-code-applications/route.js
+```
+Then paste the API route code.
+
+### Step 3: Create/Update the Fiscal Code Page
+```bash
+# If it doesn't exist yet
+touch app/fiscal-code/page.js
+```
+
+Then add this code to `page.js`:
+```javascript
+import FiscalCodeForm from '@/components/FiscalCodeForm';
+
+export default function FiscalCodePage() {
+  return (
+    <div>
+      <FiscalCodeForm />
+    </div>
+  );
+}
+```
+
+### Step 4: Update Root Layout
+Edit `/app/layout.js` and add before `</body>`:
+```javascript
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+```
+
+## ✅ Quick Checklist
+
+- [ ] `/components/FiscalCodeForm.js` - Form component
+- [ ] `/app/api/fiscal-code-applications/route.js` - API endpoint
+- [ ] `/app/fiscal-code/page.js` - Page to display form
+- [ ] `/app/layout.js` - Updated with EmailJS script
+- [ ] `.env.local` - Already has your credentials
+
+## 🚀 Test Your Setup
+
+1. Navigate to: `https://investiscope.net/fiscal-code`
+2. Fill out the form
+3. Check Supabase dashboard for new entry
+4. Check email for confirmations
+
+That's it! All files are now in their proper locations.
