@@ -344,7 +344,7 @@ export default function FiscalCodePage() {
 
     } catch (error) {
       console.error('Submission error:', error)
-      setShowAlert({ type: 'error', message: error.message || 'Failed to submit application. Please try again.' })
+      setShowAlert({ type: 'error', message: error instanceof Error ? error.message : 'Failed to submit application. Please try again.' })
     } finally {
       setIsSubmitting(false)
     }
