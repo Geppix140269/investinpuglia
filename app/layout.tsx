@@ -1,4 +1,4 @@
-// app/layout.tsx - SEO-optimized metadata with Google Analytics
+// app/layout.tsx - SEO-optimized metadata with Google Analytics and EmailJS
 
 import type { Metadata } from 'next'
 import { Inter, Playfair_Display } from 'next/font/google'
@@ -106,6 +106,24 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="preload" as="image" href="/Logo_InvestiScope.png" />
+        
+        {/* EmailJS Scripts */}
+        <Script 
+          src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
+          strategy="beforeInteractive"
+        />
+        <Script 
+          id="emailjs-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                // Initialize EmailJS with your user ID
+                emailjs.init("wKn1_xMCtZssdZzpb");
+              })();
+            `
+          }}
+        />
         
         {/* Google Analytics */}
         <Script
