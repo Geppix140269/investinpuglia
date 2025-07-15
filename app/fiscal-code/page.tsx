@@ -553,7 +553,7 @@ export default function FiscalCodeForm() {
                 </div>
               )}
 
-              {(formData.presentataDa === 'delegato' || formData.presentataDa === 'erede') && formData.presentataDa !== 'interessato' && (
+              {(formData.presentataDa === 'delegato' || formData.presentataDa === 'erede') && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 p-4 bg-gray-50 rounded-lg">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
