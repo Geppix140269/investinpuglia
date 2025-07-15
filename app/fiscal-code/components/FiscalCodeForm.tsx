@@ -59,24 +59,82 @@ export default function FiscalCodeForm() {
     setError('')
 
     try {
+      // Map form data to match API expectations
+      const submissionData = {
+        // Required fields
+        name: formData.firstName,
+        surname: formData.lastName,
+        email: formData.email,
+        
+        // Personal details
+        requestType: 'attribution',
+        sex: formData.gender === 'male' ? 'M' : 'F',
+        birthDate: formData.dateOfBirth,
+        birthMunicipality: formData.birthCity,
+        birthProvince: formData.birthProvince,
+        birthForeign: formData.birthCountry !== 'Italy',
+        birthForeignCountry: formData.birthCountry !== 'Italy' ? formData.birthCountry : '',
+        
+        // Residence
+        residenceAddress: formData.address,
+        residenceNumber: formData.streetNumber,
+        residenceMunicipality: formData.city,
+        residenceProvince: formData.province,
+        residenceCap: formData.postalCode,
+        
+        // Contact
+        phone: formData.phone,
+        
+        // Foreign address (if not in Italy)
+        foreignCountry: formData.country !== 'Italy' ? formData.country : '',
+        foreignAddress: formData.country !== 'Italy' ? `${formData.address} ${formData.streetNumber}, ${formData.city} ${formData.postalCode}` : '',
+        
+        // Additional info
+        purpose: formData.purpose,
+        notes: formData.notes,
+        
+        // Default values
+        termsAccepted: true,
+        privacyAccepted: true,
+        delegatorName: formData.firstName + ' ' + formData.lastName,
+        delegatorEmail: formData.email,
+        delegatorPhone: formData.phone
+      }
+
+      console.log('Submitting fiscal code application:', submissionData)
+
       const response = await fetch('/api/fiscal-code-applications', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        headers: { 
+          'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(submissionData)
       })
 
+      console.log('Response status:', response.status)
+
       const data = await response.json()
+      console.log('Response data:', data)
 
       if (!response.ok) {
         throw new Error(data.error || 'Failed to submit application')
       }
 
       setSuccess(true)
-      // Redirect to payment or success page
-      window.location.href = `/fiscal-code/success?id=${data.data.id}`
+      
+      // Store application ID for success page
+      if (data.applicationId) {
+        sessionStorage.setItem('applicationId', data.applicationId)
+      }
+      
+      // Redirect to success page
+      setTimeout(() => {
+        window.location.href = '/fiscal-code/success'
+      }, 1000)
       
     } catch (err: any) {
-      setError(err.message || 'Something went wrong')
+      console.error('Form submission error:', err)
+      setError(err.message || 'Something went wrong. Please try again.')
     } finally {
       setIsSubmitting(false)
     }
