@@ -151,7 +151,13 @@ export default function FiscalCodeForm() {
     return new Promise((resolve, reject) => {
       const reader = new FileReader()
       reader.readAsDataURL(file)
-      reader.onload = () => resolve(reader.result as string)
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          resolve(reader.result)
+        } else {
+          reject(new Error('Failed to convert file to base64'))
+        }
+      }
       reader.onerror = error => reject(error)
     })
   }
@@ -188,7 +194,11 @@ export default function FiscalCodeForm() {
     
     // Clear error when user types
     if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }))
+      setErrors(prev => {
+        const newErrors = { ...prev }
+        delete newErrors[name]
+        return newErrors
+      })
     }
   }
 
@@ -313,7 +323,11 @@ export default function FiscalCodeForm() {
           presented_by: formData.presentataDa === 'delegato' ? 'InvestiScope S.r.l. (Authorized Delegate)' : 
                        formData.presentataDa === 'erede' ? `Heir: ${formData.delegatoNome} ${formData.delegatoCognome}` : 
                        'Direct Applicant',
-          request_type: formData.tipoRichiesta
+          request_type: formData.tipoRichiesta === '1' ? 'First Time Application' :
+                       formData.tipoRichiesta === '2' ? 'Data Update' :
+                       formData.tipoRichiesta === '3' ? 'Death Notification' :
+                       formData.tipoRichiesta === '4' ? 'Certificate Request' :
+                       formData.tipoRichiesta === '5' ? 'Duplicate Request' : 'Unknown'
         }
       )
     } catch (error) {
@@ -334,11 +348,12 @@ export default function FiscalCodeForm() {
     
     try {
       // Prepare form data
-      const submitData = {
-        ...formData,
-        // Convert file to base64 if exists
-        firmaFile: formData.firmaFile ? await fileToBase64(formData.firmaFile) : null,
-        firmaFileName: formData.firmaFile?.name || null
+      let submitData: any = { ...formData }
+      
+      // Convert file to base64 if exists
+      if (formData.firmaFile) {
+        submitData.firmaFile = await fileToBase64(formData.firmaFile)
+        submitData.firmaFileName = formData.firmaFile.name
       }
 
       // Submit to API
@@ -1328,7 +1343,7 @@ export default function FiscalCodeForm() {
                       if (file) {
                         setFormData(prev => ({ ...prev, firmaFile: file }))
                         // Clear drawn signature if file is uploaded
-                        if (prev => prev.firmaDigitale) {
+                        if (formData.firmaDigitale) {
                           clearSignature()
                         }
                       }
