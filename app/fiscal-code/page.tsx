@@ -217,11 +217,11 @@ export default function FiscalCodePage() {
       'homeCountry', 'reasonForRequest'
     ]
 
-    requiredFields.forEach(field => {
-      if (!formData[field] || !validateField(field, formData[field])) {
-        newErrors[field] = true
-      }
-    })
+ requiredFields.forEach(field => {
+  if (!formData[field as keyof typeof formData] || !validateField(field, formData[field as keyof typeof formData])) {
+    newErrors[field] = true
+  }
+})
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
