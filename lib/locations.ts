@@ -14,7 +14,7 @@ export async function getCountries() {
 
 // Option 2: GeoNames API (FREE with registration - 30,000 credits/day)
 // Register at: http://www.geonames.org/export/web-services.html
-const GEONAMES_USERNAME = 'your_username'; // Register for free
+const GEONAMES_USERNAME = 'demo'; // Register for free and replace with your username
 
 export async function getCities(countryCode: string) {
   const response = await fetch(
@@ -31,17 +31,38 @@ export async function getCities(countryCode: string) {
 
 // Option 3: Italian-specific API for comuni/provinces
 export async function getItalianProvinces() {
-  // Use the official Italian dataset
-  const response = await fetch('https://raw.githubusercontent.com/matteocontrini/comuni-json/master/comuni.json');
-  const data = await response.json();
-  
-  // Extract unique provinces
-  const provinces = [...new Set(data.map((c: any) => ({
-    code: c.sigla,
-    name: c.provincia.nome
-  })))];
-  
-  return provinces;
+  try {
+    // Use the official Italian dataset
+    const response = await fetch('https://raw.githubusercontent.com/matteocontrini/comuni-json/master/comuni.json');
+    const data = await response.json();
+    
+    // Extract unique provinces - FIXED VERSION
+    const provinceMap = new Map();
+    
+    data.forEach((comune: any) => {
+      if (!provinceMap.has(comune.sigla)) {
+        provinceMap.set(comune.sigla, {
+          code: comune.sigla,
+          name: comune.provincia.nome
+        });
+      }
+    });
+    
+    // Convert Map values to array and sort
+    return Array.from(provinceMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+    
+  } catch (error) {
+    console.error('Error fetching Italian provinces:', error);
+    // Return fallback Puglia provinces if API fails
+    return [
+      { code: 'BA', name: 'Bari' },
+      { code: 'BT', name: 'Barletta-Andria-Trani' },
+      { code: 'BR', name: 'Brindisi' },
+      { code: 'FG', name: 'Foggia' },
+      { code: 'LE', name: 'Lecce' },
+      { code: 'TA', name: 'Taranto' }
+    ];
+  }
 }
 
 // Option 4: Google Places Autocomplete (Best UX but needs API key)
