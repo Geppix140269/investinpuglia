@@ -67,6 +67,15 @@ export default function Navbar() {
             <a href="/surveys" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
               Surveys
             </a>
+            
+            {/* NEW: Buyer Profile Link with Badge */}
+            <a href="/buyer-profile" className="text-gray-700 hover:text-gray-900 transition-colors font-medium relative">
+              Buyer Profile
+              <span className="absolute -top-2 -right-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs px-2 py-0.5 rounded-full font-bold">
+                NEW
+              </span>
+            </a>
+            
             <a href="/fiscal-code" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
               Fiscal Code
             </a>
@@ -140,6 +149,15 @@ export default function Navbar() {
               <a href="/surveys" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
                 Surveys
               </a>
+              
+              {/* NEW: Buyer Profile Link with Badge for Mobile */}
+              <a href="/buyer-profile" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2 flex items-center gap-2">
+                Buyer Profile
+                <span className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs px-2 py-0.5 rounded-full font-bold">
+                  NEW
+                </span>
+              </a>
+              
               <a href="/fiscal-code" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
                 Fiscal Code
               </a>
