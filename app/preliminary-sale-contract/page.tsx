@@ -40,14 +40,18 @@ export default function PreliminaryContractPage() {
   };
 
   const handleSubmit = async () => {
-    const pdfBlob = generatePdfBlob(form);
+    const { file, ...formWithoutFile } = form;
+
+    const pdfBlob = generatePdfBlob(formWithoutFile);
     const fileUrl = await uploadFileToSupabase(pdfBlob, `${form.buyerName}_preliminary_contract.pdf`);
+
     await sendContractEmail({
       to: form.email,
       subject: "Your Preliminary Sale Contract",
       pdfUrl: fileUrl,
-      formData: form,
+      formData: formWithoutFile,
     });
+
     alert("Contract generated, uploaded and emailed successfully.");
   };
 
