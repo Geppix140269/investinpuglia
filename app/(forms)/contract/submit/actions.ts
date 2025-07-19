@@ -3,7 +3,7 @@
 import { uploadContractPDF } from '@/lib/supabase'
 import emailjs from '@emailjs/browser'
 
-// Server-side environment-safe keys
+// EmailJS Configuration
 const EMAILJS_SERVICE_ID = 'service_w6tghqr'
 const EMAILJS_TEMPLATE_ID = 'template_a47xzn7'
 const EMAILJS_PUBLIC_KEY = 'wKn1_xMCtZssdZzpb'
@@ -27,14 +27,12 @@ type FormDataFields = {
 
 export async function handleSubmit(data: FormDataFields) {
   try {
-    // Upload file
     const pdfUrl = await uploadContractPDF(data.contract_file, data.buyer_name)
     if (!pdfUrl) throw new Error('PDF upload failed')
 
-    // Prepare template params
     const templateParams = {
       ...data,
-      contract_file: pdfUrl, // Pass the URL as the attachment link
+      contract_file: pdfUrl
     }
 
     const response = await emailjs.send(
