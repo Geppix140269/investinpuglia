@@ -3,16 +3,86 @@
 import React, { useState } from 'react'
 import { ChevronRight, ChevronLeft, CheckCircle, Send, Download, X } from 'lucide-react'
 
-const BuyerProfilePage = () => {
-  const [currentStep, setCurrentStep] = useState(1)
-  const [showModal, setShowModal] = useState(false)
-  const [emailSent, setEmailSent] = useState(false)
-  const [recipientEmail, setRecipientEmail] = useState('')
-  const [recipientType, setRecipientType] = useState('agency')
-  const [customRecipients, setCustomRecipients] = useState('')
+interface FormData {
+  // Personal Information
+  fullName: string
+  email: string
+  phone: string
+  nationality: string
+  residency: string
+  
+  // Investment Goals
+  investmentPurpose: string
+  propertyType: string
+  budget: string
+  timeline: string
+  
+  // Property Preferences
+  location: string[]
+  propertySize: string
+  bedrooms: string
+  amenities: string[]
+  
+  // Financial Details
+  financingMethod: string
+  downPaymentPercentage: string
+  preApproved: string
+  monthlyBudget: string
+  
+  // Experience Level
+  previousInvestments: string
+  italianPropertyExperience: string
+  languageSkills: string
+  needsAssistance: string[]
+  
+  // Legal Requirements
+  taxId: string
+  needsTaxId: string
+  legalRepresentation: string
+  powerOfAttorney: string
+  
+  // Property Management
+  propertyManagement: string
+  rentalStrategy: string
+  maintenanceBudget: string
+  localContacts: string
+  
+  // Due Diligence
+  propertyInspection: string
+  legalReview: string
+  surveyRequired: string
+  insuranceNeeds: string[]
+  
+  // Grant Eligibility
+  businessPlan: string
+  employmentCreation: string
+  sustainabilityFeatures: string[]
+  grantInterest: string
+  
+  // Additional Services
+  additionalServices: string[]
+  urgency: string
+  specialRequests: string
+  howHeard: string
+}
+
+type RecipientType = 'agency' | 'internal' | 'custom'
+
+interface RecipientOption {
+  label: string
+  emails: string[]
+}
+
+const BuyerProfilePage: React.FC = () => {
+  const [currentStep, setCurrentStep] = useState<number>(1)
+  const [showModal, setShowModal] = useState<boolean>(false)
+  const [emailSent, setEmailSent] = useState<boolean>(false)
+  const [recipientEmail, setRecipientEmail] = useState<string>('')
+  const [recipientType, setRecipientType] = useState<RecipientType>('agency')
+  const [customRecipients, setCustomRecipients] = useState<string>('')
   
   // Predefined recipient emails
-  const recipientOptions = {
+  const recipientOptions: Record<RecipientType, RecipientOption> = {
     agency: {
       label: 'Partner Agencies',
       emails: ['agencies@investinpuglia.eu', 'partners@investinpuglia.eu']
@@ -27,7 +97,7 @@ const BuyerProfilePage = () => {
     }
   }
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     // Personal Information
     fullName: '',
     email: '',
@@ -92,15 +162,18 @@ const BuyerProfilePage = () => {
 
   const totalSteps = 10
 
-  const updateFormData = (field, value) => {
+  const updateFormData = (field: keyof FormData, value: string | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
-  const handleCheckboxChange = (field, value, checked) => {
-    if (checked) {
-      updateFormData(field, [...formData[field], value])
-    } else {
-      updateFormData(field, formData[field].filter(item => item !== value))
+  const handleCheckboxChange = (field: keyof FormData, value: string, checked: boolean) => {
+    const currentValues = formData[field]
+    if (Array.isArray(currentValues)) {
+      if (checked) {
+        updateFormData(field, [...currentValues, value])
+      } else {
+        updateFormData(field, currentValues.filter(item => item !== value))
+      }
     }
   }
 
@@ -118,14 +191,14 @@ const BuyerProfilePage = () => {
     }
   }
 
-  const formatValue = (value) => {
+  const formatValue = (value: string): string => {
     if (!value) return 'Not specified'
     return value.split('-').map(word => 
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ')
   }
 
-  const generateEmailContent = () => {
+  const generateEmailContent = (): JSX.Element => {
     const today = new Date().toLocaleDateString('en-US', { 
       year: 'numeric', 
       month: 'long', 
@@ -174,9 +247,9 @@ const BuyerProfilePage = () => {
     )
   }
 
-  const handleSendEmail = async () => {
+  const handleSendEmail = async (): Promise<void> => {
     // Determine recipients based on selection
-    let recipients = []
+    let recipients: string[] = []
     
     if (recipientType === 'custom') {
       // Parse custom email addresses
@@ -218,13 +291,13 @@ const BuyerProfilePage = () => {
     }, 1000)
   }
 
-  const handleDownloadPDF = () => {
+  const handleDownloadPDF = (): void => {
     // In a real implementation, you would generate a PDF here
     console.log('Downloading PDF with form data:', formData)
     alert('PDF download functionality would be implemented with a library like jsPDF or by calling a backend service')
   }
 
-  const renderStepContent = () => {
+  const renderStepContent = (): JSX.Element => {
     switch (currentStep) {
       case 1:
         return (
@@ -1057,22 +1130,30 @@ const BuyerProfilePage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-amber-50 to-white">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-800 to-blue-600 text-white">
-        <div className="max-w-7xl mx-auto px-4 py-6">
+      <header className="fixed w-full top-0 z-20 bg-white/70 backdrop-blur-md border-b border-gray-200/20">
+        <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-4">
               <span className="text-2xl">🇮🇹</span>
-              <h1 className="text-2xl font-bold">Invest in Puglia</h1>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900" style={{ fontFamily: 'Playfair Display, Georgia, serif' }}>
+                  investinpuglia.eu
+                </h1>
+                <p className="text-sm text-gray-600">Your Profile</p>
+              </div>
             </div>
-            <p className="text-blue-100 text-sm hidden md:block">
+            <p className="text-gray-500 text-sm hidden md:block">
               Your Gateway to Italian Property Investment
             </p>
           </div>
         </div>
-      </div>
+      </header>
+
+      {/* Add padding to account for fixed header */}
+      <div className="pt-20">
 
       {/* Progress Bar */}
-      <div className="bg-white shadow-sm sticky top-0 z-10">
+      <div className="bg-white/80 backdrop-blur-sm shadow-sm sticky top-20 z-10">
         <div className="max-w-4xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-gray-600">Step {currentStep} of {totalSteps}</span>
@@ -1089,7 +1170,7 @@ const BuyerProfilePage = () => {
 
       {/* Form Content */}
       <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-xl p-8 border border-white/20">
           {renderStepContent()}
 
           {/* Navigation Buttons */}
@@ -1127,7 +1208,7 @@ const BuyerProfilePage = () => {
         </div>
 
         {/* Step Overview */}
-        <div className="mt-8 bg-white rounded-2xl shadow-lg p-6">
+        <div className="mt-8 bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg p-6 border border-white/20">
           <h3 className="font-semibold text-gray-900 mb-4">Profile Sections Overview</h3>
           <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
             {[
@@ -1158,6 +1239,7 @@ const BuyerProfilePage = () => {
           </div>
         </div>
       </div>
+    </div>
 
       {/* Email Modal */}
       {showModal && (
@@ -1190,7 +1272,7 @@ const BuyerProfilePage = () => {
                           name="recipientType"
                           value="agency"
                           checked={recipientType === 'agency'}
-                          onChange={(e) => setRecipientType(e.target.value)}
+                          onChange={(e) => setRecipientType(e.target.value as RecipientType)}
                           className="mr-3"
                         />
                         <div>
@@ -1205,7 +1287,7 @@ const BuyerProfilePage = () => {
                           name="recipientType"
                           value="internal"
                           checked={recipientType === 'internal'}
-                          onChange={(e) => setRecipientType(e.target.value)}
+                          onChange={(e) => setRecipientType(e.target.value as RecipientType)}
                           className="mr-3"
                         />
                         <div>
@@ -1220,7 +1302,7 @@ const BuyerProfilePage = () => {
                           name="recipientType"
                           value="custom"
                           checked={recipientType === 'custom'}
-                          onChange={(e) => setRecipientType(e.target.value)}
+                          onChange={(e) => setRecipientType(e.target.value as RecipientType)}
                           className="mr-3"
                         />
                         <div className="flex-1">
