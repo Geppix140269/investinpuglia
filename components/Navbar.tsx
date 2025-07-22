@@ -55,8 +55,8 @@ export default function Navbar() {
                 <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100 mt-2">
                   Analysis Tools
                 </div>
-                <a href="/surveys" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
-                  Property Surveys
+                <a href="/buyer-profile" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
+                  Buyer Profile
                 </a>
                 <a href="/tools" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
                   All Tools →
@@ -64,21 +64,6 @@ export default function Navbar() {
               </div>
             </div>
             
-            <a href="/surveys" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
-              Surveys
-            </a>
-            
-            {/* NEW: Buyer Profile Link with Badge */}
-            <a href="/buyer-profile" className="text-gray-700 hover:text-gray-900 transition-colors font-medium relative">
-              Buyer Profile
-              <span className="absolute -top-2 -right-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs px-2 py-0.5 rounded-full font-bold">
-                NEW
-              </span>
-            </a>
-            
-            <a href="/fiscal-code" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
-              Fiscal Code
-            </a>
             <a href="/contact" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
               Contact
             </a>
@@ -140,27 +125,12 @@ export default function Navbar() {
                   <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide py-1 mt-2">
                     Analysis
                   </div>
-                  <a href="/surveys" className="text-gray-600 hover:text-gray-900 transition-colors text-sm block py-1">
-                    → Property Surveys
+                  <a href="/buyer-profile" className="text-gray-600 hover:text-gray-900 transition-colors text-sm block py-1">
+                    → Buyer Profile
                   </a>
                 </div>
               </div>
               
-              <a href="/surveys" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
-                Surveys
-              </a>
-              
-              {/* NEW: Buyer Profile Link with Badge for Mobile */}
-              <a href="/buyer-profile" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2 flex items-center gap-2">
-                Buyer Profile
-                <span className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs px-2 py-0.5 rounded-full font-bold">
-                  NEW
-                </span>
-              </a>
-              
-              <a href="/fiscal-code" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
-                Fiscal Code
-              </a>
               <a href="/contact" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
                 Contact
               </a>
