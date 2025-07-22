@@ -369,7 +369,7 @@ export default function BuyerProfilePage() {
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
           >
             <option value="">Select size</option>
-            <option value="small">Small (< 100 m²)</option>
+            <option value="small">Small (&lt; 100 m²)</option>
             <option value="medium">Medium (100-200 m²)</option>
             <option value="large">Large (200-400 m²)</option>
             <option value="xlarge">Extra Large (400+ m²)</option>
@@ -445,7 +445,7 @@ export default function BuyerProfilePage() {
           </select>
         </div>
 
-        {formData.financingMethod === 'mortgage' || formData.financingMethod === 'mixed' ? (
+        {(formData.financingMethod === 'mortgage' || formData.financingMethod === 'mixed') && (
           <>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -482,7 +482,7 @@ export default function BuyerProfilePage() {
               </select>
             </div>
           </>
-        ) : null}
+        )}
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -716,7 +716,7 @@ export default function BuyerProfilePage() {
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent"
           >
             <option value="">Select budget</option>
-            <option value="minimal">Minimal (< €5,000)</option>
+            <option value="minimal">Minimal (&lt; €5,000)</option>
             <option value="moderate">Moderate (€5,000 - €10,000)</option>
             <option value="substantial">Substantial (€10,000 - €20,000)</option>
             <option value="premium">Premium (€20,000+)</option>
