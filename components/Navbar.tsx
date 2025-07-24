@@ -65,7 +65,7 @@ export default function Navbar() {
               Blog
             </a>
             <a 
-              href="https://calendly.com/investinpuglia/consultation" 
+              href="https://calendly.com/investinpuglia/30min" 
               className="bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-full font-semibold transition-all hover:shadow-lg hover:scale-105 transform duration-200"
               target="_blank"
               rel="noopener noreferrer"
