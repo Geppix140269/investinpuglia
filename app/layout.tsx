@@ -20,10 +20,10 @@ const playfairDisplay = Playfair_Display({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://investiscope.net'),
+  metadataBase: new URL('https://investinpuglia.eu'),
   title: {
-    default: 'Property Investment in Puglia - EU Grants up to €2.25M | InvestiScope',
-    template: '%s | Property Investment Puglia - InvestiScope'
+    default: 'Property Investment in Puglia - EU Grants up to €2.25M | Invest in Puglia',
+    template: '%s | Property Investment Puglia - Invest in Puglia'
   },
   description: 'Expert property investment advisory in Puglia, Italy. Secure up to €2.25M in EU grants. Free grant calculator, property surveys, and professional guidance for foreign investors.',
   keywords: [
@@ -39,12 +39,13 @@ export const metadata: Metadata = {
     'buy property puglia grants',
     'puglia property market',
     'italian property investment grants',
-    'investiscope',
+    'invest in puglia',
+    'investinpuglia',
     'giuseppe funaro property advisor'
   ],
-  authors: [{ name: 'InvestiScope' }],
-  creator: 'InvestiScope',
-  publisher: 'InvestiScope',
+  authors: [{ name: 'Invest in Puglia' }],
+  creator: 'Invest in Puglia',
+  publisher: 'Invest in Puglia',
   formatDetection: {
     email: false,
     address: false,
@@ -53,8 +54,8 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Property Investment in Puglia - Secure €2.25M in EU Grants',
     description: 'Expert advisory for property investment in Puglia. Free grant calculator, professional surveys, and proven strategies for foreign investors.',
-    url: 'https://investiscope.net',
-    siteName: 'InvestiScope - Puglia Property Investment',
+    url: 'https://investinpuglia.eu',
+    siteName: 'Invest in Puglia - EU Property Grants & Investment',
     images: [
       {
         url: '/images/puglia-property-investment.jpg',
@@ -71,13 +72,18 @@ export const metadata: Metadata = {
     title: 'Property Investment in Puglia - EU Grants Available',
     description: 'Secure up to €2.25M in grants for your Puglia property investment. Expert advisory services.',
     images: ['/images/puglia-property-investment.jpg'],
+    creator: '@investinpuglia'
   },
   alternates: {
-    canonical: 'https://investiscope.net',
+    canonical: 'https://investinpuglia.eu',
     languages: {
-      'en-US': 'https://investiscope.net',
-      'it-IT': 'https://investiscope.net/it',
-    },
+      'en-US': 'https://en.investinpuglia.eu',
+      'ar': 'https://ar.investinpuglia.eu',
+      'zh': 'https://zh.investinpuglia.eu',
+    }
+  },
+  verification: {
+    google: 'G-LPJCZYGWWG', // Your existing Google verification
   },
   robots: {
     index: true,
@@ -98,33 +104,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${playfairDisplay.variable}`}>
       <head>
-        <link rel="canonical" href="https://investiscope.net" />
-        <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#667eea" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link rel="preload" as="image" href="/Logo_InvestiScope.png" />
-        
-        {/* EmailJS Scripts */}
-        <Script 
-          src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"
-          strategy="beforeInteractive"
-        />
-        <Script 
-          id="emailjs-init"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                // Initialize EmailJS with your user ID
-                emailjs.init("wKn1_xMCtZssdZzpb");
-              })();
-            `
-          }}
-        />
-        
         {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-LPJCZYGWWG"
@@ -138,58 +119,56 @@ export default function RootLayout({
             gtag('config', 'G-LPJCZYGWWG');
           `}
         </Script>
+
+        {/* EmailJS SDK */}
+        <Script
+          src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"
+          strategy="afterInteractive"
+        />
+        <Script id="emailjs-init" strategy="afterInteractive">
+          {`
+            (function(){
+              if (typeof window !== 'undefined' && window.emailjs) {
+                window.emailjs.init("wKn1_xMCtZssdZzpb");
+              }
+            })();
+          `}
+        </Script>
+
+        {/* Favicon */}
+        <link rel="icon" href="/favicon.ico" />
         
-        <script
+        {/* Schema.org JSON-LD */}
+        <Script
+          id="schema-org"
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "FinancialService",
-              "name": "InvestiScope - Property Investment Puglia",
-              "description": "Expert property investment advisory in Puglia, Italy. Secure EU grants up to €2.25M.",
-              "url": "https://investiscope.net",
-              "logo": "https://investiscope.net/images/logo.png",
-              "image": "https://investiscope.net/images/puglia-property-investment.jpg",
-              "priceRange": "€€€",
+              "@type": "RealEstateAgent",
+              "name": "Invest in Puglia",
+              "description": "Expert property investment advisory in Puglia, Italy. EU grants up to €2.25M.",
+              "url": "https://investinpuglia.eu",
+              "telephone": "+39 351 400 1402",
+              "email": "info@investinpuglia.eu",
               "address": {
                 "@type": "PostalAddress",
+                "addressLocality": "Bari",
                 "addressRegion": "Puglia",
                 "addressCountry": "IT"
-              },
-              "geo": {
-                "@type": "GeoCoordinates",
-                "latitude": "40.7928",
-                "longitude": "17.1011"
               },
               "areaServed": {
                 "@type": "Place",
                 "name": "Puglia, Italy"
               },
-              "serviceType": [
-                "Property Investment Advisory",
-                "EU Grant Consultation",
-                "Real Estate Due Diligence",
-                "Investment Property Analysis"
-              ],
-              "founder": {
-                "@type": "Person",
-                "name": "Giuseppe Funaro",
-                "jobTitle": "Senior Property Investment Advisor"
-              },
-              "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "5",
-                "reviewCount": "47"
-              }
+              "knowsAbout": ["Property Investment", "EU Grants", "Italian Real Estate", "Mini PIA Turismo"]
             })
           }}
         />
       </head>
-      <body className={`${inter.variable} ${playfairDisplay.variable} ${inter.className}`}>
+      <body className={`${inter.className} font-sans antialiased`}>
         <Navbar />
-        <main className="pt-16 min-h-screen">
-          {children}
-        </main>
+        <main className="pt-16">{children}</main>
         <Footer />
       </body>
     </html>
