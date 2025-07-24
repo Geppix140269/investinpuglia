@@ -174,7 +174,7 @@ export default function ToolsPage() {
                 <a href="/contact" className="block text-blue-600 hover:underline font-medium">
                   → Contact Us
                 </a>
-                <a href="https://calendly.com/investiscope_pro/30min" target="_blank" rel="noopener noreferrer" className="block text-blue-600 hover:underline font-medium">
+                <a href="https://calendly.com/investinpuglia/30min" target="_blank" rel="noopener noreferrer" className="block text-blue-600 hover:underline font-medium">
                   → Book Consultation
                 </a>
               </div>
@@ -252,7 +252,7 @@ export default function ToolsPage() {
               Start Advanced Calculator
             </a>
             <a 
-              href="https://calendly.com/investiscope_pro/30min" 
+              href="https://calendly.com/investinpuglia/30min" 
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-3 border-2 border-white text-white px-10 py-5 rounded-full text-lg font-bold hover:bg-white hover:text-blue-700 transition-colors"
