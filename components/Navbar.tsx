@@ -46,7 +46,7 @@ export default function Navbar() {
                 <a href="/classic" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
                   Classic Calculator
                 </a>
-                <a href="https://investinpuglia-easy.netlify.app/" target="_blank" rel="noopener noreferrer" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
+                <a href="https://investiscope-easy.netlify.app/" target="_blank" rel="noopener noreferrer" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
                   Quick Calculator
                 </a>
                 <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100 mt-2">
