@@ -530,9 +530,12 @@ export default function HomePage() {
                 Connect with pre-vetted architects, engineers, contractors with proven track records
               </p>
               <CTAButton 
-                variant="bookCall"
+                variant="custom"
+                href="https://calendly.com/investinpuglia/30min"
+                text="Book Expert Call"
                 location="services"
                 className="inline-flex items-center gap-2 font-semibold bg-gradient-to-r from-purple-600 to-emerald-600 bg-clip-text text-transparent hover:scale-105 transition-transform"
+                showIcon={true}
               />
             </div>
           </div>
@@ -723,7 +726,9 @@ export default function HomePage() {
                 className="text-lg px-10 py-5 bg-white text-purple-700 hover:bg-gray-100 rounded-full font-bold shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
               />
               <CTAButton 
-                variant="bookCall"
+                variant="custom"
+                href="https://calendly.com/investinpuglia/30min"
+                text="Book Expert Call"
                 location="footer-cta"
                 className="text-lg px-10 py-5 bg-transparent border-2 border-white text-white hover:bg-white hover:text-purple-700 rounded-full font-bold shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all"
               />
