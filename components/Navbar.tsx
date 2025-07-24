@@ -10,12 +10,12 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md z-50 border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <a href="/" className="flex items-center">
+          {/* Logo - Updated with better styling */}
+          <a href="/" className="flex items-center group">
             <img 
               src="/Logo_InvestInPuglia_Black.svg" 
-              alt="Invest in Puglia Logo" 
-              className="h-12 w-auto object-contain"
+              alt="Invest in Puglia" 
+              className="h-10 md:h-12 w-auto object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-200"
             />
           </a>
           
@@ -40,11 +40,14 @@ export default function Navbar() {
                 <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100">
                   Calculators
                 </div>
-                <a href="/classic" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
-                  Grant Calculator Classic
+                <a href="/calculator" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
+                  Grant Calculator
                 </a>
-                <a href="https://investiscopeeasy.netlify.app/" target="_blank" rel="noopener noreferrer" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
-                  Grant Calculator Light
+                <a href="/classic" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
+                  Classic Calculator
+                </a>
+                <a href="https://investinpuglia-easy.netlify.app/" target="_blank" rel="noopener noreferrer" className="block px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors">
+                  Quick Calculator
                 </a>
                 <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100 mt-2">
                   Analysis
@@ -62,8 +65,8 @@ export default function Navbar() {
               Blog
             </a>
             <a 
-              href="https://calendly.com/investiscope_pro/30min" 
-              className="bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-full font-semibold transition-all hover:shadow-lg"
+              href="https://calendly.com/investinpuglia/consultation" 
+              className="bg-green-600 hover:bg-green-700 text-white px-5 py-2.5 rounded-full font-semibold transition-all hover:shadow-lg hover:scale-105 transform duration-200"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -106,11 +109,14 @@ export default function Navbar() {
                   <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide py-1">
                     Calculators
                   </div>
-                  <a href="/classic" className="text-gray-600 hover:text-gray-900 transition-colors text-sm block py-1">
-                    → Grant Calculator Classic
+                  <a href="/calculator" className="text-gray-600 hover:text-gray-900 transition-colors text-sm block py-1">
+                    → Grant Calculator
                   </a>
-                  <a href="https://investiscopeeasy.netlify.app/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors text-sm block py-1">
-                    → Grant Calculator Light
+                  <a href="/classic" className="text-gray-600 hover:text-gray-900 transition-colors text-sm block py-1">
+                    → Classic Calculator
+                  </a>
+                  <a href="https://investinpuglia-easy.netlify.app/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors text-sm block py-1">
+                    → Quick Calculator
                   </a>
                   <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide py-1 mt-2">
                     Analysis
@@ -128,7 +134,7 @@ export default function Navbar() {
                 Blog
               </a>
               <a 
-                href="https://calendly.com/investiscope_pro/30min" 
+                href="https://calendly.com/investinpuglia/consultation" 
                 className="bg-green-600 text-white px-5 py-3 rounded-full font-semibold text-center"
                 target="_blank"
                 rel="noopener noreferrer"
