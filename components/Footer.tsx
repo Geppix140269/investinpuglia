@@ -5,15 +5,10 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-5 text-center">
         <div className="flex justify-center items-center gap-3 mb-4">
           <img 
-            src="/Logo_InvestiScope.png" 
+            src="/Logo_InvestInPuglia_White.svg" 
             alt="Invest in Puglia Logo" 
             className="h-12 w-auto"
           />
-          <div className="flex items-baseline gap-1">
-            <h3 className="text-3xl font-bold m-0" style={{ fontFamily: "'Playfair Display', serif" }}>
-              Invest in Puglia
-            </h3>
-          </div>
         </div>
         <p className="text-gray-400 text-sm tracking-wider mb-8" style={{ fontFamily: "'Inter', sans-serif", letterSpacing: '0.15em' }}>
           EU PROPERTY GRANTS • INVESTMENT ADVISORY • PUGLIA EXPERTISE
