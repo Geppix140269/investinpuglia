@@ -39,7 +39,7 @@ export default function ContactPage() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-5 justify-center animate-fadeIn animation-delay-400">
               <a 
-                href="https://calendly.com/investiscope_pro/30min" 
+                href="https://calendly.com/investinpuglia/30min" 
                 className="inline-flex items-center gap-3 bg-gradient-to-r from-green-600 to-green-700 text-white px-10 py-5 rounded-full text-lg font-bold hover:-translate-y-1 hover:shadow-2xl transition-all duration-300"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -48,7 +48,7 @@ export default function ContactPage() {
                 <span className="text-2xl">→</span>
               </a>
               <a 
-                href="mailto:info@investiscope.net" 
+                href="mailto:info@investinpuglia.eu" 
                 className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md border-2 border-white/30 text-white px-10 py-5 rounded-full text-lg font-bold hover:bg-white/20 transition-all duration-300"
               >
                 Email Directly
@@ -69,7 +69,7 @@ export default function ContactPage() {
               <div className="space-y-6">
                 <div>
                   <h3 className="font-semibold text-gray-700 mb-2">Email</h3>
-                  <a href="mailto:info@investiscope.net" className="text-green-600 hover:underline text-lg">
+                  <a href="mailto:info@investinpuglia.eu" className="text-green-600 hover:underline text-lg">
                     info@investiscope.net
                   </a>
                 </div>
@@ -100,7 +100,7 @@ export default function ContactPage() {
               </p>
               
               <a 
-                href="https://calendly.com/investiscope_pro/30min" 
+                href="https://calendly.com/investinpuglia/30min" 
                 className="inline-block bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-xl font-bold hover:shadow-2xl hover:-translate-y-1 transition-all w-full text-center"
                 target="_blank"
                 rel="noopener noreferrer"
