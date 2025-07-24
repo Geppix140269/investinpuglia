@@ -64,14 +64,10 @@ const CTAButton: React.FC<CTAButtonProps> = ({
   const handleClick = async (e: React.MouseEvent) => {
     // Track the click
     try {
-      await trackCTAClick({
-        cta_type: variant,
-        cta_location: location,
-        metadata: {
-          ...metadata,
-          href: finalHref,
-          text: finalText
-        }
+      await trackCTAClick(variant, location, {
+        ...metadata,
+        href: finalHref,
+        text: finalText
       })
     } catch (error) {
       console.error('Error tracking CTA click:', error)
