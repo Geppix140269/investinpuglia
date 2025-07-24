@@ -132,8 +132,8 @@ export default function HomePage() {
                   📞 +39 351 400 1402
                 </a>
                 <span className="text-white/30">•</span>
-                <a href="mailto:info@investiscope.net" className="hover:text-emerald-300 transition-colors font-medium">
-                  ✉️ info@investiscope.net
+                <a href="mailto:info@investinpuglia.eu" className="hover:text-emerald-300 transition-colors font-medium">
+                  ✉️ info@investinpuglia.eu
                 </a>
               </div>
             </div>
@@ -165,7 +165,7 @@ export default function HomePage() {
                 Grant Source <strong className="font-bold">Institutions</strong>
               </h2>
               <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-                InvestiScope™ provides consultancy and support services related to the Mini PIA program — 
+                Invest in Puglia™ provides consultancy and support services related to the Mini PIA program — 
                 a public funding initiative co-financed by Regione Puglia and the European Union.
               </p>
             </div>
@@ -197,7 +197,7 @@ export default function HomePage() {
               
               <div className="border-t pt-6">
                 <p className="text-xs text-gray-500 text-center italic">
-                  <strong>Disclaimer:</strong> InvestiScope™ is an independent private consultancy and is not 
+                  <strong>Disclaimer:</strong> Invest in Puglia™ is an independent private consultancy and is not 
                   affiliated with or endorsed by Regione Puglia or the European Union.
                 </p>
               </div>
