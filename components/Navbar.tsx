@@ -13,15 +13,10 @@ export default function Navbar() {
           {/* Logo */}
           <a href="/" className="flex items-center gap-2">
             <img 
-              src="/Logo_InvestiScope.png" 
+              src="/Logo_InvestInPuglia_Black.svg" 
               alt="Invest in Puglia Logo" 
               className="h-10 w-auto"
             />
-            <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-bold text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>
-                Invest in Puglia
-              </span>
-            </div>
           </a>
           
           {/* Desktop Navigation */}
