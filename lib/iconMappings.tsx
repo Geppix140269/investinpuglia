@@ -1,4 +1,6 @@
-// lib/iconMappings.ts
+// lib/iconMappings.tsx
+'use client'
+
 import React from 'react'
 import Image from 'next/image'
 
@@ -202,12 +204,12 @@ interface IconProps {
 }
 
 // Custom Icon component to replace Lucide icons
-const Icon: React.FC<IconProps> = ({
+export default function Icon({
   name,
   size = 24,
   className = '',
   alt = ''
-}) => {
+}: IconProps) {
   const iconPath = iconMap[name] || '/icon/default.png'
   
   return (
@@ -221,13 +223,10 @@ const Icon: React.FC<IconProps> = ({
   )
 }
 
-// Export Icon as named export
+// Named export for alternative import style
 export { Icon }
 
 // Helper function to get icon path
 export const getIconPath = (name: string): string => {
   return iconMap[name] || '/icon/default.png'
 }
-
-// Export Icon as default
-export default Icon
