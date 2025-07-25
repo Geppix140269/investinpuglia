@@ -1,4 +1,4 @@
-const blogPostType = {
+export const blogPostType = {
   name: 'blogPost',
   title: 'Blog Post',
   type: 'document',
@@ -92,5 +92,3 @@ const blogPostType = {
     }
   }
 }
-
-export default blogPostType
