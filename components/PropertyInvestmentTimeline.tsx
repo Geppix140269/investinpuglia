@@ -1,6 +1,9 @@
+// components/PropertyInvestmentTimeline.tsx
 'use client'
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
+import Icon from '@/lib/iconMappings';
 
 const PropertyInvestmentTimeline = () => {
   const [activeStep, setActiveStep] = useState(0);
@@ -25,7 +28,7 @@ const PropertyInvestmentTimeline = () => {
       title: "Initial Consultation",
       duration: "1-2 days",
       description: "Free assessment of your investment goals and property requirements",
-      icon: "💬",
+      icon: "MessageCircle",
       critical: false,
       whyImportant: "",
       details: [
@@ -40,7 +43,7 @@ const PropertyInvestmentTimeline = () => {
       title: "Fiscal Code (Codice Fiscale)",
       duration: "2-3 days",
       description: "Essential Italian tax identification number - gateway to all transactions",
-      icon: "🆔",
+      icon: "UserCheck",
       critical: true,
       whyImportant: "Without a Codice Fiscale, you cannot: open bank accounts, sign contracts, purchase property, or conduct any official business in Italy. We handle the entire application process remotely.",
       details: [
@@ -55,7 +58,7 @@ const PropertyInvestmentTimeline = () => {
       title: "Italian Bank Account",
       duration: "5-7 days",
       description: "Open Italian bank account for seamless transactions and lower fees",
-      icon: "🏦",
+      icon: "Building",
       critical: true,
       whyImportant: "Italian banks are required for: property purchases, utility payments, tax payments, and receiving rental income. International transfers for property are complex - we simplify this process.",
       details: [
@@ -70,7 +73,7 @@ const PropertyInvestmentTimeline = () => {
       title: "Property Search & Selection",
       duration: "2-4 weeks",
       description: "Curated property options matching your criteria",
-      icon: "🔍",
+      icon: "Search",
       critical: false,
       whyImportant: "",
       details: [
@@ -85,7 +88,7 @@ const PropertyInvestmentTimeline = () => {
       title: "Due Diligence Survey",
       duration: "7-10 days",
       description: "Comprehensive legal, technical, and financial verification",
-      icon: "📋",
+      icon: "ClipboardList",
       critical: false,
       whyImportant: "",
       details: [
@@ -100,7 +103,7 @@ const PropertyInvestmentTimeline = () => {
       title: "Price Negotiation",
       duration: "3-5 days",
       description: "Expert negotiation to secure best terms",
-      icon: "💰",
+      icon: "Euro",
       critical: false,
       whyImportant: "",
       details: [
@@ -115,7 +118,7 @@ const PropertyInvestmentTimeline = () => {
       title: "Preliminary Contract",
       duration: "1-2 days",
       description: "Compromesso - binding agreement with deposit",
-      icon: "📝",
+      icon: "FileText",
       critical: false,
       whyImportant: "",
       details: [
@@ -130,7 +133,7 @@ const PropertyInvestmentTimeline = () => {
       title: "Final Deed (Rogito)",
       duration: "1 day",
       description: "Official property transfer at notary",
-      icon: "🏛️",
+      icon: "Building2",
       critical: false,
       whyImportant: "",
       details: [
@@ -145,7 +148,7 @@ const PropertyInvestmentTimeline = () => {
       title: "Post-Purchase Support",
       duration: "Ongoing",
       description: "Utilities, renovations, and property management",
-      icon: "🔧",
+      icon: "Wrench",
       critical: false,
       whyImportant: "",
       details: [
@@ -164,7 +167,7 @@ const PropertyInvestmentTimeline = () => {
       title: "Grant Eligibility Check",
       duration: "2-3 days",
       description: "Verify property qualifies for Mini PIA funding",
-      icon: "✅",
+      icon: "Check",
       critical: false,
       whyImportant: "",
       details: [
@@ -179,7 +182,7 @@ const PropertyInvestmentTimeline = () => {
       title: "Business Plan Development",
       duration: "2-3 weeks",
       description: "Comprehensive investment plan for grant application",
-      icon: "📊",
+      icon: "BarChart3",
       critical: false,
       whyImportant: "",
       details: [
@@ -194,212 +197,161 @@ const PropertyInvestmentTimeline = () => {
       title: "Technical Documentation",
       duration: "2 weeks",
       description: "Gather all required technical and legal documents",
-      icon: "🗂️",
+      icon: "FolderOpen",
       critical: false,
       whyImportant: "",
       details: [
         "Architectural plans",
-        "Environmental assessments",
-        "Permits preparation",
-        "Cost estimates"
+        "Engineering reports",
+        "Environmental compliance",
+        "Financial statements"
       ]
     },
     {
       id: 'mp4',
-      title: "Grant Application Submission",
+      title: "Grant Application",
       duration: "1 week",
-      description: "Submit complete application to Regione Puglia",
-      icon: "📤",
-      critical: false,
-      whyImportant: "",
+      description: "Submit complete application to regional authorities",
+      icon: "Upload",
+      critical: true,
+      whyImportant: "Application deadlines are strict and missing documents can result in automatic rejection. We ensure 100% compliance with all requirements.",
       details: [
-        "Online submission",
-        "Document upload",
-        "Fee payment",
+        "Digital submission",
+        "Document verification",
+        "Tracking number",
         "Confirmation receipt"
       ]
     },
     {
       id: 'mp5',
       title: "Evaluation Period",
-      duration: "60-90 days",
-      description: "Regional authority review and scoring",
-      icon: "⏳",
+      duration: "8-12 weeks",
+      description: "Regional committee reviews and scores application",
+      icon: "Clock",
       critical: false,
       whyImportant: "",
       details: [
         "Technical evaluation",
         "Financial assessment",
         "Innovation scoring",
-        "Ranking publication"
+        "Ranking process"
       ]
     },
     {
       id: 'mp6',
       title: "Grant Approval",
-      duration: "1 week",
-      description: "Receive formal approval and funding agreement",
-      icon: "🎉",
+      duration: "1-2 weeks",
+      description: "Receive official approval and funding agreement",
+      icon: "Award",
       critical: false,
       whyImportant: "",
       details: [
         "Approval notification",
         "Grant agreement",
-        "Implementation timeline",
-        "Reporting requirements"
+        "Funding timeline",
+        "Compliance requirements"
       ]
     },
     {
       id: 'mp7',
       title: "Property Purchase",
-      duration: "30 days",
-      description: "Complete purchase with grant funding secured",
-      icon: "🏡",
+      duration: "2-4 weeks",
+      description: "Complete property acquisition with grant funding secured",
+      icon: "Home",
       critical: false,
       whyImportant: "",
       details: [
-        "Modified purchase contract",
-        "Grant disclosure",
-        "Compliance measures",
-        "Closing coordination"
+        "Purchase completion",
+        "Grant integration",
+        "Fund disbursement",
+        "Project initiation"
       ]
     }
   ];
 
+  // Handle step progression
   useEffect(() => {
     const timer = setInterval(() => {
-      if (!isAnimating) {
-        setActiveStep((prev) => (prev + 1) % (showMiniPIA ? miniPIASteps.length : standardSteps.length));
-      }
-    }, 3000);
+      const maxSteps = showMiniPIA ? miniPIASteps.length : standardSteps.length;
+      setActiveStep((prev) => (prev + 1) % maxSteps);
+    }, 5000);
     return () => clearInterval(timer);
-  }, [showMiniPIA, isAnimating, miniPIASteps.length, standardSteps.length]);
-
-  const handleStepClick = (index: number) => {
-    setIsAnimating(true);
-    setActiveStep(index);
-    setTimeout(() => setIsAnimating(false), 5000);
-  };
+  }, [showMiniPIA]);
 
   const currentSteps = showMiniPIA ? miniPIASteps : standardSteps;
   const currentStep = currentSteps[activeStep];
 
   // Mobile Timeline Component
   const MobileTimeline = () => (
-    <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 rounded-2xl shadow-xl">
+    <div className="bg-white p-6 rounded-2xl shadow-xl max-w-md mx-auto">
       {/* Header */}
-      <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
-          Your Property Investment Journey in Italy
-        </h2>
-        <p className="text-sm text-gray-600">
-          Navigate the complete process with confidence
-        </p>
-        
-        {/* Path Toggle */}
-        <div className="inline-flex bg-white rounded-full shadow-lg p-1 mt-4 text-sm">
-          <button
-            onClick={() => setShowMiniPIA(false)}
-            className={`px-4 py-2 rounded-full font-semibold transition-all ${
-              !showMiniPIA 
-                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white' 
-                : 'text-gray-600'
-            }`}
-          >
-            Standard
-          </button>
-          <button
-            onClick={() => setShowMiniPIA(true)}
-            className={`px-4 py-2 rounded-full font-semibold transition-all ${
-              showMiniPIA 
-                ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white' 
-                : 'text-gray-600'
-            }`}
-          >
-            With Grant
-          </button>
-        </div>
+      <h3 className="text-2xl font-bold mb-4 text-center">Investment Timeline</h3>
+      
+      {/* Path Toggle */}
+      <div className="flex gap-2 mb-6">
+        <button
+          onClick={() => setShowMiniPIA(false)}
+          className={`flex-1 py-2 px-3 rounded-lg text-sm font-semibold transition-all ${
+            !showMiniPIA 
+              ? 'bg-emerald-600 text-white' 
+              : 'bg-gray-100 text-gray-600'
+          }`}
+        >
+          Standard
+        </button>
+        <button
+          onClick={() => setShowMiniPIA(true)}
+          className={`flex-1 py-2 px-3 rounded-lg text-sm font-semibold transition-all ${
+            showMiniPIA 
+              ? 'bg-purple-600 text-white' 
+              : 'bg-gray-100 text-gray-600'
+          }`}
+        >
+          With Grant
+        </button>
       </div>
 
-      {/* Progress Indicator */}
-      <div className="mb-4">
-        <div className="flex justify-between text-xs text-gray-600 mb-1">
-          <span>Step {activeStep + 1} of {currentSteps.length}</span>
-          <span>{Math.round(((activeStep + 1) / currentSteps.length) * 100)}%</span>
-        </div>
-        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div 
-            className={`h-full rounded-full transition-all duration-1000 ${
-              showMiniPIA ? 'bg-gradient-to-r from-purple-600 to-indigo-600' : 'bg-gradient-to-r from-emerald-600 to-teal-600'
-            }`}
-            style={{ width: `${((activeStep + 1) / currentSteps.length) * 100}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Current Step Card */}
-      <div className="bg-white rounded-xl p-4 shadow-lg mb-4">
-        <div className="flex items-start gap-3">
-          <div className={`text-3xl ${currentStep.critical ? 'animate-pulse' : ''}`}>
-            {currentStep.icon}
+      {/* Current Step */}
+      <div className="mb-6">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-12 h-12 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 flex items-center justify-center">
+            <Icon name={currentStep.icon} size={24} className="text-white" />
           </div>
           <div className="flex-1">
-            <div className="flex items-start justify-between mb-2">
-              <h3 className="font-bold text-lg">{currentStep.title}</h3>
-              {currentStep.critical && (
-                <span className="px-2 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-700">
-                  Critical
-                </span>
-              )}
-            </div>
-            <p className="text-xs text-gray-500 mb-2">{currentStep.duration}</p>
-            <p className="text-sm text-gray-600 mb-3">{currentStep.description}</p>
-            
-            {currentStep.whyImportant && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-3">
-                <p className="text-xs text-amber-800">
-                  <strong>⚠️ Why Critical:</strong> {currentStep.whyImportant}
-                </p>
-              </div>
-            )}
+            <h4 className="font-bold">{currentStep.title}</h4>
+            <p className="text-sm text-gray-600">{currentStep.duration}</p>
           </div>
         </div>
+        <p className="text-sm text-gray-700">{currentStep.description}</p>
       </div>
 
-      {/* Step Navigation Dots */}
-      <div className="flex justify-center gap-2 mb-4">
+      {/* Progress Dots */}
+      <div className="flex justify-center gap-2 mb-6">
         {currentSteps.map((_, index) => (
-          <button
+          <div
             key={index}
-            onClick={() => handleStepClick(index)}
             className={`w-2 h-2 rounded-full transition-all ${
-              index === activeStep 
-                ? showMiniPIA 
-                  ? 'w-8 bg-purple-600' 
-                  : 'w-8 bg-emerald-600'
-                : index < activeStep
-                ? 'bg-gray-400'
-                : 'bg-gray-300'
+              index === activeStep ? 'bg-emerald-600 w-6' : 'bg-gray-300'
             }`}
           />
         ))}
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-3 gap-2 mb-4 text-center">
-        <div className="bg-white rounded-lg p-3">
+      {/* Summary Stats */}
+      <div className="grid grid-cols-3 gap-3 mb-6 text-center">
+        <div className="bg-gray-50 rounded-lg p-3">
           <p className="text-xs text-gray-600">Timeline</p>
           <p className={`font-bold ${showMiniPIA ? 'text-purple-600' : 'text-emerald-600'}`}>
             {showMiniPIA ? '4-6 mo' : '6-10 wk'}
           </p>
         </div>
-        <div className="bg-white rounded-lg p-3">
+        <div className="bg-gray-50 rounded-lg p-3">
           <p className="text-xs text-gray-600">Support</p>
           <p className={`font-bold ${showMiniPIA ? 'text-purple-600' : 'text-emerald-600'}`}>
             {showMiniPIA ? '€2.25M' : 'Full'}
           </p>
         </div>
-        <div className="bg-white rounded-lg p-3">
+        <div className="bg-gray-50 rounded-lg p-3">
           <p className="text-xs text-gray-600">Success</p>
           <p className={`font-bold ${showMiniPIA ? 'text-purple-600' : 'text-emerald-600'}`}>
             100%
@@ -463,50 +415,58 @@ const PropertyInvestmentTimeline = () => {
           />
         </div>
 
-        {/* Steps */}
+        {/* Step Circles */}
         <div className="relative flex justify-between">
-          {currentSteps.map((step, index) => (
-            <div
-              key={step.id}
-              className="flex flex-col items-center cursor-pointer group"
-              onClick={() => handleStepClick(index)}
-            >
-              <div
-                className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl transition-all duration-500 ${
-                  index === activeStep
-                    ? showMiniPIA 
-                      ? 'bg-gradient-to-r from-purple-600 to-indigo-600 scale-125 shadow-xl' 
-                      : 'bg-gradient-to-r from-emerald-600 to-teal-600 scale-125 shadow-xl'
-                    : index < activeStep
-                    ? 'bg-gray-400'
-                    : 'bg-white border-2 border-gray-300'
-                } ${index <= activeStep ? 'text-white' : ''}`}
+          {currentSteps.map((step, index) => {
+            const isActive = index === activeStep;
+            const isPast = index < activeStep;
+            const isCritical = 'critical' in step ? step.critical : false;
+            
+            return (
+              <div 
+                key={step.id} 
+                className="relative z-10 cursor-pointer"
+                onClick={() => setActiveStep(index)}
               >
-                {index < activeStep ? (
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                ) : (
-                  <span>{step.icon}</span>
-                )}
-              </div>
-              <div className="mt-2 text-center">
-                <p className={`text-xs font-semibold ${index === activeStep ? 'text-gray-900' : 'text-gray-500'}`}>
+                <div
+                  className={`w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 ${
+                    isActive 
+                      ? showMiniPIA 
+                        ? 'bg-gradient-to-r from-purple-600 to-indigo-600 shadow-xl scale-125' 
+                        : 'bg-gradient-to-r from-emerald-600 to-teal-600 shadow-xl scale-125'
+                      : isPast
+                        ? 'bg-gray-400'
+                        : 'bg-white border-2 border-gray-300'
+                  } ${isCritical && isActive ? 'ring-4 ring-red-200' : ''}`}
+                >
+                  <Icon 
+                    name={step.icon} 
+                    size={isActive ? 32 : 24} 
+                    className={isActive || isPast ? 'text-white' : 'text-gray-400'}
+                  />
+                </div>
+                <p className={`text-center mt-2 text-xs font-medium ${isActive ? 'text-gray-900' : 'text-gray-500'}`}>
                   Step {index + 1}
                 </p>
                 <p className={`text-xs mt-1 max-w-[100px] ${index === activeStep ? 'text-gray-700' : 'text-gray-400'}`}>
                   {step.title}
                 </p>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
 
       {/* Current Step Details */}
       <div className="bg-white rounded-2xl p-8 shadow-xl">
         <div className="flex items-start gap-6">
-          <div className={`text-6xl ${currentStep.critical ? 'animate-pulse' : ''}`}>{currentStep.icon}</div>
+          <div className={`p-4 rounded-2xl ${showMiniPIA ? 'bg-purple-100' : 'bg-emerald-100'} ${currentStep.critical ? 'animate-pulse' : ''}`}>
+            <Icon 
+              name={currentStep.icon} 
+              size={48} 
+              className={showMiniPIA ? 'text-purple-600' : 'text-emerald-600'}
+            />
+          </div>
           <div className="flex-1">
             <div className="flex items-center gap-4 mb-4">
               <h3 className="text-2xl font-bold">{currentStep.title}</h3>
