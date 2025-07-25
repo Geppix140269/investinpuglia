@@ -1,37 +1,28 @@
+// app/api/createPost/route.ts
+
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@sanity/client'
-import { readFile } from 'fs/promises'
-import { join } from 'path'
-import { v4 as uuidv4 } from 'uuid'
-import { IncomingForm } from 'formidable'
-import { writeFile } from 'fs/promises'
 import { tmpdir } from 'os'
+import { join } from 'path'
+import { writeFile } from 'fs/promises'
+import { v4 as uuidv4 } from 'uuid'
 
-// Required because Next.js doesn't handle FormData with files natively in API routes
+// Force edge mode
 export const dynamic = 'force-dynamic'
 
-// Sanity client setup
+// Sanity client
 const client = createClient({
   projectId: 'trb0xnj0',
   dataset: 'production',
   apiVersion: '2023-07-25',
-  token: process.env.SANITY_API_TOKEN, // make sure this is set in Netlify
-  useCdn: false,
+  token: process.env.SANITY_API_TOKEN,
+  useCdn: false
 })
 
-async function parseForm(req: NextRequest): Promise<any> {
-  const form = new IncomingForm({ multiples: false, uploadDir: tmpdir(), keepExtensions: true })
-  return new Promise((resolve, reject) => {
-    form.parse(req as any, (err, fields, files) => {
-      if (err) return reject(err)
-      resolve({ fields, files })
-    })
-  })
-}
-
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData()
+
     const title = formData.get('title') as string
     const body = formData.get('body') as string
     const seoTitle = formData.get('seoTitle') as string
@@ -47,6 +38,7 @@ export async function POST(req: Request) {
     if (file && typeof file === 'object') {
       const arrayBuffer = await file.arrayBuffer()
       const buffer = Buffer.from(arrayBuffer)
+
       const uploaded = await client.assets.upload('image', buffer, {
         filename: file.name,
         contentType: file.type
