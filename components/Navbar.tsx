@@ -1,4 +1,3 @@
-// components/Navbar.tsx
 'use client'
 
 import { useState } from 'react'
@@ -9,16 +8,32 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 bg-white/95 backdrop-blur-md z-50 border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo - Updated with better styling */}
-          <a href="/" className="flex items-center group">
-            <img 
-              src="/Logo_InvestInPuglia_Morph.png" 
-              alt="Invest in Puglia" 
-              className="h-10 md:h-12 w-auto object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-200"
-            />
-          </a>
-          
+        <div className="flex justify-between items-center h-16 relative">
+          {/* Mobile menu button */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className="md:hidden p-2 z-10 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+          >
+            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {isOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
+
+          {/* Logo - Centered on mobile, aligned left on desktop */}
+          <div className="absolute inset-x-0 top-0 flex justify-center items-center h-16 md:static md:justify-start">
+            <a href="/" className="flex items-center group">
+              <img 
+                src="/Logo_InvestInPuglia_Morph.png" 
+                alt="Invest in Puglia" 
+                className="h-10 md:h-12 w-auto object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-200"
+              />
+            </a>
+          </div>
+
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
             <a href="/" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
@@ -27,7 +42,7 @@ export default function Navbar() {
             <a href="/investment-process" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
               Process
             </a>
-            
+
             {/* Tools dropdown with calculators */}
             <div className="relative group">
               <a href="/tools" className="text-gray-700 hover:text-gray-900 transition-colors font-medium flex items-center gap-1">
@@ -57,7 +72,7 @@ export default function Navbar() {
                 </a>
               </div>
             </div>
-            
+
             <a href="/contact" className="text-gray-700 hover:text-gray-900 transition-colors font-medium">
               Contact
             </a>
@@ -73,22 +88,8 @@ export default function Navbar() {
               Book Strategy Call →
             </a>
           </div>
-          
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors"
-          >
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              {isOpen ? (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
         </div>
-        
+
         {/* Mobile Navigation */}
         {isOpen && (
           <div className="md:hidden py-4 border-t border-gray-200">
@@ -99,7 +100,7 @@ export default function Navbar() {
               <a href="/investment-process" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
                 Investment Process
               </a>
-              
+
               {/* Tools section with sub-items */}
               <div>
                 <a href="/tools" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2 block">
@@ -115,7 +116,7 @@ export default function Navbar() {
                   <a href="/classic" className="text-gray-600 hover:text-gray-900 transition-colors text-sm block py-1">
                     → Classic Calculator
                   </a>
-                  <a href="https://investinpuglia-easy.netlify.app/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors text-sm block py-1">
+                  <a href="https://investiscope-easy.netlify.app/" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-900 transition-colors text-sm block py-1">
                     → Quick Calculator
                   </a>
                   <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide py-1 mt-2">
@@ -126,7 +127,7 @@ export default function Navbar() {
                   </a>
                 </div>
               </div>
-              
+
               <a href="/contact" className="text-gray-700 hover:text-gray-900 transition-colors font-medium py-2">
                 Contact
               </a>
@@ -134,7 +135,7 @@ export default function Navbar() {
                 Blog
               </a>
               <a 
-                href="https://calendly.com/investinpuglia/consultation" 
+                href="https://calendly.com/investinpuglia/30min" 
                 className="bg-green-600 text-white px-5 py-3 rounded-full font-semibold text-center"
                 target="_blank"
                 rel="noopener noreferrer"
