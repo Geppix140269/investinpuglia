@@ -154,7 +154,6 @@ export const iconMap: Record<string, string> = {
   'Ship': '/icon/Ship.png',
   'Navigation': '/icon/Navigation.png',
   'Milestone': '/icon/Milestone.png',
-  'Flag': '/icon/Flag.png',
   'MapPinOff': '/icon/MapPinOff.png',
   'Route': '/icon/Route.png',
   'Signpost': '/icon/Signpost.png',
@@ -203,7 +202,7 @@ interface IconProps {
 }
 
 // Custom Icon component to replace Lucide icons
-export const Icon: React.FC<IconProps> = ({
+const Icon: React.FC<IconProps> = ({
   name,
   size = 24,
   className = '',
@@ -222,9 +221,13 @@ export const Icon: React.FC<IconProps> = ({
   )
 }
 
+// Export Icon as named export
+export { Icon }
+
 // Helper function to get icon path
 export const getIconPath = (name: string): string => {
   return iconMap[name] || '/icon/default.png'
 }
 
+// Export Icon as default
 export default Icon
