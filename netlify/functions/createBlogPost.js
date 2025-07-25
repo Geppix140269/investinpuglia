@@ -1,5 +1,4 @@
-import { Handler } from '@netlify/functions'
-import { createClient } from '@sanity/client'
+const { createClient } = require('@sanity/client')
 
 const client = createClient({
   projectId: 'trb0xnj0',
@@ -9,7 +8,7 @@ const client = createClient({
   useCdn: false,
 })
 
-const handler: Handler = async () => {
+exports.handler = async function () {
   const post = {
     _type: 'blogPost',
     title: {
@@ -24,9 +23,36 @@ const handler: Handler = async () => {
     language: 'en',
     status: 'published',
     body: {
-      en: [{ _type: 'block', style: 'normal', markDefs: [], children: [{ _type: 'span', text: 'Puglia has emerged as one of the most promising real estate markets in Europe...', marks: [] }] }],
-      ar: [{ _type: 'block', style: 'normal', markDefs: [], children: [{ _type: 'span', text: 'أصبحت بوليا واحدة من أكثر الأسواق العقارية الواعدة في أوروبا...', marks: [] }] }],
-      zh: [{ _type: 'block', style: 'normal', markDefs: [], children: [{ _type: 'span', text: '普利亚已成为欧洲最具前景的房地产市场之一...', marks: [] }] }],
+      en: [{
+        _type: 'block',
+        style: 'normal',
+        markDefs: [],
+        children: [{
+          _type: 'span',
+          text: 'Puglia has emerged as one of the most promising real estate markets in Europe...',
+          marks: []
+        }]
+      }],
+      ar: [{
+        _type: 'block',
+        style: 'normal',
+        markDefs: [],
+        children: [{
+          _type: 'span',
+          text: 'أصبحت بوليا واحدة من أكثر الأسواق العقارية الواعدة في أوروبا...',
+          marks: []
+        }]
+      }],
+      zh: [{
+        _type: 'block',
+        style: 'normal',
+        markDefs: [],
+        children: [{
+          _type: 'span',
+          text: '普利亚已成为欧洲最具前景的房地产市场之一...',
+          marks: []
+        }]
+      }],
       it: [],
       de: [],
       fr: []
@@ -51,5 +77,3 @@ const handler: Handler = async () => {
     }
   }
 }
-
-export { handler }
