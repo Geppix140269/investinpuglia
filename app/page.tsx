@@ -4,6 +4,7 @@
 
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
+import Icon from '@/lib/iconMappings'
 import CTAButton from '@/components/CTAButton'
 import ExitIntentPopup from '@/components/ExitIntentPopup'
 
@@ -88,19 +89,19 @@ export default function HomePage() {
           {/* Glass Benefits Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12 animate-fadeIn animation-delay-300">
             <div className="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-3 rounded-2xl text-white font-medium text-sm hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
-              <Image src="/icon/check.png" alt="Check" width={20} height={20} className="inline-block mr-2" />
+              <Icon name="Check" size={20} className="inline-block mr-2" />
               Verified local professionals
             </div>
             <div className="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-3 rounded-2xl text-white font-medium text-sm hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
-              <Image src="/icon/check.png" alt="Check" width={20} height={20} className="inline-block mr-2" />
+              <Icon name="Check" size={20} className="inline-block mr-2" />
               Prevent costly mistakes
             </div>
             <div className="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-3 rounded-2xl text-white font-medium text-sm hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
-              <Image src="/icon/check.png" alt="Check" width={20} height={20} className="inline-block mr-2" />
+              <Icon name="Check" size={20} className="inline-block mr-2" />
               Real references & results
             </div>
             <div className="bg-white/10 backdrop-blur-md border border-white/20 px-4 py-3 rounded-2xl text-white font-medium text-sm hover:bg-white/20 transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-1">
-              <Image src="/icon/check.png" alt="Check" width={20} height={20} className="inline-block mr-2" />
+              <Icon name="Check" size={20} className="inline-block mr-2" />
               €50M+ grants secured
             </div>
           </div>
@@ -119,9 +120,7 @@ export default function HomePage() {
               href="#advisor"
               text="Meet Our Expert Network"
               location="hero"
-              icon={
-                <Image src="/icon/Users.png" alt="Team" width={24} height={24} />
-              }
+              icon={<Icon name="Users" size={24} />}
               className="group inline-flex items-center gap-3 bg-white/10 backdrop-blur-md border-2 border-white/30 text-white px-8 py-5 rounded-full text-lg font-bold hover:bg-white/20 hover:border-white/50 transition-all duration-300 shadow-lg hover:shadow-xl"
             />
           </div>
@@ -132,12 +131,12 @@ export default function HomePage() {
               <p className="text-white font-medium text-lg mb-3">Avoid costly mistakes. Talk to trusted experts first.</p>
               <div className="flex flex-wrap justify-center items-center gap-6 text-white">
                 <a href="tel:+393514001402" className="hover:text-emerald-300 transition-colors font-medium flex items-center gap-2">
-                  <Image src="/icon/smartphone.png" alt="Phone" width={20} height={20} />
+                  <Icon name="Phone" size={20} />
                   +39 351 400 1402
                 </a>
                 <span className="text-white/30">•</span>
                 <a href="mailto:info@investinpuglia.eu" className="hover:text-emerald-300 transition-colors font-medium flex items-center gap-2">
-                  <Image src="/icon/mail.png" alt="Email" width={20} height={20} />
+                  <Icon name="Mail" size={20} />
                   info@investinpuglia.eu
                 </a>
               </div>
@@ -148,7 +147,7 @@ export default function HomePage() {
         {/* Scroll indicator with glass effect */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
           <div className="bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-full">
-            <Image src="/icon/ArrowDown.png" alt="Scroll down" width={24} height={24} />
+            <Icon name="ArrowDown" size={24} className="text-white" />
           </div>
         </div>
       </section>
@@ -219,7 +218,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-5 relative z-10">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-emerald-600 text-white px-5 py-2 rounded-full text-sm font-semibold mb-6 shadow-lg">
-              <Image src="/icon/Target.png" alt="Target" width={20} height={20} />
+              <Icon name="Target" size={20} />
               THE SMART APPROACH
             </div>
             <h2 className="text-3xl md:text-5xl font-light text-gray-900 mb-4">
@@ -229,8 +228,8 @@ export default function HomePage() {
           
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-white/50">
-              <div className="text-4xl mb-4 filter drop-shadow-lg">
-                <Image src="/icon/alert.png" alt="Alert" width={48} height={48} />
+              <div className="mb-4">
+                <Icon name="AlertTriangle" size={48} className="text-red-500" />
               </div>
               <h3 className="text-xl font-bold mb-3 bg-gradient-to-r from-purple-600 to-purple-700 bg-clip-text text-transparent">Avoid €100k+ Mistakes</h3>
               <p className="text-gray-700">
@@ -240,8 +239,8 @@ export default function HomePage() {
             </div>
             
             <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-white/50">
-              <div className="text-4xl mb-4 filter drop-shadow-lg">
-                <Image src="/icon/check.png" alt="Check" width={48} height={48} />
+              <div className="mb-4">
+                <Icon name="Check" size={48} className="text-green-600" />
               </div>
               <h3 className="text-xl font-bold mb-3 bg-gradient-to-r from-emerald-600 to-emerald-700 bg-clip-text text-transparent">Real References</h3>
               <p className="text-gray-700">
@@ -251,8 +250,8 @@ export default function HomePage() {
             </div>
             
             <div className="bg-white/70 backdrop-blur-md rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-white/50">
-              <div className="text-4xl mb-4 filter drop-shadow-lg">
-                <Image src="/icon/Trophy.png" alt="Trophy" width={48} height={48} />
+              <div className="mb-4">
+                <Icon name="Trophy" size={48} className="text-yellow-500" />
               </div>
               <h3 className="text-xl font-bold mb-3 bg-gradient-to-r from-teal-600 to-teal-700 bg-clip-text text-transparent">Guaranteed Success</h3>
               <p className="text-gray-700">
@@ -273,7 +272,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-5 relative z-10">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white px-5 py-2 rounded-full text-sm font-semibold mb-6">
-              <Image src="/icon/RefreshCw.png" alt="Process" width={20} height={20} />
+              <Icon name="RefreshCw" size={20} />
               YOUR SUCCESS PATH
             </div>
             <h2 className="text-3xl md:text-5xl font-light text-white mb-4">
@@ -283,8 +282,8 @@ export default function HomePage() {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 hover:bg-white/15 hover:-translate-y-2 transition-all">
-              <div className="text-4xl mb-4 filter drop-shadow-lg">
-                <Image src="/icon/Shield.png" alt="Shield" width={48} height={48} />
+              <div className="mb-4">
+                <Icon name="Shield" size={48} className="text-amber-400" />
               </div>
               <h3 className="text-2xl font-bold mb-4 text-amber-400">Due Diligence</h3>
               <p className="text-gray-300">
@@ -293,8 +292,8 @@ export default function HomePage() {
             </div>
             
             <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 hover:bg-white/15 hover:-translate-y-2 transition-all">
-              <div className="text-4xl mb-4 filter drop-shadow-lg">
-                <Image src="/icon/Users.png" alt="Team" width={48} height={48} />
+              <div className="mb-4">
+                <Icon name="Users" size={48} className="text-cyan-400" />
               </div>
               <h3 className="text-2xl font-bold mb-4 text-cyan-400">Local Team</h3>
               <p className="text-gray-300">
@@ -303,8 +302,8 @@ export default function HomePage() {
             </div>
             
             <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 hover:bg-white/15 hover:-translate-y-2 transition-all">
-              <div className="text-4xl mb-4 filter drop-shadow-lg">
-                <Image src="/icon/Banknote.png" alt="Money" width={48} height={48} />
+              <div className="mb-4">
+                <Icon name="Banknote" size={48} className="text-orange-400" />
               </div>
               <h3 className="text-2xl font-bold mb-4 text-orange-400">Grant Success</h3>
               <p className="text-gray-300">
@@ -313,8 +312,8 @@ export default function HomePage() {
             </div>
             
             <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 hover:bg-white/15 hover:-translate-y-2 transition-all">
-              <div className="text-4xl mb-4 filter drop-shadow-lg">
-                <Image src="/icon/TrendingUp.png" alt="Growth" width={48} height={48} />
+              <div className="mb-4">
+                <Icon name="TrendingUp" size={48} className="text-rose-400" />
               </div>
               <h3 className="text-2xl font-bold mb-4 text-rose-400">ROI Maximized</h3>
               <p className="text-gray-300">
@@ -324,7 +323,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-{/* NEW: Buyer Profile Section */}
+
+      {/* NEW: Buyer Profile Section */}
       <section className="py-20 bg-gradient-to-br from-purple-900 via-pink-800 to-purple-900 text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
           <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.1)_0%,transparent_70%)]"></div>
@@ -333,7 +333,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-5 relative z-10">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-5 py-2 rounded-full text-sm font-semibold mb-6 shadow-lg animate-pulse">
-              <Image src="/icon/Sparkles.png" alt="New" width={20} height={20} />
+              <Icon name="Sparkles" size={20} />
               NEW FEATURE
             </div>
             <h2 className="text-3xl md:text-5xl font-light text-white mb-4">
@@ -348,7 +348,7 @@ export default function HomePage() {
             <div className="space-y-6">
               <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
                 <h3 className="text-xl font-bold mb-3 flex items-center gap-2">
-                  <Image src="/icon/Target.png" alt="Target" width={24} height={24} />
+                  <Icon name="Target" size={24} />
                   Get Matched with Properties
                 </h3>
                 <p className="text-white/80">
@@ -358,7 +358,7 @@ export default function HomePage() {
               
               <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
                 <h3 className="text-xl font-bold mb-3 flex items-center gap-2">
-                  <Image src="/icon/Bell.png" alt="Bell" width={24} height={24} />
+                  <Icon name="Bell" size={24} />
                   Priority Notifications
                 </h3>
                 <p className="text-white/80">
@@ -368,7 +368,7 @@ export default function HomePage() {
               
               <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
                 <h3 className="text-xl font-bold mb-3 flex items-center gap-2">
-                  <Image src="/icon/Handshake.png" alt="Handshake" width={24} height={24} />
+                  <Icon name="Handshake" size={24} />
                   Connect with Top Agents
                 </h3>
                 <p className="text-white/80">
@@ -379,8 +379,8 @@ export default function HomePage() {
             
             <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 border border-white/20 shadow-2xl hover:shadow-3xl transition-all">
               <div className="text-center">
-                <div className="text-6xl mb-4">
-                  <Image src="/icon/ClipboardList.png" alt="Profile" width={64} height={64} className="mx-auto" />
+                <div className="mb-4">
+                  <Icon name="ClipboardList" size={64} className="mx-auto" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4">Complete Your Profile</h3>
                 <p className="text-white/80 mb-6">
@@ -405,7 +405,7 @@ export default function HomePage() {
                   className="inline-flex items-center gap-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:shadow-2xl hover:-translate-y-1 transition-all w-full justify-center"
                 >
                   Start Your Profile
-                  <Image src="/icon/ArrowRight.png" alt="Arrow" width={20} height={20} />
+                  <Icon name="ArrowRight" size={20} />
                 </a>
                 <p className="text-sm text-white/60 mt-4">
                   Free • No obligation • 100% confidential
@@ -415,6 +415,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
       {/* About Giuseppe - Glass Card Design */}
       <section className="py-20 bg-gradient-to-br from-white via-purple-50 to-emerald-50 relative overflow-hidden" id="advisor">
         <div className="absolute top-0 left-0 w-96 h-96 bg-purple-200/30 rounded-full blur-3xl"></div>
@@ -423,7 +424,7 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-5 relative z-10">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-emerald-600 text-white px-5 py-2 rounded-full text-sm font-semibold mb-6 shadow-lg">
-              <Image src="/icon/User.png" alt="User" width={20} height={20} />
+              <Icon name="User" size={20} />
               YOUR ADVISOR
             </div>
             <h2 className="text-3xl md:text-5xl font-light text-gray-900 mb-4">
@@ -454,25 +455,25 @@ export default function HomePage() {
                 
                 <div className="space-y-4 mb-8">
                   <div className="flex items-start gap-3 bg-white/70 backdrop-blur-sm p-4 rounded-xl border border-white/50 shadow-lg">
-                    <Image src="/icon/check.png" alt="Check" width={20} height={20} className="mt-1" />
+                    <Icon name="Check" size={20} className="text-green-600 mt-1" />
                     <span className="text-gray-700">
                       <strong>Every professional vetted</strong> - minimum 10 successful projects required
                     </span>
                   </div>
                   <div className="flex items-start gap-3 bg-white/70 backdrop-blur-sm p-4 rounded-xl border border-white/50 shadow-lg">
-                    <Image src="/icon/check.png" alt="Check" width={20} height={20} className="mt-1" />
+                    <Icon name="Check" size={20} className="text-green-600 mt-1" />
                     <span className="text-gray-700">
                       <strong>Real references provided</strong> - talk to past clients before you commit
                     </span>
                   </div>
                   <div className="flex items-start gap-3 bg-white/70 backdrop-blur-sm p-4 rounded-xl border border-white/50 shadow-lg">
-                    <Image src="/icon/check.png" alt="Check" width={20} height={20} className="mt-1" />
+                    <Icon name="Check" size={20} className="text-green-600 mt-1" />
                     <span className="text-gray-700">
                       <strong>Fixed pricing agreements</strong> - no surprise costs or delays
                     </span>
                   </div>
                   <div className="flex items-start gap-3 bg-white/70 backdrop-blur-sm p-4 rounded-xl border border-white/50 shadow-lg">
-                    <Image src="/icon/check.png" alt="Check" width={20} height={20} className="mt-1" />
+                    <Icon name="Check" size={20} className="text-green-600 mt-1" />
                     <span className="text-gray-700">
                       <strong>Full project oversight</strong> - I personally ensure standards are met
                     </span>
@@ -503,7 +504,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-5 relative z-10">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-emerald-600 text-white px-5 py-2 rounded-full text-sm font-semibold mb-6 shadow-lg">
-              <Image src="/icon/Wrench.png" alt="Tools" width={20} height={20} />
+              <Icon name="Wrench" size={20} />
               PROFESSIONAL TOOLS
             </div>
             <h2 className="text-3xl md:text-5xl font-light text-gray-900 mb-4">
@@ -517,8 +518,8 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-8">
             <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group border border-white/50">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 to-emerald-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-              <div className="text-5xl mb-4 filter drop-shadow-lg group-hover:scale-110 transition-transform">
-                <Image src="/icon/Calculator.png" alt="Calculator" width={56} height={56} />
+              <div className="mb-6 group-hover:scale-110 transition-transform">
+                <Icon name="Calculator" size={56} className="text-purple-600" />
               </div>
               <h3 className="text-2xl font-bold mb-4 text-gray-900">Grant Calculators</h3>
               <p className="mb-6 text-gray-600">
@@ -536,8 +537,8 @@ export default function HomePage() {
             
             <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group border border-white/50">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 to-emerald-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-              <div className="text-5xl mb-4 filter drop-shadow-lg group-hover:scale-110 transition-transform">
-                <Image src="/icon/Search.png" alt="Search" width={56} height={56} />
+              <div className="mb-6 group-hover:scale-110 transition-transform">
+                <Icon name="Search" size={56} className="text-emerald-600" />
               </div>
               <h3 className="text-2xl font-bold mb-4 text-gray-900">Due Diligence Reports</h3>
               <p className="mb-6 text-gray-600">
@@ -555,8 +556,8 @@ export default function HomePage() {
             
             <div className="bg-white/70 backdrop-blur-sm rounded-3xl p-8 shadow-xl hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 relative overflow-hidden group border border-white/50">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 to-emerald-600 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></div>
-              <div className="text-5xl mb-4 filter drop-shadow-lg group-hover:scale-110 transition-transform">
-                <Image src="/icon/ClipboardList.png" alt="Clipboard" width={56} height={56} />
+              <div className="mb-6 group-hover:scale-110 transition-transform">
+                <Icon name="ClipboardList" size={56} className="text-teal-600" />
               </div>
               <h3 className="text-2xl font-bold mb-4 text-gray-900">Verified Professionals</h3>
               <p className="mb-6 text-gray-600">
@@ -585,7 +586,7 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-5 relative z-10">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white/90 px-5 py-2 rounded-full text-sm font-semibold mb-6">
-              <Image src="/icon/Star.png" alt="Star" width={20} height={20} />
+              <Icon name="Star" size={20} />
               PROVEN RESULTS
             </div>
             <h2 className="text-3xl md:text-5xl font-light text-white mb-4">
@@ -597,7 +598,7 @@ export default function HomePage() {
             <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 hover:bg-white/15 hover:-translate-y-2 transition-all">
               <div className="flex gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
-                  <Image key={i} src="/icon/Star.png" alt="Star" width={20} height={20} />
+                  <Icon key={i} name="Star" size={20} className="text-yellow-400" />
                 ))}
               </div>
               <p className="text-lg mb-4 text-white/90">
@@ -613,7 +614,7 @@ export default function HomePage() {
             <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 hover:bg-white/15 hover:-translate-y-2 transition-all">
               <div className="flex gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
-                  <Image key={i} src="/icon/Star.png" alt="Star" width={20} height={20} />
+                  <Icon key={i} name="Star" size={20} className="text-yellow-400" />
                 ))}
               </div>
               <p className="text-lg mb-4 text-white/90">
@@ -629,7 +630,7 @@ export default function HomePage() {
             <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 border border-white/20 hover:bg-white/15 hover:-translate-y-2 transition-all">
               <div className="flex gap-1 mb-4">
                 {[...Array(5)].map((_, i) => (
-                  <Image key={i} src="/icon/Star.png" alt="Star" width={20} height={20} />
+                  <Icon key={i} name="Star" size={20} className="text-yellow-400" />
                 ))}
               </div>
               <p className="text-lg mb-4 text-white/90">
@@ -672,7 +673,7 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto px-5 relative z-10">
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-600 to-emerald-600 text-white px-5 py-2 rounded-full text-sm font-semibold mb-6 shadow-lg">
-              <Image src="/icon/HelpCircle.png" alt="FAQ" width={20} height={20} />
+              <Icon name="HelpCircle" size={20} />
               COMMON QUESTIONS
             </div>
             <h2 className="text-3xl md:text-5xl font-light text-gray-900 mb-4">
@@ -770,7 +771,7 @@ export default function HomePage() {
             </div>
             
             <p className="mt-8 text-sm text-white/70 flex items-center justify-center gap-2">
-              <Image src="/icon/alert.png" alt="Warning" width={16} height={16} />
+              <Icon name="AlertTriangle" size={16} />
               Warning: 95% of investors who go it alone face major problems. Don't be one of them.
             </p>
           </div>
