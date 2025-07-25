@@ -2,6 +2,13 @@
 
 import React, { useState } from 'react'
 import { ChevronRight, ChevronLeft, CheckCircle, Send, Download, X } from 'lucide-react'
+import emailjs from '@emailjs/browser'
+import jsPDF from 'jspdf'
+
+// Initialize EmailJS
+if (typeof window !== 'undefined') {
+  emailjs.init('wKn1_xMCtZssdZzpb')
+}
 
 interface FormData {
   // Personal Information
@@ -80,6 +87,7 @@ const BuyerProfilePage: React.FC = () => {
   const [recipientEmail, setRecipientEmail] = useState<string>('')
   const [recipientType, setRecipientType] = useState<RecipientType>('agency')
   const [customRecipients, setCustomRecipients] = useState<string>('')
+  const [isProcessing, setIsProcessing] = useState<boolean>(false)
   
   // Predefined recipient emails
   const recipientOptions: Record<RecipientType, RecipientOption> = {
@@ -210,37 +218,53 @@ const BuyerProfilePage: React.FC = () => {
         <h2 className="text-2xl font-bold text-blue-900 mb-4">Buyer Profile Summary</h2>
         <p className="text-gray-600 mb-6">Date: {today}</p>
         
-        <div className="space-y-6">
-          <div>
-            <h3 className="text-xl font-semibold text-blue-700 mb-3">Personal Information</h3>
-            <p><strong>Name:</strong> {formData.fullName || 'Not provided'}</p>
-            <p><strong>Email:</strong> {formData.email || 'Not provided'}</p>
-            <p><strong>Phone:</strong> {formData.phone || 'Not provided'}</p>
-            <p><strong>Nationality:</strong> {formData.nationality || 'Not provided'}</p>
-            <p><strong>Residency:</strong> {formData.residency || 'Not provided'}</p>
+        <div className="space-y-4">
+          <div className="border-l-4 border-blue-500 pl-4">
+            <h3 className="font-semibold text-gray-900">Contact Information</h3>
+            <p className="text-gray-700">
+              <strong>Name:</strong> {formData.fullName}<br />
+              <strong>Email:</strong> {formData.email}<br />
+              <strong>Phone:</strong> {formData.phone}<br />
+              <strong>Nationality:</strong> {formData.nationality}
+            </p>
           </div>
           
-          <div>
-            <h3 className="text-xl font-semibold text-blue-700 mb-3">Investment Goals</h3>
-            <p><strong>Purpose:</strong> {formatValue(formData.investmentPurpose)}</p>
-            <p><strong>Property Type:</strong> {formatValue(formData.propertyType)}</p>
-            <p><strong>Budget:</strong> {formatValue(formData.budget)}</p>
-            <p><strong>Timeline:</strong> {formatValue(formData.timeline)}</p>
+          <div className="border-l-4 border-green-500 pl-4">
+            <h3 className="font-semibold text-gray-900">Investment Details</h3>
+            <p className="text-gray-700">
+              <strong>Purpose:</strong> {formatValue(formData.investmentPurpose)}<br />
+              <strong>Property Type:</strong> {formatValue(formData.propertyType)}<br />
+              <strong>Budget:</strong> {formData.budget}<br />
+              <strong>Timeline:</strong> {formData.timeline}
+            </p>
           </div>
           
-          <div>
-            <h3 className="text-xl font-semibold text-blue-700 mb-3">Property Preferences</h3>
-            <p><strong>Locations:</strong> {formData.location.join(', ') || 'Not specified'}</p>
-            <p><strong>Size:</strong> {formatValue(formData.propertySize)}</p>
-            <p><strong>Bedrooms:</strong> {formData.bedrooms || 'Not specified'}</p>
-            <p><strong>Amenities:</strong> {formData.amenities.join(', ') || 'None selected'}</p>
+          <div className="border-l-4 border-purple-500 pl-4">
+            <h3 className="font-semibold text-gray-900">Financial Information</h3>
+            <p className="text-gray-700">
+              <strong>Financing:</strong> {formatValue(formData.financingMethod)}<br />
+              <strong>Down Payment:</strong> {formData.downPaymentPercentage || 'Not specified'}<br />
+              <strong>Pre-approved:</strong> {formatValue(formData.preApproved)}
+            </p>
           </div>
         </div>
         
-        <div className="mt-8 p-6 bg-amber-50 rounded-lg">
-          <p className="text-gray-700 italic">
-            This buyer profile was generated through Invest in Puglia. 
-            We specialize in connecting international buyers with exceptional properties in the heart of Southern Italy.
+        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+          <p className="text-sm text-blue-800">
+            <strong>Note:</strong> Complete profile details are included in the attached PDF.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  if (currentStep > totalSteps) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-amber-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Profile Complete!</h1>
+          <p className="text-xl text-gray-600">
+            Thank you for completing your buyer profile. We'll be in touch soon.
           </p>
         </div>
       </div>
@@ -248,53 +272,221 @@ const BuyerProfilePage: React.FC = () => {
   }
 
   const handleSendEmail = async (): Promise<void> => {
-    // Determine recipients based on selection
-    let recipients: string[] = []
+    setIsProcessing(true)
     
-    if (recipientType === 'custom') {
-      // Parse custom email addresses
-      recipients = customRecipients
-        .split(',')
-        .map(email => email.trim())
-        .filter(email => email.includes('@'))
-    } else {
-      recipients = recipientOptions[recipientType].emails
-    }
+    try {
+      // Determine recipients based on selection
+      let recipients: string[] = []
+      
+      if (recipientType === 'custom') {
+        // Parse custom email addresses
+        recipients = customRecipients
+          .split(',')
+          .map(email => email.trim())
+          .filter(email => email.includes('@'))
+      } else {
+        recipients = recipientOptions[recipientType].emails
+      }
 
-    if (recipients.length === 0) {
-      alert('Please select or enter at least one recipient email address')
-      return
-    }
+      if (recipients.length === 0) {
+        alert('Please select or enter at least one recipient email address')
+        setIsProcessing(false)
+        return
+      }
 
-    // Prepare email data
-    const emailData = {
-      to: recipients,
-      cc: [formData.email], // CC the buyer
-      subject: `New Buyer Profile: ${formData.fullName} - ${formatValue(formData.propertyType)} in Puglia`,
-      buyerData: formData,
-      sentAt: new Date().toISOString()
-    }
-    
-    console.log('Sending email to:', recipients)
-    console.log('Email data:', emailData)
-    
-    // In production, you would call your backend API here
-    // const response = await fetch('/api/send-buyer-profile', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify(emailData)
-    // })
-    
-    // Simulate email sending
-    setTimeout(() => {
+      // Generate PDF
+      const pdf = generatePDF()
+      const pdfBase64 = pdf.output('datauristring').split(',')[1]
+
+      // Prepare email template parameters
+      const templateParams = {
+        // Recipient info
+        to_email: recipients[0], // Primary recipient
+        cc_email: recipients.slice(1).join(','), // CC other recipients
+        reply_to: formData.email,
+        
+        // Buyer info
+        buyer_name: formData.fullName,
+        buyer_email: formData.email,
+        buyer_phone: formData.phone,
+        buyer_nationality: formData.nationality,
+        
+        // Investment details
+        property_type: formData.propertyType,
+        budget: formData.budget,
+        timeline: formData.timeline,
+        locations: formData.location.join(', '),
+        
+        // Financial info
+        financing_method: formData.financingMethod,
+        down_payment: formData.downPaymentPercentage,
+        
+        // Additional details for the email body
+        property_size: formData.propertySize,
+        bedrooms: formData.bedrooms,
+        experience: formData.italianPropertyExperience,
+        language_skills: formData.languageSkills,
+        special_requirements: formData.specialRequests || 'None specified',
+        
+        // PDF attachment (base64)
+        pdf_base64: pdfBase64,
+        pdf_filename: `buyer-profile-${formData.fullName.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}.pdf`,
+        
+        // Metadata
+        sent_date: new Date().toLocaleDateString(),
+        sent_time: new Date().toLocaleTimeString()
+      }
+      
+      // Send email using EmailJS
+      const result = await emailjs.send(
+        'service_w6tghqr',
+        'template_buyer_profile', // You'll need to create this template
+        templateParams
+      )
+      
+      console.log('Email sent successfully:', result)
+      
+      // Send a copy to the buyer
+      await emailjs.send(
+        'service_w6tghqr',
+        'template_buyer_profile_copy', // Template for buyer's copy
+        {
+          to_email: formData.email,
+          buyer_name: formData.fullName,
+          sent_to: recipients.join(', '),
+          pdf_base64: pdfBase64,
+          pdf_filename: `buyer-profile-${formData.fullName.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}.pdf`
+        }
+      )
+      
       setEmailSent(true)
-    }, 1000)
+    } catch (error) {
+      console.error('Error sending email:', error)
+      alert('Failed to send email. Please try again or contact support.')
+    } finally {
+      setIsProcessing(false)
+    }
   }
 
   const handleDownloadPDF = (): void => {
-    // In a real implementation, you would generate a PDF here
-    console.log('Downloading PDF with form data:', formData)
-    alert('PDF download functionality would be implemented with a library like jsPDF or by calling a backend service')
+    const pdf = generatePDF()
+    pdf.save(`buyer-profile-${formData.fullName.replace(/\s+/g, '-').toLowerCase()}-${Date.now()}.pdf`)
+  }
+
+  const generatePDF = (): jsPDF => {
+    const doc = new jsPDF()
+    let yPosition = 20
+    const lineHeight = 7
+    const pageHeight = 280
+    
+    // Add header
+    doc.setFontSize(20)
+    doc.setTextColor(31, 78, 121)
+    doc.text('Buyer Profile Report', 105, yPosition, { align: 'center' })
+    yPosition += 15
+    
+    doc.setFontSize(12)
+    doc.setTextColor(100)
+    doc.text('Invest in Puglia - Qualified Buyer Database', 105, yPosition, { align: 'center' })
+    yPosition += 10
+    
+    // Add date
+    doc.setFontSize(10)
+    doc.text(`Generated: ${new Date().toLocaleDateString()}`, 105, yPosition, { align: 'center' })
+    yPosition += 15
+    
+    // Function to add a section
+    const addSection = (title: string, data: [string, string][]) => {
+      // Check if we need a new page
+      if (yPosition + (data.length * lineHeight) + 20 > pageHeight) {
+        doc.addPage()
+        yPosition = 20
+      }
+      
+      // Section title
+      doc.setFontSize(14)
+      doc.setTextColor(31, 78, 121)
+      doc.text(title, 20, yPosition)
+      yPosition += 10
+      
+      // Section data
+      doc.setFontSize(10)
+      doc.setTextColor(0)
+      
+      data.forEach(([label, value]) => {
+        if (yPosition > pageHeight - 10) {
+          doc.addPage()
+          yPosition = 20
+        }
+        
+        doc.setFont('helvetica', 'bold')
+        doc.text(`${label}:`, 20, yPosition)
+        doc.setFont('helvetica', 'normal')
+        
+        // Handle long text
+        const textLines = doc.splitTextToSize(value, 160)
+        doc.text(textLines, 60, yPosition)
+        yPosition += lineHeight * textLines.length
+      })
+      
+      yPosition += 10
+    }
+    
+    // Add all sections
+    addSection('Personal Information', [
+      ['Full Name', formData.fullName],
+      ['Email', formData.email],
+      ['Phone', formData.phone],
+      ['Nationality', formData.nationality],
+      ['Current Residency', formData.residency]
+    ])
+    
+    addSection('Investment Goals', [
+      ['Purpose', formatValue(formData.investmentPurpose)],
+      ['Property Type', formatValue(formData.propertyType)],
+      ['Budget', formData.budget],
+      ['Timeline', formData.timeline]
+    ])
+    
+    addSection('Property Preferences', [
+      ['Preferred Locations', formData.location.length > 0 ? formData.location.join(', ') : 'Not specified'],
+      ['Property Size', formData.propertySize || 'Not specified'],
+      ['Bedrooms', formData.bedrooms || 'Not specified'],
+      ['Required Amenities', formData.amenities.length > 0 ? formData.amenities.join(', ') : 'None selected']
+    ])
+    
+    addSection('Financial Details', [
+      ['Financing Method', formatValue(formData.financingMethod)],
+      ['Down Payment', formData.downPaymentPercentage || 'Not specified'],
+      ['Pre-approved', formatValue(formData.preApproved)],
+      ['Monthly Budget', formData.monthlyBudget || 'Not specified']
+    ])
+    
+    addSection('Experience & Requirements', [
+      ['Previous Investments', formData.previousInvestments || 'Not specified'],
+      ['Italian Property Experience', formatValue(formData.italianPropertyExperience)],
+      ['Language Skills', formatValue(formData.languageSkills)],
+      ['Assistance Needed', formData.needsAssistance.length > 0 ? formData.needsAssistance.join(', ') : 'None selected']
+    ])
+    
+    addSection('Legal & Management', [
+      ['Italian Tax ID', formData.taxId || formData.needsTaxId || 'Not specified'],
+      ['Legal Representation', formatValue(formData.legalRepresentation)],
+      ['Property Management', formatValue(formData.propertyManagement)],
+      ['Rental Strategy', formatValue(formData.rentalStrategy)]
+    ])
+    
+    // Add footer
+    doc.setFontSize(8)
+    doc.setTextColor(150)
+    const pageCount = doc.getNumberOfPages()
+    for (let i = 1; i <= pageCount; i++) {
+      doc.setPage(i)
+      doc.text(`Page ${i} of ${pageCount}`, 105, 290, { align: 'center' })
+      doc.text('Confidential - Invest in Puglia', 20, 290)
+    }
+    
+    return doc
   }
 
   const renderStepContent = (): JSX.Element => {
@@ -427,7 +619,7 @@ const BuyerProfilePage: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Budget Range (EUR) *
+                  Total Investment Budget *
                 </label>
                 <select
                   value={formData.budget}
@@ -436,11 +628,11 @@ const BuyerProfilePage: React.FC = () => {
                   required
                 >
                   <option value="">Select budget</option>
-                  <option value="0-150k">€0 - €150,000</option>
-                  <option value="150k-300k">€150,000 - €300,000</option>
-                  <option value="300k-500k">€300,000 - €500,000</option>
+                  <option value="0-250k">€0 - €250,000</option>
+                  <option value="250k-500k">€250,000 - €500,000</option>
                   <option value="500k-1m">€500,000 - €1,000,000</option>
-                  <option value="1m+">€1,000,000+</option>
+                  <option value="1m-2m">€1,000,000 - €2,000,000</option>
+                  <option value="2m+">€2,000,000+</option>
                 </select>
               </div>
 
@@ -455,10 +647,10 @@ const BuyerProfilePage: React.FC = () => {
                   required
                 >
                   <option value="">Select timeline</option>
-                  <option value="immediate">Immediate (0-3 months)</option>
-                  <option value="short">Short-term (3-6 months)</option>
-                  <option value="medium">Medium-term (6-12 months)</option>
-                  <option value="long">Long-term (12+ months)</option>
+                  <option value="0-3">0-3 months</option>
+                  <option value="3-6">3-6 months</option>
+                  <option value="6-12">6-12 months</option>
+                  <option value="12+">12+ months</option>
                 </select>
               </div>
             </div>
@@ -477,15 +669,15 @@ const BuyerProfilePage: React.FC = () => {
                   Preferred Locations (select all that apply)
                 </label>
                 <div className="space-y-2">
-                  {['Ostuni', 'Monopoli', 'Polignano a Mare', 'Locorotondo', 'Alberobello', 'Cisternino', 'Martina Franca', 'Fasano', 'Other'].map(location => (
-                    <label key={location} className="flex items-center p-2 hover:bg-blue-50 rounded-lg cursor-pointer transition-colors">
+                  {['Lecce', 'Brindisi', 'Ostuni', 'Gallipoli', 'Otranto', 'Fasano', 'Monopoli', 'Polignano a Mare', 'Valle d\'Itria', 'Salento Coast', 'No preference'].map(loc => (
+                    <label key={loc} className="flex items-center p-2 hover:bg-blue-50 rounded-lg cursor-pointer transition-colors">
                       <input
                         type="checkbox"
-                        checked={formData.location.includes(location)}
-                        onChange={(e) => handleCheckboxChange('location', location, e.target.checked)}
+                        checked={formData.location.includes(loc)}
+                        onChange={(e) => handleCheckboxChange('location', loc, e.target.checked)}
                         className="mr-3 w-5 h-5 text-blue-600 rounded focus:ring-blue-500"
                       />
-                      <span className="text-gray-700">{location}</span>
+                      <span className="text-gray-700">{loc}</span>
                     </label>
                   ))}
                 </div>
@@ -501,10 +693,11 @@ const BuyerProfilePage: React.FC = () => {
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
                   <option value="">Select size</option>
-                  <option value="small">Small (&lt; 100 m²)</option>
-                  <option value="medium">Medium (100-200 m²)</option>
-                  <option value="large">Large (200-400 m²)</option>
-                  <option value="xlarge">Extra Large (400+ m²)</option>
+                  <option value="0-100">0-100 m²</option>
+                  <option value="100-200">100-200 m²</option>
+                  <option value="200-300">200-300 m²</option>
+                  <option value="300-500">300-500 m²</option>
+                  <option value="500+">500+ m²</option>
                 </select>
               </div>
 
@@ -527,10 +720,10 @@ const BuyerProfilePage: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Essential Amenities (select all that apply)
+                  Required Amenities (select all that apply)
                 </label>
                 <div className="space-y-2">
-                  {['Swimming Pool', 'Garden', 'Sea View', 'Parking', 'Guest House', 'Wine Cellar', 'Olive Grove', 'Historic Features'].map(amenity => (
+                  {['Swimming Pool', 'Garden', 'Sea View', 'Parking', 'Terrace', 'Wine Cellar', 'Guest House', 'Historic Features', 'Modern Kitchen', 'Air Conditioning'].map(amenity => (
                     <label key={amenity} className="flex items-center p-2 hover:bg-blue-50 rounded-lg cursor-pointer transition-colors">
                       <input
                         type="checkbox"
@@ -551,7 +744,7 @@ const BuyerProfilePage: React.FC = () => {
         return (
           <div className="space-y-6">
             <h2 className="text-3xl font-bold text-blue-900">Financial Details</h2>
-            <p className="text-gray-600">Help us understand your financial situation.</p>
+            <p className="text-gray-600">Help us understand your financial requirements.</p>
             
             <div className="space-y-4">
               <div>
@@ -568,11 +761,11 @@ const BuyerProfilePage: React.FC = () => {
                   <option value="cash">Cash Purchase</option>
                   <option value="mortgage">Mortgage</option>
                   <option value="mixed">Cash + Mortgage</option>
-                  <option value="investor">Investor Funding</option>
+                  <option value="investor">Investor Financing</option>
                 </select>
               </div>
 
-              {(formData.financingMethod === 'mortgage' || formData.financingMethod === 'mixed') && (
+              {formData.financingMethod && formData.financingMethod !== 'cash' && (
                 <>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -588,13 +781,13 @@ const BuyerProfilePage: React.FC = () => {
                       <option value="30">30%</option>
                       <option value="40">40%</option>
                       <option value="50">50%</option>
-                      <option value="60+">60% or more</option>
+                      <option value="60+">60%+</option>
                     </select>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Pre-approved for Mortgage?
+                      Pre-approved for Financing?
                     </label>
                     <select
                       value={formData.preApproved}
@@ -635,7 +828,7 @@ const BuyerProfilePage: React.FC = () => {
         return (
           <div className="space-y-6">
             <h2 className="text-3xl font-bold text-blue-900">Experience Level</h2>
-            <p className="text-gray-600">Tell us about your real estate investment experience.</p>
+            <p className="text-gray-600">Tell us about your investment experience.</p>
             
             <div className="space-y-4">
               <div>
@@ -651,7 +844,7 @@ const BuyerProfilePage: React.FC = () => {
                   <option value="none">First-time investor</option>
                   <option value="1-2">1-2 properties</option>
                   <option value="3-5">3-5 properties</option>
-                  <option value="5+">5+ properties</option>
+                  <option value="6+">6+ properties</option>
                 </select>
               </div>
 
@@ -687,7 +880,7 @@ const BuyerProfilePage: React.FC = () => {
                   <option value="basic">Basic</option>
                   <option value="intermediate">Intermediate</option>
                   <option value="fluent">Fluent</option>
-                  <option value="native">Native speaker</option>
+                  <option value="native">Native</option>
                 </select>
               </div>
 
@@ -696,7 +889,7 @@ const BuyerProfilePage: React.FC = () => {
                   Areas Where You Need Assistance (select all that apply)
                 </label>
                 <div className="space-y-2">
-                  {['Property Search', 'Legal Process', 'Financing', 'Renovation', 'Property Management', 'Tax Planning', 'Residency/Visa', 'Local Connections'].map(area => (
+                  {['Property Search', 'Legal Process', 'Financing', 'Renovation Planning', 'Grant Applications', 'Tax Planning', 'Property Management', 'Translation Services'].map(area => (
                     <label key={area} className="flex items-center p-2 hover:bg-blue-50 rounded-lg cursor-pointer transition-colors">
                       <input
                         type="checkbox"
@@ -762,16 +955,16 @@ const BuyerProfilePage: React.FC = () => {
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
                   <option value="">Select option</option>
-                  <option value="have-lawyer">I have an Italian lawyer</option>
-                  <option value="need-lawyer">I need a lawyer</option>
-                  <option value="notary-only">Notary only is fine</option>
-                  <option value="full-service">Want full legal service</option>
+                  <option value="need-lawyer">Need a lawyer</option>
+                  <option value="have-lawyer">Have a lawyer</option>
+                  <option value="need-notary">Need notary only</option>
+                  <option value="all-covered">All covered</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Power of Attorney
+                  Power of Attorney Needs
                 </label>
                 <select
                   value={formData.powerOfAttorney}
@@ -779,7 +972,7 @@ const BuyerProfilePage: React.FC = () => {
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
                   <option value="">Select option</option>
-                  <option value="present">I'll be present for closing</option>
+                  <option value="will-attend">Will attend closing in person</option>
                   <option value="need-poa">I'll need power of attorney</option>
                   <option value="not-sure">Not sure yet</option>
                 </select>
@@ -871,12 +1064,12 @@ const BuyerProfilePage: React.FC = () => {
         return (
           <div className="space-y-6">
             <h2 className="text-3xl font-bold text-blue-900">Due Diligence</h2>
-            <p className="text-gray-600">Important checks and inspections for your purchase.</p>
+            <p className="text-gray-600">Your approach to property inspection and verification.</p>
             
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Property Inspection
+                  Property Inspection Plans
                 </label>
                 <select
                   value={formData.propertyInspection}
@@ -884,33 +1077,33 @@ const BuyerProfilePage: React.FC = () => {
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
                   <option value="">Select option</option>
-                  <option value="basic">Basic inspection</option>
-                  <option value="comprehensive">Comprehensive survey</option>
-                  <option value="structural">Structural engineer review</option>
-                  <option value="full-team">Full professional team</option>
+                  <option value="visit-myself">Will visit myself</option>
+                  <option value="trusted-rep">Send trusted representative</option>
+                  <option value="virtual-only">Virtual viewing only</option>
+                  <option value="professional-inspection">Hire professional inspector</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Legal Review
+                  Legal Document Review
                 </label>
                 <select
                   value={formData.legalReview}
                   onChange={(e) => updateFormData('legalReview', e.target.value)}
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
-                  <option value="">Select level</option>
-                  <option value="basic">Basic title check</option>
-                  <option value="standard">Standard due diligence</option>
-                  <option value="enhanced">Enhanced due diligence</option>
-                  <option value="comprehensive">Comprehensive review</option>
+                  <option value="">Select approach</option>
+                  <option value="full-review">Full legal review</option>
+                  <option value="basic-check">Basic title check</option>
+                  <option value="rely-on-agent">Rely on agent/notary</option>
+                  <option value="independent-lawyer">Independent lawyer review</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Professional Survey Required?
+                  Property Survey Requirements
                 </label>
                 <select
                   value={formData.surveyRequired}
@@ -951,7 +1144,7 @@ const BuyerProfilePage: React.FC = () => {
         return (
           <div className="space-y-6">
             <h2 className="text-3xl font-bold text-blue-900">Grant Eligibility</h2>
-            <p className="text-gray-600">Explore potential grant opportunities for your investment.</p>
+            <p className="text-gray-600">Information for potential grant opportunities.</p>
             
             <div className="space-y-4">
               <div>
@@ -968,13 +1161,13 @@ const BuyerProfilePage: React.FC = () => {
                   <option value="agriculture">Agriculture/Farming</option>
                   <option value="residential">Residential only</option>
                   <option value="mixed">Mixed use</option>
-                  <option value="undecided">Undecided</option>
+                  <option value="undecided">Still deciding</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Employment Creation
+                  Potential for Employment Creation
                 </label>
                 <select
                   value={formData.employmentCreation}
@@ -982,11 +1175,10 @@ const BuyerProfilePage: React.FC = () => {
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
                   <option value="">Select option</option>
-                  <option value="none">No employees planned</option>
+                  <option value="0">No employees</option>
                   <option value="1-2">1-2 employees</option>
                   <option value="3-5">3-5 employees</option>
                   <option value="6+">6+ employees</option>
-                  <option value="seasonal">Seasonal workers</option>
                 </select>
               </div>
 
@@ -995,7 +1187,7 @@ const BuyerProfilePage: React.FC = () => {
                   Sustainability Features (select all that apply)
                 </label>
                 <div className="space-y-2">
-                  {['Solar Panels', 'Rainwater Harvesting', 'Geothermal Heating', 'Energy Efficient Windows', 'Organic Farming', 'EV Charging Station', 'Waste Recycling System'].map(feature => (
+                  {['Solar Panels', 'Heat Pumps', 'Rainwater Harvesting', 'Energy Efficient Windows', 'Insulation Upgrade', 'Smart Home Systems', 'EV Charging', 'Organic Farming'].map(feature => (
                     <label key={feature} className="flex items-center p-2 hover:bg-blue-50 rounded-lg cursor-pointer transition-colors">
                       <input
                         type="checkbox"
@@ -1068,7 +1260,7 @@ const BuyerProfilePage: React.FC = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Urgency Level
+                  Timeline Urgency
                 </label>
                 <select
                   value={formData.urgency}
@@ -1076,23 +1268,23 @@ const BuyerProfilePage: React.FC = () => {
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                 >
                   <option value="">Select urgency</option>
-                  <option value="asap">ASAP - Ready to move fast</option>
-                  <option value="flexible">Flexible timeline</option>
-                  <option value="researching">Just researching</option>
-                  <option value="specific-date">Specific date in mind</option>
+                  <option value="asap">ASAP - As soon as possible</option>
+                  <option value="flexible">Flexible - No rush</option>
+                  <option value="specific-date">Specific deadline</option>
+                  <option value="exploring">Just exploring options</option>
                 </select>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Special Requests or Questions
+                  Special Requirements or Notes
                 </label>
                 <textarea
                   value={formData.specialRequests}
                   onChange={(e) => updateFormData('specialRequests', e.target.value)}
-                  rows={4}
                   className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                  placeholder="Tell us anything else that would help us serve you better..."
+                  rows={4}
+                  placeholder="Any specific requirements or information you'd like us to know..."
                 />
               </div>
 
@@ -1332,10 +1524,15 @@ const BuyerProfilePage: React.FC = () => {
                   <div className="flex flex-wrap gap-4">
                     <button
                       onClick={handleSendEmail}
-                      className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-full font-medium hover:from-blue-700 hover:to-blue-800 transition-all shadow-lg hover:shadow-xl"
+                      disabled={isProcessing}
+                      className={`flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-full font-medium transition-all shadow-lg ${
+                        isProcessing 
+                          ? 'opacity-50 cursor-not-allowed' 
+                          : 'hover:from-blue-700 hover:to-blue-800 hover:shadow-xl'
+                      }`}
                     >
                       <Send className="w-5 h-5" />
-                      Send Email
+                      {isProcessing ? 'Sending...' : 'Send Email'}
                     </button>
                     <button
                       onClick={handleDownloadPDF}
