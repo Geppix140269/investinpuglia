@@ -8,7 +8,7 @@ import { writeFile } from 'fs/promises'
 import { tmpdir } from 'os'
 
 // Required because Next.js doesn't handle FormData with files natively in API routes
-export const config = { api: { bodyParser: false } }
+export const dynamic = 'force-dynamic'
 
 // Sanity client setup
 const client = createClient({
