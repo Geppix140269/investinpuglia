@@ -13,7 +13,7 @@ export default function Navbar() {
           {/* Logo - Updated with better styling */}
           <a href="/" className="flex items-center group">
             <img 
-              src="/Logo_InvestInPuglia_Black.svg" 
+              src="/Logo_InvestInPuglia_Morph.png" 
               alt="Invest in Puglia" 
               className="h-10 md:h-12 w-auto object-contain opacity-90 group-hover:opacity-100 transition-opacity duration-200"
             />
