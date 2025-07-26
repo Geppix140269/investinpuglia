@@ -1,14 +1,4 @@
-import { createClient } from '@sanity/client'
 import { OpenAI } from 'openai'
-
-const client = createClient({
-  projectId: 'trb0xnj0',
-  dataset: 'production',
-  apiVersion: '2023-07-25',
-  token: process.env.SANITY_API_WRITE_TOKEN,
-  useCdn: false,
-  // Remove apiHost - let Sanity client handle it automatically
-})
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
@@ -16,6 +6,36 @@ const locations = [
   'Ostuni', 'Martina Franca', 'Lecce', 'Cisternino', 'Alberobello',
   'Polignano a Mare', 'Monopoli', 'Carovigno', 'Brindisi', 'Taranto'
 ]
+
+// Direct Sanity REST API - bypasses all client issues
+async function createSanityDocument(document) {
+  const projectId = 'trb0xnj0'
+  const dataset = 'production'
+  const token = process.env.SANITY_API_WRITE_TOKEN
+  
+  const url = `https://${projectId}.api.sanity.io/v2023-08-16/data/mutate/${dataset}`
+  
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    },
+    body: JSON.stringify({
+      mutations: [{
+        create: document
+      }]
+    })
+  })
+  
+  if (!response.ok) {
+    const errorText = await response.text()
+    throw new Error(`Sanity API error: ${response.status} - ${errorText}`)
+  }
+  
+  const result = await response.json()
+  return result.results[0]
+}
 
 export async function handler(event) {
   try {
@@ -41,7 +61,6 @@ export async function handler(event) {
       try {
         const geo = locations[Math.floor(Math.random() * locations.length)]
         
-        // Updated prompt to ensure JSON response without response_format
         const prompt = `Generate a multilingual blog post metadata entry for a real estate SEO blog focused on ${geo} in Puglia, Italy. 
         
         IMPORTANT: Return ONLY a valid JSON object, no other text or markdown.
@@ -69,7 +88,6 @@ export async function handler(event) {
           messages: [{ role: 'user', content: prompt }],
           model: 'gpt-4',
           temperature: 0.7
-          // Removed response_format as it's not supported
         })
         
         const jsonRaw = completion.choices[0].message.content?.trim()
@@ -124,15 +142,15 @@ export async function handler(event) {
           publishedAt: new Date().toISOString()
         }
         
-        // Create document in Sanity
-        const created = await client.create(doc)
+        // Use REST API instead of client
+        const created = await createSanityDocument(doc)
         results.push({
-          id: created._id,
+          id: created.id,
           title: doc.title.en,
           geo: doc.geoFocus
         })
         
-        console.log(`Created post ${i + 1}/${count}: ${created._id}`)
+        console.log(`Created post ${i + 1}/${count}: ${created.id}`)
         
       } catch (innerError) {
         console.error(`Error creating post ${i + 1}:`, innerError)
