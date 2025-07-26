@@ -9,9 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@sanity/client": "^6.20.0",
-"@sanity/image-url": "^1.0.2",
-"@portabletext/react": "^3.0.0",
     "openai": "^4.30.0",
     "@emailjs/browser": "^4.4.1",
     "@portabletext/react": "^3.1.0",
