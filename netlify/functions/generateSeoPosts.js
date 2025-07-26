@@ -1,14 +1,12 @@
 import { createClient } from '@sanity/client'
 import { OpenAI } from 'openai'
 
-// FIX: Add explicit apiHost to force correct endpoint
 const client = createClient({
   projectId: 'trb0xnj0',
   dataset: 'production',
   apiVersion: '2023-07-25',
   token: process.env.SANITY_API_WRITE_TOKEN,
   useCdn: false,
-  // THIS IS THE FIX - Force the correct API host
   apiHost: 'https://trb0xnj0.api.sanity.io'
 })
 
@@ -25,7 +23,6 @@ export async function handler(event) {
     const results = []
     const errors = []
     
-    // Add error handling for missing env vars
     if (!process.env.SANITY_API_WRITE_TOKEN) {
       return {
         statusCode: 500,
@@ -44,10 +41,12 @@ export async function handler(event) {
       try {
         const geo = locations[Math.floor(Math.random() * locations.length)]
         
-        // Enhanced prompt for better multilingual content
+        // Updated prompt to ensure JSON response without response_format
         const prompt = `Generate a multilingual blog post metadata entry for a real estate SEO blog focused on ${geo} in Puglia, Italy. 
         
-        Return a valid JSON object with these exact fields:
+        IMPORTANT: Return ONLY a valid JSON object, no other text or markdown.
+        
+        The JSON must have these exact fields:
         {
           "title": "English title about real estate in ${geo}",
           "title_it": "Italian title",
@@ -62,20 +61,28 @@ export async function handler(event) {
           "geoFocus": "${geo}"
         }
         
-        Make it authentic, location-specific, and SEO-friendly. Focus on luxury real estate, villas, or property investment.`
+        Make it authentic, location-specific, and SEO-friendly. Focus on luxury real estate, villas, or property investment.
+        
+        RESPOND WITH ONLY THE JSON OBJECT, NO EXPLANATIONS.`
         
         const completion = await openai.chat.completions.create({
           messages: [{ role: 'user', content: prompt }],
           model: 'gpt-4',
-          temperature: 0.7,
-          response_format: { type: "json_object" }
+          temperature: 0.7
+          // Removed response_format as it's not supported
         })
         
         const jsonRaw = completion.choices[0].message.content?.trim()
-        let parsed
         
+        // Clean up potential markdown formatting
+        const cleanJson = jsonRaw
+          .replace(/```json\n?/g, '')
+          .replace(/```\n?/g, '')
+          .trim()
+        
+        let parsed
         try {
-          parsed = JSON.parse(jsonRaw || '{}')
+          parsed = JSON.parse(cleanJson)
         } catch (err) {
           console.error('JSON parse error:', err, 'Raw:', jsonRaw)
           errors.push({ index: i, error: 'Invalid JSON from OpenAI' })
@@ -88,8 +95,8 @@ export async function handler(event) {
           title: {
             en: parsed.title || `Real Estate in ${geo}`,
             it: parsed.title_it || '',
-            fr: '', // Empty for now as not generated
-            de: '', // Empty for now as not generated
+            fr: '',
+            de: '',
             zh: parsed.title_zh || '',
             ar: parsed.title_ar || ''
           },
@@ -117,7 +124,7 @@ export async function handler(event) {
           publishedAt: new Date().toISOString()
         }
         
-        // Create document with better error handling
+        // Create document in Sanity
         const created = await client.create(doc)
         results.push({
           id: created._id,
@@ -131,8 +138,7 @@ export async function handler(event) {
         console.error(`Error creating post ${i + 1}:`, innerError)
         errors.push({
           index: i,
-          error: innerError.message,
-          type: innerError.constructor.name
+          error: innerError.message || 'Unknown error'
         })
       }
     }
@@ -159,9 +165,8 @@ export async function handler(event) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({ 
-        error: error.message,
-        type: error.constructor.name,
-        stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+        error: error.message || 'Unknown error',
+        type: error.constructor?.name || 'Error'
       })
     }
   }
