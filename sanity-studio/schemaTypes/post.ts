@@ -6,7 +6,6 @@ export default defineType({
   title: 'Post',
   type: 'document',
   // Add i18n configuration
-  i18n: true,
   fields: [
     defineField({
       name: 'title',
