@@ -5,7 +5,6 @@ export default defineType({
   name: 'post',
   title: 'Post',
   type: 'document',
-  // Add i18n configuration
   fields: [
     defineField({
       name: 'title',
@@ -70,7 +69,6 @@ export default defineType({
       title: 'Body',
       type: 'blockContent',
     }),
-    // SEO fields
     defineField({
       name: 'seoTitle',
       title: 'SEO Title',
