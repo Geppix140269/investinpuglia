@@ -7,7 +7,7 @@ const client = createClient({
   projectId: 'trb0xnj0',
   dataset: 'production',
   apiVersion: '2023-07-25',
-  token: process.env.SANITY_API_TOKEN,
+  token: process.env.SANITY_WRITE_API_TOKEN,
   useCdn: false,
 })
 
