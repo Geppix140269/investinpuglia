@@ -1,0 +1,52 @@
+{
+  "nav": {
+    "home": "首页",
+    "calculator": "计算器",
+    "about": "关于我们",
+    "blog": "博客",
+    "contact": "联系我们"
+  },
+  "hero": {
+    "title": "投资普利亚的未来",
+    "subtitle": "发现意大利南部隐藏宝地的丰厚房地产机会",
+    "cta": "计算您的投资",
+    "ctaSecondary": "探索房产"
+  },
+  "calculator": {
+    "title": "PIA旅游投资计算器",
+    "propertyValue": "房产价值",
+    "renovationCost": "装修成本",
+    "calculate": "计算收益",
+    "results": {
+      "title": "您的投资收益",
+      "taxCredit": "税收抵免",
+      "totalInvestment": "总投资",
+      "netInvestment": "扣除优惠后的净投资",
+      "savings": "总节省"
+    }
+  },
+  "blog": {
+    "title": "InvestinPuglia博客",
+    "subtitle": "了解普利亚蓬勃发展的房地产市场的最新见解、市场趋势和投资机会",
+    "readMore": "阅读更多",
+    "backToBlog": "返回博客",
+    "noPosts": "暂无博客文章。",
+    "checkBack": "请稍后查看更新！",
+    "newsletter": {
+      "title": "及时了解普利亚投资机会",
+      "subtitle": "将最新的市场洞察和投资机会发送到您的邮箱",
+      "cta": "订阅通讯"
+    }
+  },
+  "footer": {
+    "company": {
+      "title": "InvestinPuglia",
+      "description": "您在意大利普利亚房地产投资的可靠合作伙伴。"
+    },
+    "quickLinks": "快速链接",
+    "followUs": "关注我们",
+    "rights": "版权所有。",
+    "privacy": "隐私政策",
+    "terms": "服务条款"
+  }
+}
