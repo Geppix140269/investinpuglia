@@ -7,6 +7,18 @@ import Link from 'next/link'
 
 export const revalidate = 60
 
+// Helper function to extract text from multilingual object
+const getText = (field: any, fallback: string = ''): string => {
+  if (typeof field === 'string') return field;
+  if (field?.en) return field.en;
+  if (field?.it) return field.it;
+  if (field?.ar) return field.ar;
+  if (field?.zh) return field.zh;
+  if (field?.de) return field.de;
+  if (field?.fr) return field.fr;
+  return fallback;
+}
+
 // ✅ Dynamic metadata for social sharing (uses blog post image)
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const query = groq`*[_type == "post" && slug.current == $slug][0]{
@@ -21,30 +33,32 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const post = await sanity.fetch(query, { slug: params.slug })
   if (!post) return {}
 
-  const imageUrl = post.mainImage?.asset?.url || 'https://investiscope.net/default-og-image.jpg'
+  const imageUrl = post.mainImage?.asset?.url || 'https://investinpuglia.eu/default-og-image.jpg'
+  const postTitle = getText(post.title, 'Untitled Post');
+  const postDescription = getText(post.description, 'Read insights on investing in Puglia real estate.');
 
   return {
-    title: post.title,
-    description: post.description || 'Read insights on investing in Puglia real estate.',
+    title: postTitle,
+    description: postDescription,
     openGraph: {
-      title: post.title,
-      description: post.description,
-      url: `https://investiscope.net/blog/${post.slug}`,
-      siteName: 'InvestiScope',
+      title: postTitle,
+      description: postDescription,
+      url: `https://investinpuglia.eu/blog/${post.slug}`,
+      siteName: 'InvestinPuglia.eu',
       type: 'article',
       images: [
         {
           url: imageUrl,
           width: 1200,
           height: 630,
-          alt: post.title,
+          alt: postTitle,
         },
       ],
     },
     twitter: {
       card: 'summary_large_image',
-      title: post.title,
-      description: post.description,
+      title: postTitle,
+      description: postDescription,
       images: [imageUrl],
     },
   }
@@ -56,6 +70,7 @@ export async function generateStaticParams() {
   const slugs = await sanity.fetch(query)
   return slugs.filter((s: any) => s.slug).map((s: any) => ({ slug: s.slug }))
 }
+
 // ✨ Blog post rendering
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
   const query = groq`*[_type == "post" && slug.current == $slug][0]{
@@ -87,6 +102,11 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
     day: 'numeric'
   })
 
+  // Extract multilingual content
+  const postTitle = getText(post.title, 'Untitled');
+  const postBody = typeof post.body === 'object' && post.body?.en ? post.body.en : post.body;
+  const postAlt = getText(post.mainImage?.alt, postTitle);
+
   return (
     <>
       {/* Hero Section */}
@@ -99,12 +119,12 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
           {post.categories && post.categories.length > 0 && (
             <div className="mb-6">
               <span className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-sm font-medium">
-                📁 {post.categories[0].title}
+                📁 {getText(post.categories[0].title, 'Category')}
               </span>
             </div>
           )}
 
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">{post.title}</h1>
+          <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">{postTitle}</h1>
 
           <div className="flex flex-wrap items-center gap-6 text-white/80">
             {post.author && (
@@ -137,7 +157,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
             <div className="max-w-5xl mx-auto px-5">
               <img
                 src={post.mainImage.asset.url}
-                alt={post.mainImage.alt || post.title}
+                alt={postAlt}
                 className="w-full h-full object-cover rounded-3xl shadow-2xl"
               />
             </div>
@@ -147,7 +167,7 @@ export default async function BlogPostPage({ params }: { params: { slug: string 
         <div className="max-w-4xl mx-auto px-5 py-12">
           <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-xl p-8 md:p-12 border border-white/50">
             <div className="prose prose-lg md:prose-xl max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6 prose-li:text-gray-700 prose-li:mb-2 prose-strong:text-emerald-700 prose-strong:font-semibold prose-a:text-emerald-600 prose-a:no-underline hover:prose-a:underline prose-blockquote:border-l-4 prose-blockquote:border-emerald-500 prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-gray-600">
-              <PortableText value={post.body} />
+              <PortableText value={postBody} />
             </div>
           </div>
 
