@@ -1,13 +1,66 @@
+// app/buyer-profile/page.tsx
 'use client'
 
 import React, { useState, useEffect } from 'react'
 import { ChevronRight, ChevronLeft, CheckCircle, Send, Download, X } from 'lucide-react'
 
+// Type definitions
+interface FormData {
+  fullName: string
+  email: string
+  phone: string
+  nationality: string
+  residency: string
+  investmentPurpose: string
+  propertyType: string
+  budget: string
+  timeline: string
+  location: string[]
+  propertySize: string
+  bedrooms: string
+  amenities: string[]
+  financingMethod: string
+  downPaymentPercentage: string
+  preApproved: string
+  monthlyBudget: string
+  previousInvestments: string
+  italianPropertyExperience: string
+  languageSkills: string
+  needsAssistance: string[]
+  taxId: string
+  needsTaxId: string
+  legalRepresentation: string
+  powerOfAttorney: string
+  propertyManagement: string
+  rentalStrategy: string
+  maintenanceBudget: string
+  localContacts: string
+  propertyInspection: string
+  legalReview: string
+  surveyRequired: string
+  insuranceNeeds: string[]
+  businessPlan: string
+  employmentCreation: string
+  sustainabilityFeatures: string[]
+  grantInterest: string
+  additionalServices: string[]
+  urgency: string
+  specialRequests: string
+  howHeard: string
+}
+
+type RecipientType = 'agency' | 'internal' | 'custom'
+
+interface RecipientOption {
+  label: string
+  emails: string[]
+}
+
 // Google Login Button Component
 const GoogleLoginButton = () => {
   const handleGoogleLogin = async () => {
-    if (typeof window !== 'undefined' && window.supabase) {
-      const { error } = await window.supabase.auth.signInWithOAuth({
+    if (typeof window !== 'undefined' && (window as any).supabase) {
+      const { error } = await (window as any).supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
@@ -35,18 +88,18 @@ const GoogleLoginButton = () => {
 
 const BuyerProfilePage = () => {
   // Auth state
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState<any>(null)
   const [authLoading, setAuthLoading] = useState(true)
   
   // Form state
   const [currentStep, setCurrentStep] = useState(1)
   const [showModal, setShowModal] = useState(false)
   const [emailSent, setEmailSent] = useState(false)
-  const [recipientType, setRecipientType] = useState('agency')
+  const [recipientType, setRecipientType] = useState<RecipientType>('agency')
   const [customRecipients, setCustomRecipients] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
   
-  const recipientOptions = {
+  const recipientOptions: Record<RecipientType, RecipientOption> = {
     agency: {
       label: 'Partner Agencies',
       emails: ['agencies@investinpuglia.eu', 'partners@investinpuglia.eu']
@@ -61,7 +114,7 @@ const BuyerProfilePage = () => {
     }
   }
   
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     fullName: '',
     email: '',
     phone: '',
@@ -107,15 +160,15 @@ const BuyerProfilePage = () => {
 
   // Initialize EmailJS and check auth
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.emailjs) {
-      window.emailjs.init('wKn1_xMCtZssdZzpb')
+    if (typeof window !== 'undefined' && (window as any).emailjs) {
+      (window as any).emailjs.init('wKn1_xMCtZssdZzpb')
     }
     checkUser()
   }, [])
 
   async function checkUser() {
-    if (typeof window !== 'undefined' && window.supabase) {
-      const { data: { user } } = await window.supabase.auth.getUser()
+    if (typeof window !== 'undefined' && (window as any).supabase) {
+      const { data: { user } } = await (window as any).supabase.auth.getUser()
       setUser(user)
       if (user) {
         setFormData(prev => ({ ...prev, email: user.email || '' }))
@@ -153,12 +206,14 @@ const BuyerProfilePage = () => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
-  const handleCheckboxChange = (field, value, checked) => {
+  const handleCheckboxChange = (field: keyof FormData, value: string, checked: boolean) => {
     const currentValues = formData[field]
-    if (checked) {
-      updateFormData(field, [...currentValues, value])
-    } else {
-      updateFormData(field, currentValues.filter(item => item !== value))
+    if (Array.isArray(currentValues)) {
+      if (checked) {
+        updateFormData(field, [...currentValues, value])
+      } else {
+        updateFormData(field, currentValues.filter(item => item !== value))
+      }
     }
   }
 
@@ -176,7 +231,7 @@ const BuyerProfilePage = () => {
     }
   }
 
-  const formatValue = (value) => {
+  const formatValue = (value: string): string => {
     if (!value) return 'Not specified'
     return value.split('-').map(word => 
       word.charAt(0).toUpperCase() + word.slice(1)
@@ -187,8 +242,8 @@ const BuyerProfilePage = () => {
     setIsProcessing(true)
     try {
       // Save to database if user is logged in
-      if (user && window.supabase) {
-        await window.supabase
+      if (user && (window as any).supabase) {
+        await (window as any).supabase
           .from('buyer_profiles')
           .upsert({
             user_id: user.id,
@@ -199,7 +254,7 @@ const BuyerProfilePage = () => {
       }
 
       // Determine recipients
-      let recipients = []
+      let recipients: string[] = []
       if (recipientType === 'custom') {
         recipients = customRecipients.split(',').map(email => email.trim()).filter(email => email.includes('@'))
       } else {
@@ -213,7 +268,7 @@ const BuyerProfilePage = () => {
       }
 
       // Send email
-      if (window.emailjs) {
+      if ((window as any).emailjs) {
         const templateParams = {
           to_email: recipients[0],
           cc_email: recipients.slice(1).join(','),
@@ -227,7 +282,7 @@ const BuyerProfilePage = () => {
           locations: formData.location.join(', ')
         }
         
-        await window.emailjs.send('service_w6tghqr', 'template_buyer_profile', templateParams)
+        await (window as any).emailjs.send('service_w6tghqr', 'template_buyer_profile', templateParams)
       }
       
       setEmailSent(true)
@@ -277,7 +332,7 @@ Monthly Budget: ${formData.monthlyBudget || 'Not specified'}`
     URL.revokeObjectURL(url)
   }
 
-  const renderStepContent = () => {
+  const renderStepContent = (): JSX.Element => {
     switch (currentStep) {
       case 1:
         return (
@@ -446,7 +501,7 @@ Monthly Budget: ${formData.monthlyBudget || 'Not specified'}`
               <p className="text-gray-500 text-sm">{user?.email}</p>
               {user && (
                 <button
-                  onClick={() => window.supabase?.auth.signOut()}
+                  onClick={() => (window as any).supabase?.auth.signOut()}
                   className="text-sm text-red-600 hover:underline"
                 >
                   Sign Out
@@ -544,7 +599,7 @@ Monthly Budget: ${formData.monthlyBudget || 'Not specified'}`
                             name="recipientType"
                             value={key}
                             checked={recipientType === key}
-                            onChange={(e) => setRecipientType(e.target.value)}
+                            onChange={(e) => setRecipientType(e.target.value as RecipientType)}
                             className="mr-3"
                           />
                           <div>
