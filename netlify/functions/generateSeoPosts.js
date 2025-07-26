@@ -1,4 +1,13 @@
+import { createClient } from '@sanity/client'
 import { OpenAI } from 'openai'
+
+const client = createClient({
+  projectId: 'trdbxmjo', // FIXED: Correct project ID!
+  dataset: 'production',
+  apiVersion: '2023-07-25',
+  token: process.env.SANITY_API_WRITE_TOKEN,
+  useCdn: false
+})
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
 
@@ -6,36 +15,6 @@ const locations = [
   'Ostuni', 'Martina Franca', 'Lecce', 'Cisternino', 'Alberobello',
   'Polignano a Mare', 'Monopoli', 'Carovigno', 'Brindisi', 'Taranto'
 ]
-
-// Direct Sanity REST API - bypasses all client issues
-async function createSanityDocument(document) {
-  const projectId = 'trb0xnj0'
-  const dataset = 'production'
-  const token = process.env.SANITY_API_WRITE_TOKEN
-  
-  const url = `https://${projectId}.api.sanity.io/v2023-08-16/data/mutate/${dataset}`
-  
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify({
-      mutations: [{
-        create: document
-      }]
-    })
-  })
-  
-  if (!response.ok) {
-    const errorText = await response.text()
-    throw new Error(`Sanity API error: ${response.status} - ${errorText}`)
-  }
-  
-  const result = await response.json()
-  return result.results[0]
-}
 
 export async function handler(event) {
   try {
@@ -142,15 +121,15 @@ export async function handler(event) {
           publishedAt: new Date().toISOString()
         }
         
-        // Use REST API instead of client
-        const created = await createSanityDocument(doc)
+        // Create document using Sanity client (now with correct project ID!)
+        const created = await client.create(doc)
         results.push({
-          id: created.id,
+          id: created._id,
           title: doc.title.en,
           geo: doc.geoFocus
         })
         
-        console.log(`Created post ${i + 1}/${count}: ${created.id}`)
+        console.log(`Created post ${i + 1}/${count}: ${created._id}`)
         
       } catch (innerError) {
         console.error(`Error creating post ${i + 1}:`, innerError)
