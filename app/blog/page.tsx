@@ -10,7 +10,29 @@ export const metadata: Metadata = {
   description: 'Latest insights on property investment opportunities in Puglia, Italy',
 }
 
-async function getPosts() {
+interface Translation {
+  slug: {
+    current: string
+  }
+  language: string
+}
+
+interface Post {
+  _id: string
+  title: string
+  slug: {
+    current: string
+  }
+  excerpt?: string
+  publishedAt?: string
+  author?: string
+  mainImage?: any
+  categories?: string[]
+  language?: string
+  translations?: Translation[]
+}
+
+async function getPosts(): Promise<Post[]> {
   // Fetch posts with language references
   const query = `*[_type == "post" && !(_id in path("drafts.**"))] | order(publishedAt desc) {
     _id,
@@ -34,7 +56,7 @@ async function getPosts() {
 }
 
 // Helper function to format date
-function formatDate(date: string) {
+function formatDate(date: string): string {
   return new Date(date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -46,7 +68,7 @@ export default async function BlogPage() {
   const posts = await getPosts()
   
   // Filter to show only English posts (or posts without language set)
-  const englishPosts = posts.filter(post => !post.language || post.language === 'en')
+  const englishPosts = posts.filter((post: Post) => !post.language || post.language === 'en')
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
@@ -74,7 +96,7 @@ export default async function BlogPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {englishPosts.map((post) => (
+              {englishPosts.map((post: Post) => (
                 <article 
                   key={post._id}
                   className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
@@ -97,7 +119,7 @@ export default async function BlogPage() {
                     {/* Categories */}
                     {post.categories && post.categories.length > 0 && (
                       <div className="flex flex-wrap gap-2 mb-3">
-                        {post.categories.map((category, index) => (
+                        {post.categories.map((category: string, index: number) => (
                           <span 
                             key={index}
                             className="text-xs font-medium text-blue-600 bg-blue-50 px-2 py-1 rounded"
