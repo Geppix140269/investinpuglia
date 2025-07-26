@@ -52,11 +52,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 // ⚙️ Static path generation
 export async function generateStaticParams() {
-  const query = groq`*[_type == "post"]{ "slug": slug.current }`
+  const query = groq`*[_type == "post" && defined(slug.current)]{ "slug": slug.current }`
   const slugs = await sanity.fetch(query)
-  return slugs.map((s: any) => ({ slug: s.slug }))
+  return slugs.filter((s: any) => s.slug).map((s: any) => ({ slug: s.slug }))
 }
-
 // ✨ Blog post rendering
 export default async function BlogPostPage({ params }: { params: { slug: string } }) {
   const query = groq`*[_type == "post" && slug.current == $slug][0]{
