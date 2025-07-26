@@ -1,32 +1,24 @@
-import { NextResponse } from 'next/server'
-import { CalculatorConfigService } from '@/lib/services/calculatorConfigService'
+export const dynamic = 'force-static'
 
-export async function GET(request: Request) {
-  try {
-    const { searchParams } = new URL(request.url)
-    const dateParam = searchParams.get('date')
-    
-    let config
-    if (dateParam) {
-      const date = new Date(dateParam)
-      config = await CalculatorConfigService.getConfigForDate(date)
-    } else {
-      config = await CalculatorConfigService.getActiveConfig()
-    }
-    
-    if (!config) {
-      return NextResponse.json(
-        { error: 'No active calculator configuration found' },
-        { status: 404 }
-      )
-    }
-    
-    return NextResponse.json(config)
-  } catch (error) {
-    console.error('Error fetching calculator config:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch calculator configuration' },
-      { status: 500 }
-    )
-  }
+export async function GET() {
+  return Response.json({
+    calculatorVersion: '2.0',
+    lastUpdated: '2024-07-15',
+    maxGrant: 2250000,
+    grantPercentages: {
+      tourism: 0.75,
+      restoration: 0.50,
+      sustainability: 0.65
+    },
+    eligibleRegions: ['Puglia', 'Calabria', 'Sicily', 'Campania', 'Basilicata'],
+    minimumInvestment: 150000,
+    supportedPropertyTypes: [
+      'Villa',
+      'Palazzo',
+      'Masseria',
+      'Trullo',
+      'Commercial Building',
+      'Historic Property'
+    ]
+  })
 }
