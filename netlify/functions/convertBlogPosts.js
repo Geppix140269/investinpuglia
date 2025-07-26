@@ -1,5 +1,4 @@
 import { createClient } from '@sanity/client'
-
 const client = createClient({
   projectId: 'trdbxmjo',
   dataset: 'production',
@@ -7,52 +6,42 @@ const client = createClient({
   token: process.env.SANITY_API_WRITE_TOKEN,
   useCdn: false
 })
-
 export async function handler(event) {
   try {
-    // Fetch all blogPost documents
-    const blogPosts = await client.fetch('*[_type == "blogPost"]')
+    // Fetch ONE blogPost document only
+    const oldPost = await client.fetch('*[_type == "blogPost"][0]')
     
-    console.log(`Found ${blogPosts.length} posts to convert`)
-    
-    const results = []
-    const errors = []
-    
-    // Convert each one
-    for (const oldPost of blogPosts) {
-      try {
-        // Create new post with correct type
-        const newPost = {
-          ...oldPost,
-          _type: 'post',
-          _id: undefined, // Let Sanity generate new ID
-          _rev: undefined,
-          _createdAt: undefined,
-          _updatedAt: undefined
-        }
-        
-        // Create the new post
-        const created = await client.create(newPost)
-        
-        // Delete the old blogPost
-        await client.delete(oldPost._id)
-        
-        results.push({
-          oldId: oldPost._id,
-          newId: created._id,
-          title: oldPost.title?.en || oldPost.title
-        })
-        
-        console.log(`Converted: ${oldPost._id} → ${created._id}`)
-        
-      } catch (error) {
-        console.error(`Failed to convert ${oldPost._id}:`, error)
-        errors.push({
-          id: oldPost._id,
-          error: error.message
+    if (!oldPost) {
+      return {
+        statusCode: 200,
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        },
+        body: JSON.stringify({
+          message: '✅ All posts have been converted!',
+          converted: 0
         })
       }
     }
+    
+    // Create new post with correct type
+    const newPost = {
+      ...oldPost,
+      _type: 'post',
+      _id: undefined, // Let Sanity generate new ID
+      _rev: undefined,
+      _createdAt: undefined,
+      _updatedAt: undefined
+    }
+    
+    // Create the new post
+    const created = await client.create(newPost)
+    
+    // Delete the old blogPost
+    await client.delete(oldPost._id)
+    
+    console.log(`Converted: ${oldPost._id} → ${created._id}`)
     
     return {
       statusCode: 200,
@@ -61,11 +50,10 @@ export async function handler(event) {
         'Access-Control-Allow-Origin': '*'
       },
       body: JSON.stringify({
-        message: `Converted ${results.length} posts from blogPost to post`,
-        converted: results.length,
-        failed: errors.length,
-        results: results,
-        errors: errors
+        message: `Converted: ${oldPost.title?.en || oldPost._id}`,
+        oldId: oldPost._id,
+        newId: created._id,
+        title: oldPost.title?.en || oldPost.title
       }, null, 2)
     }
     
