@@ -123,7 +123,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             {/* Categories */}
             {post.categories && post.categories.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
-                {post.categories.map((category, index) => (
+                {post.categories.map((category: string, index: number) => (
                   <span 
                     key={index}
                     className="text-sm font-medium text-white bg-white/20 backdrop-blur px-3 py-1 rounded"
