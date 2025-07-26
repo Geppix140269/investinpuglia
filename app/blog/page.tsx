@@ -1,5 +1,4 @@
 import { sanity } from '@/lib/sanity'
-import { getAllPosts } from '@/lib/queries'
 import { groq } from 'next-sanity'
 import Link from 'next/link'
 import Image from 'next/image'
@@ -20,7 +19,7 @@ const query = groq`
 `
 
 export default async function BlogPage() {
-  const posts = await sanity.fetch(query)
+  const posts = await sanity.fetch(query) || []
 
   return (
     <main className="max-w-7xl mx-auto px-6 py-12">
@@ -29,7 +28,7 @@ export default async function BlogPage() {
       </h1>
 
       <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-        {posts.map((post: any) => (
+        {posts.filter((post: any) => post.slug?.current).map((post: any) => (
           <Link 
             href={`/blog/${post.slug.current}`} 
             key={post._id} 
