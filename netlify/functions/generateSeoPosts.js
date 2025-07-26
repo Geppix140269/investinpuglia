@@ -7,7 +7,7 @@ const client = createClient({
   apiVersion: '2023-07-25',
   token: process.env.SANITY_API_WRITE_TOKEN,
   useCdn: false,
-  apiHost: 'https://trb0xnj0.api.sanity.io'
+  // Remove apiHost - let Sanity client handle it automatically
 })
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
