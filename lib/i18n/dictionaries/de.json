@@ -1,0 +1,52 @@
+{
+  "nav": {
+    "home": "Startseite",
+    "calculator": "Rechner",
+    "about": "Über uns",
+    "blog": "Blog",
+    "contact": "Kontakt"
+  },
+  "hero": {
+    "title": "Investieren Sie in Apuliens Zukunft",
+    "subtitle": "Entdecken Sie lukrative Immobilienchancen in Süditaliens verborgenem Juwel",
+    "cta": "Berechnen Sie Ihre Investition",
+    "ctaSecondary": "Immobilien Erkunden"
+  },
+  "calculator": {
+    "title": "PIA Tourismus Investitionsrechner",
+    "propertyValue": "Immobilienwert",
+    "renovationCost": "Renovierungskosten",
+    "calculate": "Vorteile Berechnen",
+    "results": {
+      "title": "Ihre Investitionsvorteile",
+      "taxCredit": "Steuergutschrift",
+      "totalInvestment": "Gesamtinvestition",
+      "netInvestment": "Nettoinvestition nach Vorteilen",
+      "savings": "Gesamtersparnis"
+    }
+  },
+  "blog": {
+    "title": "InvestinPuglia Blog",
+    "subtitle": "Entdecken Sie die neuesten Einblicke, Markttrends und Investitionsmöglichkeiten in Apuliens florierendem Immobilienmarkt",
+    "readMore": "Weiterlesen",
+    "backToBlog": "Zurück zum Blog",
+    "noPosts": "Noch keine Blogbeiträge verfügbar.",
+    "checkBack": "Schauen Sie bald wieder vorbei für Updates!",
+    "newsletter": {
+      "title": "Bleiben Sie über Investitionsmöglichkeiten in Apulien informiert",
+      "subtitle": "Erhalten Sie die neuesten Markteinblicke und Investitionschancen in Ihrem Posteingang",
+      "cta": "Newsletter Abonnieren"
+    }
+  },
+  "footer": {
+    "company": {
+      "title": "InvestinPuglia",
+      "description": "Ihr vertrauenswürdiger Partner für Immobilieninvestitionen in Apulien, Italien."
+    },
+    "quickLinks": "Schnelllinks",
+    "followUs": "Folgen Sie uns",
+    "rights": "Alle Rechte vorbehalten.",
+    "privacy": "Datenschutzrichtlinie",
+    "terms": "Nutzungsbedingungen"
+  }
+}
