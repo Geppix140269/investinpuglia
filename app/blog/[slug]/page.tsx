@@ -1,218 +1,279 @@
 // app/blog/[slug]/page.tsx
-import { sanity } from '@/lib/sanity'
-import { PortableText } from '@/lib/PortableText'
-import { groq } from 'next-sanity'
-import { notFound } from 'next/navigation'
+import { Metadata } from 'next'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import { PortableText } from '@portabletext/react'
+import { client } from '@/lib/sanity/client'
+import { urlForImage } from '@/lib/sanity/image'
+import { CalendarIcon, UserIcon, ArrowLeftIcon, GlobeIcon } from 'lucide-react'
 
-export const revalidate = 60
-
-// Helper function to extract text from multilingual object
-const getText = (field: any, fallback: string = ''): string => {
-  if (typeof field === 'string') return field;
-  if (field?.en) return field.en;
-  if (field?.it) return field.it;
-  if (field?.ar) return field.ar;
-  if (field?.zh) return field.zh;
-  if (field?.de) return field.de;
-  if (field?.fr) return field.fr;
-  return fallback;
+interface BlogPostPageProps {
+  params: {
+    slug: string
+  }
 }
 
-// ✅ Dynamic metadata for social sharing (uses blog post image)
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const query = groq`*[_type == "post" && slug.current == $slug][0]{
+async function getPost(slug: string) {
+  if (!slug) {
+    return null
+  }
+
+  const query = `*[_type == "post" && slug.current == $slug][0] {
+    _id,
     title,
-    "slug": slug.current,
-    "description": pt::text(body)[0...160],
-    mainImage {
-      asset->{url}
+    slug,
+    excerpt,
+    publishedAt,
+    "author": author->{
+      name,
+      image,
+      bio
+    },
+    mainImage,
+    "categories": categories[]->title,
+    body,
+    seoTitle,
+    seoDescription,
+    // Get language and translations
+    "language": language,
+    "translations": *[_type == "translation.metadata" && references(^._id)].translations[].value->{
+      title,
+      slug,
+      language
     }
   }`
+  
+  return client.fetch(query, { slug })
+}
 
-  const post = await sanity.fetch(query, { slug: params.slug })
-  if (!post) return {}
-
-  const imageUrl = post.mainImage?.asset?.url || 'https://investinpuglia.eu/default-og-image.jpg'
-  const postTitle = getText(post.title, 'Untitled Post');
-  const postDescription = getText(post.description, 'Read insights on investing in Puglia real estate.');
+// Generate metadata for SEO
+export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+  const post = await getPost(params.slug)
+  
+  if (!post) {
+    return {
+      title: 'Post Not Found | InvestinPuglia',
+    }
+  }
 
   return {
-    title: postTitle,
-    description: postDescription,
+    title: post.seoTitle || `${post.title} | InvestinPuglia`,
+    description: post.seoDescription || post.excerpt || 'Read our latest insights on property investment in Puglia',
     openGraph: {
-      title: postTitle,
-      description: postDescription,
-      url: `https://investinpuglia.eu/blog/${post.slug}`,
-      siteName: 'InvestinPuglia.eu',
-      type: 'article',
-      images: [
-        {
-          url: imageUrl,
-          width: 1200,
-          height: 630,
-          alt: postTitle,
-        },
-      ],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: postTitle,
-      description: postDescription,
-      images: [imageUrl],
+      title: post.title,
+      description: post.excerpt,
+      images: post.mainImage ? [urlForImage(post.mainImage).width(1200).height(630).url()] : [],
     },
   }
 }
 
-// ⚙️ Static path generation
-export async function generateStaticParams() {
-  const query = groq`*[_type == "post" && defined(slug.current)]{ "slug": slug.current }`
-  const slugs = await sanity.fetch(query)
-  return slugs.filter((s: any) => s.slug).map((s: any) => ({ slug: s.slug }))
-}
-
-// ✨ Blog post rendering
-export default async function BlogPostPage({ params }: { params: { slug: string } }) {
-  const query = groq`*[_type == "post" && slug.current == $slug][0]{
-    title,
-    body,
-    publishedAt,
-    mainImage {
-      asset->{url},
-      alt
-    },
-    author->{
-      name,
-      bio,
-      image{
-        asset->{url}
-      }
-    },
-    categories[]->{
-      title
-    }
-  }`
-
-  const post = await sanity.fetch(query, { slug: params.slug })
-  if (!post) notFound()
-
-  const publishDate = new Date(post.publishedAt).toLocaleDateString('en-US', {
+// Helper function to format date
+function formatDate(date: string) {
+  return new Date(date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric'
   })
+}
 
-  // Extract multilingual content
-  const postTitle = getText(post.title, 'Untitled');
-  const postBody = typeof post.body === 'object' && post.body?.en ? post.body.en : post.body;
-  const postAlt = getText(post.mainImage?.alt, postTitle);
+// Language names mapping
+const languageNames: Record<string, string> = {
+  en: 'English',
+  it: 'Italiano',
+  ar: 'العربية',
+  zh: '中文',
+  de: 'Deutsch',
+  fr: 'Français'
+}
+
+export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const post = await getPost(params.slug)
+
+  if (!post) {
+    notFound()
+  }
 
   return (
-    <>
-      {/* Hero Section */}
-      <section className="relative min-h-[60vh] bg-gradient-to-br from-emerald-600 via-teal-600 to-cyan-600 text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-20" style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-        }}></div>
-
-        <div className="relative z-10 max-w-5xl mx-auto px-5 py-20">
-          {post.categories && post.categories.length > 0 && (
-            <div className="mb-6">
-              <span className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md px-4 py-2 rounded-full text-sm font-medium">
-                📁 {getText(post.categories[0].title, 'Category')}
-              </span>
-            </div>
-          )}
-
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight mb-6">{postTitle}</h1>
-
-          <div className="flex flex-wrap items-center gap-6 text-white/80">
-            {post.author && (
-              <div className="flex items-center gap-3">
-                {post.author.image?.asset?.url && (
-                  <img
-                    src={post.author.image.asset.url}
-                    alt={post.author.name}
-                    className="w-10 h-10 rounded-full border-2 border-white/30"
-                  />
-                )}
-                <div>
-                  <p className="font-medium">{post.author.name}</p>
-                  {post.author.bio && (
-                    <p className="text-sm text-white/60">{post.author.bio}</p>
-                  )}
-                </div>
+    <article className="min-h-screen bg-white">
+      {/* Hero Section with Image */}
+      <div className="relative h-[400px] md:h-[500px] bg-gray-900">
+        {post.mainImage && (
+          <>
+            <img
+              src={urlForImage(post.mainImage).width(1920).height(500).url()}
+              alt={post.mainImage.alt || post.title}
+              className="absolute inset-0 w-full h-full object-cover opacity-70"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+          </>
+        )}
+        
+        {/* Content Overlay */}
+        <div className="relative h-full flex items-end">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 w-full">
+            {/* Back Link */}
+            <Link 
+              href="/blog"
+              className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors"
+            >
+              <ArrowLeftIcon className="w-4 h-4" />
+              Back to Blog
+            </Link>
+            
+            {/* Categories */}
+            {post.categories && post.categories.length > 0 && (
+              <div className="flex flex-wrap gap-2 mb-4">
+                {post.categories.map((category, index) => (
+                  <span 
+                    key={index}
+                    className="text-sm font-medium text-white bg-white/20 backdrop-blur px-3 py-1 rounded"
+                  >
+                    {category}
+                  </span>
+                ))}
               </div>
             )}
-            <span className="text-sm">•</span>
-            <time className="text-sm">{publishDate}</time>
+            
+            {/* Title */}
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+              {post.title}
+            </h1>
+            
+            {/* Meta Info */}
+            <div className="flex flex-wrap items-center gap-6 text-white/80">
+              {post.author && (
+                <div className="flex items-center gap-2">
+                  {post.author.image && (
+                    <img
+                      src={urlForImage(post.author.image).width(40).height(40).url()}
+                      alt={post.author.name}
+                      className="w-10 h-10 rounded-full"
+                    />
+                  )}
+                  <div>
+                    <div className="flex items-center gap-1">
+                      <UserIcon className="w-4 h-4" />
+                      <span className="font-medium">{post.author.name}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {post.publishedAt && (
+                <div className="flex items-center gap-1">
+                  <CalendarIcon className="w-4 h-4" />
+                  <time dateTime={post.publishedAt}>
+                    {formatDate(post.publishedAt)}
+                  </time>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </section>
+      </div>
 
       {/* Main Content */}
-      <article className="relative">
-        {post.mainImage?.asset?.url && (
-          <div className="relative h-[500px] -mt-20 mb-12">
-            <div className="max-w-5xl mx-auto px-5">
-              <img
-                src={post.mainImage.asset.url}
-                alt={postAlt}
-                className="w-full h-full object-cover rounded-3xl shadow-2xl"
-              />
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Language Switcher */}
+        {post.translations && post.translations.length > 0 && (
+          <div className="mb-8 p-4 bg-gray-50 rounded-lg">
+            <div className="flex items-center gap-2 mb-2">
+              <GlobeIcon className="w-5 h-5 text-gray-600" />
+              <span className="font-medium text-gray-700">This post is available in:</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href={`/blog/${post.slug.current}`}
+                className={`px-3 py-1 rounded text-sm font-medium ${
+                  (!post.language || post.language === 'en')
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                {languageNames.en}
+              </Link>
+              {post.translations.map((translation) => (
+                <Link
+                  key={translation.language}
+                  href={`/blog/${translation.slug.current}`}
+                  className="px-3 py-1 rounded text-sm font-medium bg-white text-gray-700 hover:bg-gray-100"
+                >
+                  {languageNames[translation.language] || translation.language}
+                </Link>
+              ))}
             </div>
           </div>
         )}
 
-        <div className="max-w-4xl mx-auto px-5 py-12">
-          <div className="bg-white/90 backdrop-blur-lg rounded-3xl shadow-xl p-8 md:p-12 border border-white/50">
-            <div className="prose prose-lg md:prose-xl max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6 prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-p:text-gray-700 prose-p:leading-relaxed prose-p:mb-6 prose-li:text-gray-700 prose-li:mb-2 prose-strong:text-emerald-700 prose-strong:font-semibold prose-a:text-emerald-600 prose-a:no-underline hover:prose-a:underline prose-blockquote:border-l-4 prose-blockquote:border-emerald-500 prose-blockquote:pl-6 prose-blockquote:italic prose-blockquote:text-gray-600">
-              <PortableText value={postBody} />
-            </div>
-          </div>
+        {/* Excerpt */}
+        {post.excerpt && (
+          <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+            {post.excerpt}
+          </p>
+        )}
 
-          {/* Call to Action */}
-          <div className="mt-16 bg-gradient-to-r from-emerald-600 to-teal-600 rounded-3xl p-8 md:p-12 text-white text-center">
-            <h3 className="text-2xl md:text-3xl font-bold mb-4">
-              Ready to Start Your Puglia Property Journey?
-            </h3>
-            <p className="text-lg mb-8 text-white/90">
-              Get expert guidance and unlock up to €2.25M in EU grants for your investment.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/classic" className="inline-flex items-center gap-2 bg-white text-emerald-700 px-8 py-4 rounded-full font-bold hover:bg-white/90 transition-all">
-                Calculate Your Grant
-              </Link>
-              <Link href="/contact" className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-md border-2 border-white/30 text-white px-8 py-4 rounded-full font-bold hover:bg-white/30 transition-all">
-                Book Free Consultation
-              </Link>
-            </div>
+        {/* Body Content */}
+        {post.body && (
+          <div className="prose prose-lg max-w-none">
+            <PortableText 
+              value={post.body}
+              components={{
+                types: {
+                  image: ({ value }) => (
+                    <img
+                      src={urlForImage(value).width(800).url()}
+                      alt={value.alt || ''}
+                      className="rounded-lg my-8"
+                    />
+                  ),
+                },
+                marks: {
+                  link: ({ children, value }) => (
+                    <a 
+                      href={value.href}
+                      target={value.href.startsWith('http') ? '_blank' : undefined}
+                      rel={value.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                      className="text-blue-600 hover:underline"
+                    >
+                      {children}
+                    </a>
+                  ),
+                },
+              }}
+            />
           </div>
+        )}
 
-          {/* Related Posts Placeholder */}
-          <div className="mt-16">
-            <h3 className="text-2xl font-bold mb-8">Related Articles</h3>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-                <div className="h-48 bg-gradient-to-br from-emerald-400 to-teal-500"></div>
-                <div className="p-6">
-                  <h4 className="font-bold mb-2">Loading related posts...</h4>
-                  <Link href="/blog" className="text-emerald-600 font-medium">
-                    Read More →
-                  </Link>
-                </div>
+        {/* Author Bio */}
+        {post.author && post.author.bio && (
+          <div className="mt-12 p-6 bg-gray-50 rounded-lg">
+            <h3 className="text-lg font-bold text-gray-900 mb-3">About the Author</h3>
+            <div className="flex items-start gap-4">
+              {post.author.image && (
+                <img
+                  src={urlForImage(post.author.image).width(80).height(80).url()}
+                  alt={post.author.name}
+                  className="w-20 h-20 rounded-full flex-shrink-0"
+                />
+              )}
+              <div>
+                <h4 className="font-medium text-gray-900 mb-2">{post.author.name}</h4>
+                <p className="text-gray-600">{post.author.bio}</p>
               </div>
             </div>
           </div>
-        </div>
-      </article>
+        )}
 
-      {/* Back to Blog */}
-      <div className="max-w-4xl mx-auto px-5 py-8">
-        <Link href="/blog" className="inline-flex items-center gap-2 text-emerald-600 hover:text-emerald-700 font-medium">
-          ← Back to All Articles
-        </Link>
+        {/* Navigation */}
+        <div className="mt-12 pt-8 border-t">
+          <Link 
+            href="/blog"
+            className="inline-flex items-center gap-2 text-blue-600 font-medium hover:gap-3 transition-all"
+          >
+            <ArrowLeftIcon className="w-4 h-4" />
+            Back to all posts
+          </Link>
+        </div>
       </div>
-    </>
+    </article>
   )
 }
