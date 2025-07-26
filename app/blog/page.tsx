@@ -20,42 +20,54 @@ const query = groq`
 
 export default async function BlogPage() {
   const posts = await sanity.fetch(query) || []
-
+  
   return (
     <main className="max-w-7xl mx-auto px-6 py-12">
       <h1 className="text-5xl font-bold mb-10 text-center text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>
-        InvestiScope Blog
+        InvestinPuglia.eu Blog
       </h1>
-
+      
       <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-3">
-        {posts.filter((post: any) => post.slug?.current).map((post: any) => (
-          <Link 
-            href={`/blog/${post.slug.current}`} 
-            key={post._id} 
-            className="group block rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
-          >
-            {post.mainImage?.asset?.url && (
-              <Image
-                src={post.mainImage.asset.url}
-                alt={post.title}
-                width={400}
-                height={250}
-                className="w-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-            )}
-            <div className="p-5 bg-white">
-              <h2 className="text-xl font-semibold mb-2 text-gray-900 group-hover:text-green-600 transition-colors">
-                {post.title}
-              </h2>
-              {post.publishedAt && (
-                <p className="text-sm text-gray-500 mb-3">
-                  {new Date(post.publishedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
-                </p>
+        {posts.filter((post: any) => post.slug?.current).map((post: any) => {
+          // Extract title - handle both multilingual object and simple string
+          const postTitle = typeof post.title === 'string' 
+            ? post.title 
+            : post.title?.en || post.title?.it || 'Untitled';
+            
+          // Extract excerpt - handle multilingual
+          const postExcerpt = typeof post.excerpt === 'string'
+            ? post.excerpt
+            : post.excerpt?.en || post.excerpt?.it || 'No excerpt available.';
+          
+          return (
+            <Link 
+              href={`/blog/${post.slug.current}`} 
+              key={post._id} 
+              className="group block rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
+            >
+              {post.mainImage?.asset?.url && (
+                <Image
+                  src={post.mainImage.asset.url}
+                  alt={postTitle}
+                  width={400}
+                  height={250}
+                  className="w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
               )}
-              <p className="text-gray-700 line-clamp-3">{post.excerpt || 'No excerpt available.'}</p>
-            </div>
-          </Link>
-        ))}
+              <div className="p-5 bg-white">
+                <h2 className="text-xl font-semibold mb-2 text-gray-900 group-hover:text-green-600 transition-colors">
+                  {postTitle}
+                </h2>
+                {post.publishedAt && (
+                  <p className="text-sm text-gray-500 mb-3">
+                    {new Date(post.publishedAt).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
+                  </p>
+                )}
+                <p className="text-gray-700 line-clamp-3">{postExcerpt}</p>
+              </div>
+            </Link>
+          )
+        })}
       </div>
     </main>
   )
