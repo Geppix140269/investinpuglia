@@ -149,7 +149,7 @@ const BuyerProfilePage = () => {
 
   const totalSteps = 10
 
-  const updateFormData = (field, value) => {
+  const updateFormData = (field: keyof FormData, value: string | string[]) => {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
