@@ -1,0 +1,52 @@
+{
+  "nav": {
+    "home": "Home",
+    "calculator": "Calcolatore",
+    "about": "Chi Siamo",
+    "blog": "Blog",
+    "contact": "Contatti"
+  },
+  "hero": {
+    "title": "Investi nel Futuro della Puglia",
+    "subtitle": "Scopri opportunità immobiliari redditizie nella perla nascosta del Sud Italia",
+    "cta": "Calcola il Tuo Investimento",
+    "ctaSecondary": "Esplora Proprietà"
+  },
+  "calculator": {
+    "title": "Calcolatore Investimenti PIA Turismo",
+    "propertyValue": "Valore Immobile",
+    "renovationCost": "Costo Ristrutturazione",
+    "calculate": "Calcola Benefici",
+    "results": {
+      "title": "I Tuoi Benefici d'Investimento",
+      "taxCredit": "Credito d'Imposta",
+      "totalInvestment": "Investimento Totale",
+      "netInvestment": "Investimento Netto Dopo i Benefici",
+      "savings": "Risparmio Totale"
+    }
+  },
+  "blog": {
+    "title": "Blog InvestinPuglia",
+    "subtitle": "Scopri le ultime novità, tendenze di mercato e opportunità di investimento nel fiorente mercato immobiliare pugliese",
+    "readMore": "Leggi di Più",
+    "backToBlog": "Torna al Blog",
+    "noPosts": "Nessun articolo disponibile al momento.",
+    "checkBack": "Torna presto per aggiornamenti!",
+    "newsletter": {
+      "title": "Rimani Aggiornato sulle Opportunità di Investimento in Puglia",
+      "subtitle": "Ricevi le ultime analisi di mercato e opportunità di investimento nella tua casella email",
+      "cta": "Iscriviti alla Newsletter"
+    }
+  },
+  "footer": {
+    "company": {
+      "title": "InvestinPuglia",
+      "description": "Il tuo partner di fiducia per investimenti immobiliari in Puglia, Italia."
+    },
+    "quickLinks": "Link Rapidi",
+    "followUs": "Seguici",
+    "rights": "Tutti i diritti riservati.",
+    "privacy": "Privacy Policy",
+    "terms": "Termini di Servizio"
+  }
+}
