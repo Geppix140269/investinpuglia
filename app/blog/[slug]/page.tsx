@@ -13,7 +13,39 @@ interface BlogPostPageProps {
   }
 }
 
-async function getPost(slug: string) {
+interface Author {
+  name: string
+  image?: any
+  bio?: string
+}
+
+interface Translation {
+  title: string
+  slug: {
+    current: string
+  }
+  language: string
+}
+
+interface Post {
+  _id: string
+  title: string
+  slug: {
+    current: string
+  }
+  excerpt?: string
+  publishedAt?: string
+  author?: Author
+  mainImage?: any
+  categories?: string[]
+  body?: any[]
+  seoTitle?: string
+  seoDescription?: string
+  language?: string
+  translations?: Translation[]
+}
+
+async function getPost(slug: string): Promise<Post | null> {
   if (!slug) {
     return null
   }
@@ -68,7 +100,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 }
 
 // Helper function to format date
-function formatDate(date: string) {
+function formatDate(date: string): string {
   return new Date(date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -191,7 +223,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               >
                 {languageNames.en}
               </Link>
-              {post.translations.map((translation) => (
+              {post.translations.map((translation: Translation) => (
                 <Link
                   key={translation.language}
                   href={`/blog/${translation.slug.current}`}
@@ -218,7 +250,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               value={post.body}
               components={{
                 types: {
-                  image: ({ value }) => (
+                  image: ({ value }: any) => (
                     <img
                       src={urlForImage(value).width(800).url()}
                       alt={value.alt || ''}
@@ -227,7 +259,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                   ),
                 },
                 marks: {
-                  link: ({ children, value }) => (
+                  link: ({ children, value }: any) => (
                     <a 
                       href={value.href}
                       target={value.href.startsWith('http') ? '_blank' : undefined}
