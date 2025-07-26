@@ -1,0 +1,52 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "calculator": "Calculateur",
+    "about": "À Propos",
+    "blog": "Blog",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Investissez dans l'Avenir des Pouilles",
+    "subtitle": "Découvrez des opportunités immobilières lucratives dans le joyau caché du sud de l'Italie",
+    "cta": "Calculez Votre Investissement",
+    "ctaSecondary": "Explorer les Propriétés"
+  },
+  "calculator": {
+    "title": "Calculateur d'Investissement PIA Tourisme",
+    "propertyValue": "Valeur de la Propriété",
+    "renovationCost": "Coût de Rénovation",
+    "calculate": "Calculer les Avantages",
+    "results": {
+      "title": "Vos Avantages d'Investissement",
+      "taxCredit": "Crédit d'Impôt",
+      "totalInvestment": "Investissement Total",
+      "netInvestment": "Investissement Net Après Avantages",
+      "savings": "Économies Totales"
+    }
+  },
+  "blog": {
+    "title": "Blog InvestinPuglia",
+    "subtitle": "Découvrez les dernières perspectives, tendances du marché et opportunités d'investissement dans le marché immobilier florissant des Pouilles",
+    "readMore": "Lire la Suite",
+    "backToBlog": "Retour au Blog",
+    "noPosts": "Aucun article de blog disponible pour le moment.",
+    "checkBack": "Revenez bientôt pour les mises à jour!",
+    "newsletter": {
+      "title": "Restez Informé sur les Opportunités d'Investissement dans les Pouilles",
+      "subtitle": "Recevez les dernières analyses du marché et opportunités d'investissement dans votre boîte mail",
+      "cta": "S'abonner à la Newsletter"
+    }
+  },
+  "footer": {
+    "company": {
+      "title": "InvestinPuglia",
+      "description": "Votre partenaire de confiance pour l'investissement immobilier dans les Pouilles, Italie."
+    },
+    "quickLinks": "Liens Rapides",
+    "followUs": "Suivez-nous",
+    "rights": "Tous droits réservés.",
+    "privacy": "Politique de Confidentialité",
+    "terms": "Conditions d'Utilisation"
+  }
+}
