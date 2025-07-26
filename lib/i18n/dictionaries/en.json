@@ -1,0 +1,52 @@
+{
+  "nav": {
+    "home": "Home",
+    "calculator": "Calculator",
+    "about": "About",
+    "blog": "Blog",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Invest in Puglia's Future",
+    "subtitle": "Discover lucrative real estate opportunities in Southern Italy's hidden gem",
+    "cta": "Calculate Your Investment",
+    "ctaSecondary": "Explore Properties"
+  },
+  "calculator": {
+    "title": "PIA Tourism Investment Calculator",
+    "propertyValue": "Property Value",
+    "renovationCost": "Renovation Cost",
+    "calculate": "Calculate Benefits",
+    "results": {
+      "title": "Your Investment Benefits",
+      "taxCredit": "Tax Credit",
+      "totalInvestment": "Total Investment",
+      "netInvestment": "Net Investment After Benefits",
+      "savings": "Total Savings"
+    }
+  },
+  "blog": {
+    "title": "InvestinPuglia Blog",
+    "subtitle": "Discover the latest insights, market trends, and investment opportunities in Puglia's thriving real estate market",
+    "readMore": "Read More",
+    "backToBlog": "Back to Blog",
+    "noPosts": "No blog posts available yet.",
+    "checkBack": "Check back soon for updates!",
+    "newsletter": {
+      "title": "Stay Updated on Puglia Investment Opportunities",
+      "subtitle": "Get the latest market insights and investment opportunities delivered to your inbox",
+      "cta": "Subscribe to Newsletter"
+    }
+  },
+  "footer": {
+    "company": {
+      "title": "InvestinPuglia",
+      "description": "Your trusted partner for property investment in Puglia, Italy."
+    },
+    "quickLinks": "Quick Links",
+    "followUs": "Follow Us",
+    "rights": "All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  }
+}
